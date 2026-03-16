@@ -8,7 +8,8 @@ module.exports = {
       interpreter: 'none',
       env: {
         NODE_ENV: 'production',
-        PORT: '3100'
+        PORT: '3100',
+        DATABASE_URL: 'postgresql://tradepotion:a5be90b7555d9492766fe97618bb037f@127.0.0.1:5433/tradepotion_tracker'
       },
       restart_delay: 3000,
       max_restarts: 10
