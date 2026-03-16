@@ -33,7 +33,7 @@ export default async function TopLosersPage() {
         </div>
       </div>
 
-      <TierFilter coins={losers} />
+      <TierFilter coins={losers} filterStables={true} />
     </main>
   );
 }

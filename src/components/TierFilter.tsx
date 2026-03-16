@@ -18,6 +18,7 @@ interface Coin {
 
 interface Props {
   coins: Coin[];
+  filterStables?: boolean;
 }
 
 const TIERS = [
@@ -28,13 +29,19 @@ const TIERS = [
   { label: 'Micro Cap', sublabel: '<$100M', min: 0, max: 100_000_000 },
 ];
 
-export default function TierFilter({ coins }: Props) {
+export default function TierFilter({ coins, filterStables = false }: Props) {
   const [activeTier, setActiveTier] = useState(0);
+
+  const baseCoins = useMemo(() => {
+    if (!filterStables) return coins;
+    // Filter stablecoins: price between $0.95-$1.05 AND abs(24h change) < 0.5%
+    return coins.filter(c => !(c.current_price >= 0.95 && c.current_price <= 1.05 && Math.abs(c.price_change_percentage_24h) < 0.5));
+  }, [coins, filterStables]);
 
   const filtered = useMemo(() => {
     const tier = TIERS[activeTier];
-    return coins.filter(c => c.market_cap >= tier.min && c.market_cap < tier.max);
-  }, [coins, activeTier]);
+    return baseCoins.filter(c => c.market_cap >= tier.min && c.market_cap < tier.max);
+  }, [baseCoins, activeTier]);
 
   return (
     <>
