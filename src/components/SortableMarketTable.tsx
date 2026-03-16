@@ -63,8 +63,8 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
 
   const sorted = useMemo(() => {
     return [...coinsWithRatio].sort((a, b) => {
-      const aVal = (a as Record<string, number>)[sortKey] ?? 0;
-      const bVal = (b as Record<string, number>)[sortKey] ?? 0;
+      const aVal = (a as unknown as Record<string, number>)[sortKey] ?? 0;
+      const bVal = (b as unknown as Record<string, number>)[sortKey] ?? 0;
       return sortDir === 'asc' ? aVal - bVal : bVal - aVal;
     });
   }, [coinsWithRatio, sortKey, sortDir]);
@@ -72,7 +72,6 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
   const totalPages = Math.ceil(sorted.length / pageSize);
   const paginated = sorted.slice(page * pageSize, (page + 1) * pageSize);
 
-  const colCount = showVolMcap ? 7 : 6;
   const gridCols = showVolMcap
     ? 'grid-cols-[2rem_1fr_repeat(6,8rem)]'
     : 'grid-cols-[2rem_1fr_repeat(5,8rem)]';
@@ -193,8 +192,6 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
           </div>
         </div>
       )}
-      {/* Unused colCount variable suppressed */}
-      <span className="hidden">{colCount}</span>
     </div>
   );
 }
