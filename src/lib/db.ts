@@ -6,11 +6,14 @@ declare global {
 }
 
 function createPool(): Pool {
+  // Disable SSL for Railway postgres:16 image (no SSL configured)
+  const sslConfig = process.env.DATABASE_SSL === 'true'
+    ? { rejectUnauthorized: false }
+    : false;
+
   return new Pool({
     connectionString: process.env.DATABASE_URL,
-    ssl: process.env.DATABASE_URL?.includes('railway') || process.env.NODE_ENV === 'production'
-      ? { rejectUnauthorized: false }
-      : false,
+    ssl: sslConfig,
     max: 10,
     idleTimeoutMillis: 30000,
     connectionTimeoutMillis: 5000,
