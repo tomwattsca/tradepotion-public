@@ -1,8 +1,6 @@
 import { getGlobalMarketData } from '@/lib/coingecko';
 import { formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 
-export const revalidate = 300;
-
 export default async function MarketStatsBar() {
   let data;
   try {
