@@ -1,11 +1,12 @@
 import { getCoinDetail } from '@/lib/coingecko';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
-import PriceChart from '@/components/PriceChart';
+import NormalisedChart from '@/components/NormalisedChart';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
 import { ArrowLeft } from 'lucide-react';
 import { Metadata } from 'next';
+import ShareCompareButton from '@/components/ShareCompareButton';
 
 export const revalidate = 300;
 
@@ -24,19 +25,12 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!ids) return { title: 'Compare Coins' };
   const [a, b] = ids.map(id => id.charAt(0).toUpperCase() + id.slice(1));
   return {
-    title: `${a} vs ${b} — Price Comparison`,
-    description: `Compare ${a} and ${b} side by side. Live prices, market cap, volume, 24h/7d/30d performance charts.`,
+    title: `${a} vs ${b} — Price Comparison | Trade Potion`,
+    description: `Compare ${a} and ${b} side by side. Normalised performance chart, Pearson correlation, price, market cap, volume, ATH and more.`,
   };
 }
 
-function StatRow({ label, aVal, bVal, }: {
-  label: string;
-  aVal: string;
-  bVal: string;
-  aRaw?: number;
-  bRaw?: number;
-
-}) {
+function StatRow({ label, aVal, bVal }: { label: string; aVal: string; bVal: string }) {
   return (
     <div className="grid grid-cols-3 gap-2 py-2.5 border-b border-zinc-800/50 text-sm">
       <span className="text-zinc-400">{label}</span>
@@ -64,59 +58,28 @@ export default async function ComparePage({ params }: Props) {
   const amd = a.market_data;
   const bmd = b.market_data;
 
-  const stats = [
-    {
-      label: 'Price (USD)',
-      aVal: formatPrice(amd.current_price.usd),
-      bVal: formatPrice(bmd.current_price.usd),
-    },
-    {
-      label: '24h Change',
-      aVal: formatPct(amd.price_change_percentage_24h ?? 0),
-      bVal: formatPct(bmd.price_change_percentage_24h ?? 0),
-    },
-    {
-      label: '7d Change',
-      aVal: formatPct(amd.price_change_percentage_7d),
-      bVal: formatPct(bmd.price_change_percentage_7d),
-    },
-    {
-      label: '30d Change',
-      aVal: formatPct(amd.price_change_percentage_30d),
-      bVal: formatPct(bmd.price_change_percentage_30d),
-    },
-    {
-      label: 'Market Cap',
-      aVal: formatMarketCap(amd.market_cap.usd),
-      bVal: formatMarketCap(bmd.market_cap.usd),
-    },
-    {
-      label: '24h Volume',
-      aVal: formatMarketCap(amd.total_volume.usd),
-      bVal: formatMarketCap(bmd.total_volume.usd),
-    },
-    {
-      label: 'Circulating Supply',
-      aVal: amd.circulating_supply?.toLocaleString() ?? '—',
-      bVal: bmd.circulating_supply?.toLocaleString() ?? '—',
-    },
-    {
-      label: 'All-Time High',
-      aVal: formatPrice(amd.ath.usd),
-      bVal: formatPrice(bmd.ath.usd),
-    },
-    {
-      label: 'All-Time Low',
-      aVal: formatPrice(amd.atl.usd),
-      bVal: formatPrice(bmd.atl.usd),
-    },
+  const stats: { label: string; aVal: string; bVal: string }[] = [
+    { label: 'Price (USD)', aVal: formatPrice(amd.current_price.usd), bVal: formatPrice(bmd.current_price.usd) },
+    { label: '24h Change', aVal: formatPct(amd.price_change_percentage_24h ?? 0), bVal: formatPct(bmd.price_change_percentage_24h ?? 0) },
+    { label: '7d Change', aVal: formatPct(amd.price_change_percentage_7d), bVal: formatPct(bmd.price_change_percentage_7d) },
+    { label: '30d Change', aVal: formatPct(amd.price_change_percentage_30d), bVal: formatPct(bmd.price_change_percentage_30d) },
+    { label: 'Market Cap', aVal: formatMarketCap(amd.market_cap.usd), bVal: formatMarketCap(bmd.market_cap.usd) },
+    { label: '24h Volume', aVal: formatMarketCap(amd.total_volume.usd), bVal: formatMarketCap(bmd.total_volume.usd) },
+    { label: 'Circulating Supply', aVal: amd.circulating_supply?.toLocaleString() ?? '—', bVal: bmd.circulating_supply?.toLocaleString() ?? '—' },
+    { label: 'All-Time High', aVal: formatPrice(amd.ath.usd), bVal: formatPrice(bmd.ath.usd) },
+    { label: 'All-Time Low', aVal: formatPrice(amd.atl.usd), bVal: formatPrice(bmd.atl.usd) },
   ];
+
+  const shareUrl = `https://tradepotion.com/compare/${params.pair}`;
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-8">
-      <Link href="/" className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-300 mb-6 transition-colors">
-        <ArrowLeft className="h-4 w-4" /> Markets
-      </Link>
+      <div className="flex items-center justify-between mb-6">
+        <Link href="/" className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-300 transition-colors">
+          <ArrowLeft className="h-4 w-4" /> Markets
+        </Link>
+        <ShareCompareButton url={shareUrl} />
+      </div>
 
       {/* Header */}
       <div className="flex items-center justify-center gap-6 mb-8">
@@ -147,16 +110,14 @@ export default async function ComparePage({ params }: Props) {
         </Link>
       </div>
 
-      {/* Charts side by side */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
-        <div>
-          <p className="text-sm font-semibold text-zinc-300 mb-2">{a.name} Price Chart</p>
-          <PriceChart coinId={a.id} />
-        </div>
-        <div>
-          <p className="text-sm font-semibold text-zinc-300 mb-2">{b.name} Price Chart</p>
-          <PriceChart coinId={b.id} />
-        </div>
+      {/* Normalised overlay chart — the key differentiator */}
+      <div className="mb-6">
+        <NormalisedChart
+          coinAId={a.id}
+          coinAName={a.name}
+          coinBId={b.id}
+          coinBName={b.name}
+        />
       </div>
 
       {/* Stats table */}
@@ -175,6 +136,21 @@ export default async function ComparePage({ params }: Props) {
         {stats.map(s => (
           <StatRow key={s.label} {...s} />
         ))}
+      </div>
+
+      {/* Other comparisons */}
+      <div className="mt-6 text-center">
+        <p className="text-xs text-zinc-600 mb-2">More comparisons</p>
+        <div className="flex flex-wrap gap-2 justify-center">
+          {['bitcoin-vs-solana', 'ethereum-vs-solana', 'bitcoin-vs-dogecoin', 'ethereum-vs-bnb'].filter(p => p !== params.pair).slice(0, 4).map(pair => {
+            const [pa, pb] = pair.split('-vs-');
+            return (
+              <Link key={pair} href={`/compare/${pair}`} className="text-xs text-violet-400 hover:text-violet-300 bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-lg transition-colors">
+                {pa.charAt(0).toUpperCase() + pa.slice(1)} vs {pb.charAt(0).toUpperCase() + pb.slice(1)}
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </main>
   );
