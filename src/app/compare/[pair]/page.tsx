@@ -3,7 +3,7 @@ import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft } from 'lucide-react';
+import { ArrowLeft, AlertTriangle } from 'lucide-react';
 import { Metadata } from 'next';
 import ShareCompareButton from '@/components/ShareCompareButton';
 import CoinCompareSelector from '@/components/CoinCompareSelector';
@@ -44,6 +44,39 @@ function StatRow({ label, aVal, bVal }: { label: string; aVal: string; bVal: str
   );
 }
 
+function DataUnavailable({ pair }: { pair: string }) {
+  const ids = parsePair(pair);
+  const label = ids
+    ? `${ids[0].charAt(0).toUpperCase() + ids[0].slice(1)} vs ${ids[1].charAt(0).toUpperCase() + ids[1].slice(1)}`
+    : 'this pair';
+
+  return (
+    <div className="flex flex-col items-center justify-center py-20 gap-4 text-center">
+      <AlertTriangle className="h-10 w-10 text-amber-400/70" />
+      <div>
+        <p className="text-white font-semibold text-lg mb-1">Data temporarily unavailable</p>
+        <p className="text-zinc-400 text-sm max-w-xs">
+          We couldn&apos;t load price data for {label} right now. This is usually a brief API hiccup — try again in a moment.
+        </p>
+      </div>
+      <div className="flex gap-3 mt-2">
+        <Link
+          href={`/compare/${pair}`}
+          className="px-4 py-2 text-sm bg-violet-600 hover:bg-violet-500 text-white rounded-lg transition-colors"
+        >
+          Try again
+        </Link>
+        <Link
+          href="/"
+          className="px-4 py-2 text-sm bg-zinc-800 hover:bg-zinc-700 text-zinc-300 rounded-lg transition-colors"
+        >
+          Back to Markets
+        </Link>
+      </div>
+    </div>
+  );
+}
+
 export default async function ComparePage({ params }: Props) {
   const ids = parsePair(params.pair);
   if (!ids) notFound();
@@ -53,8 +86,18 @@ export default async function ComparePage({ params }: Props) {
     getCoinDetail(ids[1]),
   ]);
 
+  // Graceful degradation: show a friendly error instead of 404ing on API failures
   if (coinAResult.status === 'rejected' || coinBResult.status === 'rejected') {
-    notFound();
+    return (
+      <main className="mx-auto max-w-5xl px-4 py-8">
+        <div className="flex items-center justify-between mb-6">
+          <Link href="/" className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-300 transition-colors">
+            <ArrowLeft className="h-4 w-4" /> Markets
+          </Link>
+        </div>
+        <DataUnavailable pair={params.pair} />
+      </main>
+    );
   }
 
   const a = coinAResult.value;
