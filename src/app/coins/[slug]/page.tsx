@@ -23,7 +23,7 @@ export default async function CoinPage({ params }: Props) {
 
   const md = coin.market_data;
   const price = md.current_price.usd;
-  const pct24h = coin.price_change_percentage_24h;
+  const pct24h = md.price_change_percentage_24h ?? coin.price_change_percentage_24h ?? 0;
   const pct7d = md.price_change_percentage_7d;
   const pct30d = md.price_change_percentage_30d;
 
