@@ -1,6 +1,5 @@
 import { getCoinDetail } from '@/lib/coingecko';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
-import NormalisedChart from '@/components/NormalisedChart';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
@@ -8,6 +7,10 @@ import { ArrowLeft } from 'lucide-react';
 import { Metadata } from 'next';
 import ShareCompareButton from '@/components/ShareCompareButton';
 import CoinCompareSelector from '@/components/CoinCompareSelector';
+
+import dynamic from 'next/dynamic';
+
+const NormalisedChartDynamic = dynamic(() => import('@/components/NormalisedChart'), { ssr: false });
 
 export const revalidate = 300;
 
@@ -116,7 +119,7 @@ export default async function ComparePage({ params }: Props) {
 
       {/* Normalised overlay chart — the key differentiator */}
       <div className="mb-6">
-        <NormalisedChart
+        <NormalisedChartDynamic
           coinAId={a.id}
           coinAName={a.name}
           coinBId={b.id}

@@ -30,12 +30,12 @@ export default function Navbar() {
         {/* Nav links */}
         <div className="hidden md:flex items-center gap-6 text-sm text-zinc-400">
           <Link href="/" className="hover:text-white transition-colors">Markets</Link>
-          <Link href="/category/defi" className="hover:text-white transition-colors">DeFi</Link>
+          <Link href="/category/decentralized-finance-defi" className="hover:text-white transition-colors">DeFi</Link>
           <Link href="/category/layer-2" className="hover:text-white transition-colors">Layer 2</Link>
           <Link href="/category/meme-token" className="hover:text-white transition-colors">Meme</Link>
           <Link href="/top/gainers" className="hover:text-white transition-colors text-emerald-400/80">Gainers</Link>
           <Link href="/top/losers" className="hover:text-white transition-colors text-red-400/80">Losers</Link>
-          <Link href="/movers/volume-spikes" className="hover:text-white transition-colors text-yellow-400/80">Vol Spikes</Link>
+          <Link href="/top/vol-spikes" className="hover:text-white transition-colors text-yellow-400/80">Vol Spikes</Link>
         </div>
 
         {/* Search */}
@@ -65,12 +65,12 @@ export default function Navbar() {
       {menuOpen && (
         <div className="md:hidden border-t border-zinc-800 px-4 py-3 flex flex-col gap-3 text-sm text-zinc-400">
           <Link href="/" onClick={() => setMenuOpen(false)} className="hover:text-white">Markets</Link>
-          <Link href="/category/defi" onClick={() => setMenuOpen(false)} className="hover:text-white">DeFi</Link>
+          <Link href="/category/decentralized-finance-defi" onClick={() => setMenuOpen(false)} className="hover:text-white">DeFi</Link>
           <Link href="/category/layer-2" onClick={() => setMenuOpen(false)} className="hover:text-white">Layer 2</Link>
           <Link href="/category/meme-token" onClick={() => setMenuOpen(false)} className="hover:text-white">Meme</Link>
           <Link href="/top/gainers" onClick={() => setMenuOpen(false)} className="hover:text-white text-emerald-400/80">Gainers</Link>
           <Link href="/top/losers" onClick={() => setMenuOpen(false)} className="hover:text-white text-red-400/80">Losers</Link>
-          <Link href="/movers/volume-spikes" onClick={() => setMenuOpen(false)} className="hover:text-white text-yellow-400/80">Vol Spikes</Link>
+          <Link href="/top/vol-spikes" onClick={() => setMenuOpen(false)} className="hover:text-white text-yellow-400/80">Vol Spikes</Link>
         </div>
       )}
     </nav>

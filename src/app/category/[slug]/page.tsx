@@ -12,6 +12,11 @@ const CATEGORY_META: Record<string, { title: string; description: string; h1: st
     description: 'Track prices for 500+ DeFi tokens including Aave, Uniswap, Curve. Live DeFi coin prices, charts, and alerts.',
     h1: 'DeFi Tokens — Live Prices & Price Alerts',
   },
+  'decentralized-finance-defi': {
+    title: 'DeFi Tokens Price Tracker | Top DeFi Cryptocurrency Prices',
+    description: 'Track prices for 500+ DeFi tokens including Aave, Uniswap, Curve. Live DeFi coin prices, charts, and alerts.',
+    h1: 'DeFi Tokens — Live Prices & Price Alerts',
+  },
   'layer-2': {
     title: 'Layer 2 Coin Prices | Arbitrum, Optimism, Polygon Tracker',
     description: 'Live prices for Ethereum Layer 2 tokens: Arbitrum, Optimism, Polygon, and more. Real-time tracking and alerts.',
