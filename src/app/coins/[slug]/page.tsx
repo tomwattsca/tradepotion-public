@@ -2,6 +2,7 @@ import { getCoinDetail } from '@/lib/coingecko';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 import PriceChart from '@/components/PriceChart';
 import ExchangeCTAs from '@/components/ExchangeCTAs';
+import PriceAlertForm from '@/components/PriceAlertForm';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -120,6 +121,8 @@ export default async function CoinPage({ params }: Props) {
         {/* Sidebar */}
         <div className="flex flex-col gap-4">
           <ExchangeCTAs coinSymbol={coin.symbol} coinName={coin.name} />
+
+          <PriceAlertForm coinId={coin.id} coinName={coin.name} currentPrice={price} />
 
           {/* Links */}
           {coin.links?.homepage?.[0] && (
