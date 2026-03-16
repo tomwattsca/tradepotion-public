@@ -1,5 +1,6 @@
 import { getTrendingCoins, getTopGainers, getTopLosers } from '@/lib/coingecko';
 import CoinRow from '@/components/CoinRow';
+import HomePriceAlertBanner from '@/components/HomePriceAlertBanner';
 import { formatPct, pctColor } from '@/lib/utils';
 import Image from 'next/image';
 import { TrendingUp, TrendingDown, Flame } from 'lucide-react';
@@ -13,6 +14,14 @@ export default async function HomePage() {
     getTopLosers(5),
   ]);
 
+  // Top 20 coins for the alert banner coin selector
+  const alertCoins = trending.map((c) => ({
+    id: c.id,
+    name: c.name,
+    symbol: c.symbol,
+    current_price: c.current_price,
+  }));
+
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
       {/* Hero */}
@@ -22,6 +31,9 @@ export default async function HomePage() {
           Live prices, gainers, and losers across 10,000+ altcoins.
         </p>
       </div>
+
+      {/* Price Alert Banner */}
+      <HomePriceAlertBanner topCoins={alertCoins} />
 
       {/* Gainers / Losers strip */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
