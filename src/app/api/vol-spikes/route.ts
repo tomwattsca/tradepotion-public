@@ -32,7 +32,7 @@ async function fetchMarkets(): Promise<CoinGeckoMarket[]> {
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
-  const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100);
+  const limit = parseInt(searchParams.get('limit') || '250');
   const minVolume = parseInt(searchParams.get('minVol') || '1000000'); // default $1M min vol
   const minMcap = parseInt(searchParams.get('minMcap') || '0');
 

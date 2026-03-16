@@ -3,6 +3,7 @@
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 
 interface Coin {
@@ -16,6 +17,8 @@ interface Coin {
   vol_mcap_ratio: number;
   pct: number;
 }
+
+const PAGE_SIZE = 50;
 
 const VOL_FILTERS: { label: string; value: number }[] = [
   { label: 'All Vol', value: 0 },
@@ -35,10 +38,14 @@ const CAP_TIERS = [
 export default function VolSpikesClient() {
   const [minVol, setMinVol] = useState(1_000_000);
   const [capTier, setCapTier] = useState(0);
+  const [page, setPage] = useState(0);
   const [coins, setCoins] = useState<Coin[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
+
+  // Reset page on filter change
+  useEffect(() => { setPage(0); }, [minVol, capTier]);
 
   useEffect(() => {
     setLoading(true);
@@ -66,6 +73,9 @@ export default function VolSpikesClient() {
     const tier = CAP_TIERS[capTier];
     return coins.filter(c => c.market_cap >= tier.min && c.market_cap < tier.max);
   }, [coins, capTier]);
+
+  const totalPages = Math.ceil(filtered.length / PAGE_SIZE);
+  const pageCoins = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
   return (
     <div>
@@ -138,13 +148,13 @@ export default function VolSpikesClient() {
               No coins match these filters right now.
             </p>
           )}
-          {!loading && !error && filtered.map((coin, i) => (
+          {!loading && !error && pageCoins.map((coin, i) => (
             <Link
               key={coin.id}
               href={`/coins/${coin.id}`}
               className="grid grid-cols-[2rem_1fr_7rem_8rem_9rem_9rem] items-center px-4 py-3 hover:bg-zinc-900 transition-colors group"
             >
-              <span className="text-xs text-zinc-500 text-right">{i + 1}</span>
+              <span className="text-xs text-zinc-500 text-right">{page * PAGE_SIZE + i + 1}</span>
               <div className="flex items-center gap-2.5 pl-3 min-w-0">
                 <Image src={coin.image} alt={coin.name} width={24} height={24} className="rounded-full shrink-0" />
                 <div className="min-w-0">
@@ -167,6 +177,31 @@ export default function VolSpikesClient() {
           ))}
         </div>
       </div>
+
+      {/* Pagination */}
+      {!loading && !error && totalPages > 1 && (
+        <div className="flex items-center justify-between mt-4">
+          <button
+            onClick={() => setPage(p => Math.max(0, p - 1))}
+            disabled={page === 0}
+            className="flex items-center gap-1 px-3 py-1.5 text-xs rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            <ChevronLeft className="h-3.5 w-3.5" />
+            Prev
+          </button>
+          <span className="text-xs text-zinc-500">
+            Page {page + 1} of {totalPages} — showing {page * PAGE_SIZE + 1}–{Math.min((page + 1) * PAGE_SIZE, filtered.length)} of {filtered.length}
+          </span>
+          <button
+            onClick={() => setPage(p => Math.min(totalPages - 1, p + 1))}
+            disabled={page >= totalPages - 1}
+            className="flex items-center gap-1 px-3 py-1.5 text-xs rounded-lg bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+          >
+            Next
+            <ChevronRight className="h-3.5 w-3.5" />
+          </button>
+        </div>
+      )}
 
       {/* Explainer */}
       <p className="mt-3 text-xs text-zinc-600 text-center">

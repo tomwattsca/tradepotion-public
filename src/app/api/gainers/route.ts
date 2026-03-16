@@ -47,7 +47,7 @@ export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
   const range = searchParams.get('range') || '24h';
   const type = searchParams.get('type') || 'gainers'; // gainers | losers
-  const limit = Math.min(parseInt(searchParams.get('limit') || '50'), 100);
+  const limit = parseInt(searchParams.get('limit') || '250');
   const minVolume = parseInt(searchParams.get('minVol') || '0');
 
   try {
