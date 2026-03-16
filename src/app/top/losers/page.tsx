@@ -1,28 +1,16 @@
-import { getTopCoins } from '@/lib/coingecko';
 import Link from 'next/link';
 import { ArrowLeft, TrendingDown } from 'lucide-react';
 import { Metadata } from 'next';
-import TierFilter from '@/components/TierFilter';
+import GainersClient from '@/components/GainersClient';
 
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: 'Top Crypto Losers Today | 24h Worst Performing Coins',
-  description: 'Live list of the top cryptocurrency losers in the last 24 hours, filterable by market cap tier. Track which coins are down the most on Trade Potion.',
+  title: 'Top Crypto Losers Today | 1H, 24H, 7D Worst Performing Coins',
+  description: 'Live list of the top cryptocurrency losers filterable by 1H, 24H, and 7D performance and market cap tier. Track which coins are down the most on Trade Potion.',
 };
 
-export default async function TopLosersPage() {
-  let losers: import('@/types').Coin[] = [];
-  let error = false;
-  try {
-    const all = await getTopCoins(250);
-    losers = all
-      .filter((c) => typeof c.price_change_percentage_24h === 'number' && c.price_change_percentage_24h < 0)
-      .sort((a, b) => a.price_change_percentage_24h - b.price_change_percentage_24h);
-  } catch {
-    error = true;
-  }
-
+export default function TopLosersPage() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
       <Link href="/" className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-300 mb-6 transition-colors">
@@ -33,17 +21,11 @@ export default async function TopLosersPage() {
         <TrendingDown className="h-6 w-6 text-red-400" />
         <div>
           <h1 className="text-2xl font-bold text-white">Top Crypto Losers</h1>
-          <p className="text-sm text-zinc-400">Worst performing coins in the last 24 hours</p>
+          <p className="text-sm text-zinc-400">Worst performing coins — filter by time range, volume, and market cap</p>
         </div>
       </div>
 
-      {error ? (
-        <div className="rounded-xl bg-zinc-900 border border-zinc-800 px-6 py-10 text-center">
-          <p className="text-zinc-400 text-sm">Price data temporarily unavailable — try refreshing in a moment.</p>
-        </div>
-      ) : (
-        <TierFilter coins={losers} filterStables={true} />
-      )}
+      <GainersClient mode="losers" />
     </main>
   );
 }
