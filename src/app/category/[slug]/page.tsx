@@ -6,43 +6,112 @@ import { formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 
 export const revalidate = 300;
 
-const CATEGORY_META: Record<string, { title: string; description: string; h1: string }> = {
+interface CategoryMeta {
+  title: string;
+  description: string;
+  h1: string;
+  h2: string;
+  intro?: string; // populated by Emma — empty until her doc lands
+}
+
+const CATEGORY_META: Record<string, CategoryMeta> = {
   defi: {
     title: 'DeFi Tokens Price Tracker | Top DeFi Cryptocurrency Prices',
     description: 'Track prices for 500+ DeFi tokens including Aave, Uniswap, Curve. Live DeFi coin prices, charts, and alerts.',
-    h1: 'DeFi Tokens — Live Prices & Price Alerts',
+    h1: 'DeFi Tokens',
+    h2: 'Top DeFi Tokens by Market Cap',
+    intro: '',
   },
   'decentralized-finance-defi': {
     title: 'DeFi Tokens Price Tracker | Top DeFi Cryptocurrency Prices',
     description: 'Track prices for 500+ DeFi tokens including Aave, Uniswap, Curve. Live DeFi coin prices, charts, and alerts.',
-    h1: 'DeFi Tokens — Live Prices & Price Alerts',
+    h1: 'DeFi Tokens',
+    h2: 'Top DeFi Tokens by Market Cap',
+    intro: '',
   },
   'layer-2': {
     title: 'Layer 2 Coin Prices | Arbitrum, Optimism, Polygon Tracker',
     description: 'Live prices for Ethereum Layer 2 tokens: Arbitrum, Optimism, Polygon, and more. Real-time tracking and alerts.',
-    h1: 'Layer 2 Tokens — Ethereum Scaling Solutions',
-  },
-  'meme-token': {
-    title: 'Meme Coin Prices | Doge, Shiba, Pepe Tracker',
-    description: 'Track live prices for meme coins: Dogecoin, Shiba Inu, Pepe, and 1000+ more. Real-time meme token prices.',
-    h1: 'Meme Coins — Community & Trending Tokens',
-  },
-  stablecoins: {
-    title: 'Stablecoin Prices | USDT, USDC, DAI Tracker',
-    description: 'Track live prices for stablecoins: Tether, USDC, DAI, and more. Monitor USD-pegged token prices and market cap.',
-    h1: 'Stablecoins — USD-Pegged Token Tracker',
+    h1: 'Layer 2 Tokens',
+    h2: 'Top Layer 2 Tokens by Market Cap',
+    intro: '',
   },
   'layer-1': {
     title: 'Layer 1 Blockchain Prices | BTC, ETH, SOL Tracker',
     description: 'Live prices for Layer 1 blockchain tokens: Bitcoin, Ethereum, Solana, Avalanche, and more.',
-    h1: 'Layer 1 Blockchains — Live Prices & Market Data',
+    h1: 'Layer 1 Blockchains',
+    h2: 'Top Layer 1 Blockchains by Market Cap',
+    intro: '',
+  },
+  'meme-token': {
+    title: 'Meme Coin Prices | Doge, Shiba, Pepe Tracker',
+    description: 'Track live prices for meme coins: Dogecoin, Shiba Inu, Pepe, and 1000+ more. Real-time meme token prices.',
+    h1: 'Meme Coins',
+    h2: 'Top Meme Coins by Market Cap',
+    intro: '',
+  },
+  stablecoins: {
+    title: 'Stablecoin Prices | USDT, USDC, DAI Tracker',
+    description: 'Track live prices for stablecoins: Tether, USDC, DAI, and more. Monitor USD-pegged token prices and market cap.',
+    h1: 'Stablecoins',
+    h2: 'Top Stablecoins by Market Cap',
+    intro: '',
+  },
+  'smart-contract-platform': {
+    title: 'Smart Contract Platform Tokens | ETH, SOL, AVAX Prices',
+    description: 'Live prices for smart contract platform tokens: Ethereum, Solana, Avalanche, Cardano, and more.',
+    h1: 'Smart Contract Platforms',
+    h2: 'Top Smart Contract Platforms by Market Cap',
+    intro: '',
+  },
+  infrastructure: {
+    title: 'Crypto Infrastructure Tokens | Live Prices & Market Data',
+    description: 'Track prices for blockchain infrastructure tokens. Real-time data for oracles, bridges, and protocol tooling.',
+    h1: 'Infrastructure Tokens',
+    h2: 'Top Infrastructure Tokens by Market Cap',
+    intro: '',
+  },
+  'real-world-assets': {
+    title: 'Real World Asset (RWA) Tokens | Live Crypto Prices',
+    description: 'Track live prices for real-world asset tokens — tokenised bonds, real estate, and commodities on-chain.',
+    h1: 'Real World Assets (RWA)',
+    h2: 'Top Real World Asset Tokens by Market Cap',
+    intro: '',
+  },
+  governance: {
+    title: 'Governance Tokens | DAO Voting Token Prices',
+    description: 'Live prices for governance tokens used in DAO voting: Uniswap, Compound, Aave, and more.',
+    h1: 'Governance Tokens',
+    h2: 'Top Governance Tokens by Market Cap',
+    intro: '',
+  },
+  privacy: {
+    title: 'Privacy Coin Prices | Monero, Zcash, Dash Tracker',
+    description: 'Track live prices for privacy coins: Monero, Zcash, Dash, and more. Real-time privacy token market data.',
+    h1: 'Privacy Coins',
+    h2: 'Top Privacy Coins by Market Cap',
+    intro: '',
+  },
+  'artificial-intelligence': {
+    title: 'AI Crypto Token Prices | Top Artificial Intelligence Coins',
+    description: 'Live prices for AI crypto tokens: Fetch.ai, Render, Akash, and more. Track the AI and machine learning coin market.',
+    h1: 'AI & Machine Learning Tokens',
+    h2: 'Top AI Tokens by Market Cap',
+    intro: '',
+  },
+  'liquid-staking': {
+    title: 'Liquid Staking Token Prices | stETH, rETH, mSOL Tracker',
+    description: 'Track live prices for liquid staking tokens: stETH, rETH, mSOL, and more. Real-time LST market data.',
+    h1: 'Liquid Staking Tokens',
+    h2: 'Top Liquid Staking Tokens by Market Cap',
+    intro: '',
   },
 };
 
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const meta = CATEGORY_META[params.slug];
   const displayName = params.slug.replace(/-/g, ' ');
-  const title = meta?.title ?? `${displayName} Coin Prices`;
+  const title = meta?.title ?? `${displayName} Coin Prices | Trade Potion`;
   const description =
     meta?.description ??
     `Live prices for ${displayName} tokens. Real-time tracking and price alerts on Trade Potion.`;
@@ -88,7 +157,11 @@ export default async function CategoryPage({ params }: Props) {
 
   const category = categories.find((c) => c.id === params.slug);
   const meta = CATEGORY_META[params.slug];
-  const displayName = category?.name ?? meta?.h1 ?? params.slug.replace(/-/g, ' ');
+
+  // H1: prefer explicit meta.h1, then CoinGecko category name, then slug-derived
+  const h1 = meta?.h1 ?? category?.name ?? params.slug.replace(/-/g, ' ');
+  const h2 = meta?.h2 ?? `Top ${h1} by Market Cap`;
+  const intro = meta?.intro ?? null;
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
@@ -100,8 +173,9 @@ export default async function CategoryPage({ params }: Props) {
         Markets
       </Link>
 
+      {/* Page header */}
       <div className="mb-6">
-        <h1 className="text-2xl font-bold text-white capitalize">{displayName}</h1>
+        <h1 className="text-2xl font-bold text-white">{h1}</h1>
         {category && (
           <div className="flex items-center gap-4 mt-2 text-sm text-zinc-400">
             <span>
@@ -117,20 +191,37 @@ export default async function CategoryPage({ params }: Props) {
         )}
       </div>
 
-      <div className="rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden">
-        <div className="divide-y divide-zinc-800/50">
-          {coins.map((coin, i) => (
-            <CoinRow key={coin.id} coin={coin} rank={i + 1} />
-          ))}
-          {coins.length === 0 && (
-            <p className="px-4 py-8 text-sm text-zinc-500 text-center">
-              {coinsResult.status === 'rejected'
-                ? 'Price data temporarily unavailable — please try again shortly.'
-                : 'No coins found for this category.'}
-            </p>
-          )}
+      {/* Category intro text — populated from Emma's copy */}
+      {intro && (
+        <p className="text-sm text-zinc-400 leading-relaxed mb-6 max-w-3xl">
+          {intro}
+        </p>
+      )}
+
+      {/* Coin table section */}
+      <section aria-labelledby="category-table-heading">
+        <h2
+          id="category-table-heading"
+          className="text-base font-semibold text-zinc-300 mb-3"
+        >
+          {h2}
+        </h2>
+
+        <div className="rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden">
+          <div className="divide-y divide-zinc-800/50">
+            {coins.map((coin, i) => (
+              <CoinRow key={coin.id} coin={coin} rank={i + 1} />
+            ))}
+            {coins.length === 0 && (
+              <p className="px-4 py-8 text-sm text-zinc-500 text-center">
+                {coinsResult.status === 'rejected'
+                  ? 'Price data temporarily unavailable — please try again shortly.'
+                  : 'No coins found for this category.'}
+              </p>
+            )}
+          </div>
         </div>
-      </div>
+      </section>
     </main>
   );
 }
