@@ -10,7 +10,7 @@ async function fetchCG<T>(path: string, params: Record<string, string> = {}): Pr
 
   const res = await fetch(url.toString(), {
     headers: DEFAULT_HEADERS,
-    next: { revalidate: 60 }, // ISR — revalidate every 60s
+    next: { revalidate: 300 }, // ISR — revalidate every 5 min (respect CoinGecko free tier)
   });
 
   if (!res.ok) {
