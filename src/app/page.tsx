@@ -9,11 +9,14 @@ import { TrendingUp, TrendingDown, ArrowRight } from 'lucide-react';
 export const revalidate = 300;
 
 export default async function HomePage() {
-  const [coins, gainers, losers] = await Promise.all([
+  const results = await Promise.allSettled([
     getTopCoins(100),
     getTopGainers(10),
     getTopLosers(10),
   ]);
+  const coins = results[0].status === 'fulfilled' ? results[0].value : [];
+  const gainers = results[1].status === 'fulfilled' ? results[1].value : [];
+  const losers = results[2].status === 'fulfilled' ? results[2].value : [];
 
   return (
     <>
