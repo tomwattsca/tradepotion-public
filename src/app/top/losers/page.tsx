@@ -1,8 +1,9 @@
 import { getTopLosers } from '@/lib/coingecko';
-import CoinRow from '@/components/CoinRow';
 import Link from 'next/link';
+import Image from 'next/image';
 import { ArrowLeft, TrendingDown } from 'lucide-react';
 import { Metadata } from 'next';
+import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 
 export const revalidate = 300;
 
@@ -29,14 +30,42 @@ export default async function TopLosersPage() {
         <TrendingDown className="h-6 w-6 text-red-400" />
         <div>
           <h1 className="text-2xl font-bold text-white">Top Crypto Losers</h1>
-          <p className="text-sm text-zinc-400">Worst performing coins in the last 24 hours</p>
+          <p className="text-sm text-zinc-400">Worst performing coins in the last 24 hours · {losers.length} coins</p>
         </div>
       </div>
 
       <div className="rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden">
-        <div className="divide-y divide-zinc-800/50">
+        {/* Table header */}
+        <div className="grid grid-cols-[2rem_1fr_7rem_7rem_9rem_9rem] px-4 py-2 border-b border-zinc-800 text-xs text-zinc-500">
+          <span className="text-right">#</span>
+          <span className="pl-3">Coin</span>
+          <span className="text-right">Price</span>
+          <span className="text-right">24h %</span>
+          <span className="text-right hidden sm:block">Market Cap</span>
+          <span className="text-right hidden md:block">Volume (24h)</span>
+        </div>
+        <div className="divide-y divide-zinc-800/40">
           {losers.map((coin, i) => (
-            <CoinRow key={coin.id} coin={coin} rank={i + 1} />
+            <Link
+              key={coin.id}
+              href={`/coins/${coin.id}`}
+              className="grid grid-cols-[2rem_1fr_7rem_7rem_9rem_9rem] items-center px-4 py-3 hover:bg-zinc-900 transition-colors group"
+            >
+              <span className="text-xs text-zinc-500 text-right">{i + 1}</span>
+              <div className="flex items-center gap-2.5 pl-3 min-w-0">
+                <Image src={coin.image} alt={coin.name} width={24} height={24} className="rounded-full shrink-0" />
+                <div className="min-w-0">
+                  <p className="text-sm font-medium text-white truncate group-hover:text-violet-300 transition-colors">{coin.name}</p>
+                  <p className="text-xs text-zinc-500 uppercase">{coin.symbol}</p>
+                </div>
+              </div>
+              <span className="text-sm text-right text-white">{formatPrice(coin.current_price)}</span>
+              <span className={`text-sm text-right font-semibold ${pctColor(coin.price_change_percentage_24h)}`}>
+                {formatPct(coin.price_change_percentage_24h)}
+              </span>
+              <span className="text-sm text-right text-zinc-300 hidden sm:block">{formatMarketCap(coin.market_cap)}</span>
+              <span className="text-sm text-right text-zinc-400 hidden md:block">{formatMarketCap(coin.total_volume)}</span>
+            </Link>
           ))}
           {losers.length === 0 && (
             <p className="px-4 py-8 text-sm text-zinc-500 text-center">Data temporarily unavailable — try again shortly.</p>

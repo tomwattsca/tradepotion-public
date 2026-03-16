@@ -176,25 +176,6 @@ export default async function ComparePage({ params }: Props) {
           <StatRow key={s.label} {...s} />
         ))}
       </div>
-
-      {/* SEO content */}
-      <div className="mt-8 rounded-xl bg-zinc-900 border border-zinc-800 p-5">
-        <h2 className="text-base font-semibold text-white mb-3">{a.name} vs {b.name} — Which Should You Track?</h2>
-        <p className="text-sm text-zinc-400 leading-relaxed">
-          {a.name} ({a.symbol.toUpperCase()}) is currently trading at {formatPrice(amd.current_price.usd)},
-          while {b.name} ({b.symbol.toUpperCase()}) is at {formatPrice(bmd.current_price.usd)}.
-          {' '}{a.name}&apos;s market cap of {formatMarketCap(amd.market_cap.usd)} compares to {b.name}&apos;s {formatMarketCap(bmd.market_cap.usd)}.
-          Use the charts above to compare price history, and set a price alert on either coin to track movements.
-        </p>
-        <div className="flex gap-3 mt-4">
-          <Link href={`/coins/${a.id}`} className="text-sm text-violet-400 hover:text-violet-300">
-            View {a.name} details →
-          </Link>
-          <Link href={`/coins/${b.id}`} className="text-sm text-violet-400 hover:text-violet-300">
-            View {b.name} details →
-          </Link>
-        </div>
-      </div>
     </main>
   );
 }

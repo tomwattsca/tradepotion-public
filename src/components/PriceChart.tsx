@@ -79,7 +79,8 @@ export default function PriceChart({ coinId }: Props) {
           <div className="h-6 w-6 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
-        <ResponsiveContainer width="100%" height={220}>
+        <div style={{ width: '100%', height: 220 }}>
+        <ResponsiveContainer width="100%" height="100%">
           <AreaChart data={data} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
             <defs>
               <linearGradient id="priceGrad" x1="0" y1="0" x2="0" y2="1">
@@ -122,6 +123,7 @@ export default function PriceChart({ coinId }: Props) {
             />
           </AreaChart>
         </ResponsiveContainer>
+        </div>
       )}
     </div>
   );
