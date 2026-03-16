@@ -14,6 +14,39 @@ interface Props {
   params: { slug: string };
 }
 
+export async function generateMetadata({ params }: Props) {
+  try {
+    const coin = await getCoinDetail(params.slug);
+    const price = coin.market_data.current_price.usd;
+    const priceStr = price >= 1
+      ? price.toLocaleString('en-US', { maximumFractionDigits: 2 })
+      : price.toFixed(6);
+    const name = coin.name;
+    const symbol = coin.symbol.toUpperCase();
+
+    return {
+      title: `${name} (${symbol}) Price`,
+      description: `Live ${name} (${symbol}) price: $${priceStr}. Track ${name} price history, market cap, and charts. Set price alerts on Trade Potion.`,
+      openGraph: {
+        title: `${name} Price: $${priceStr} USD`,
+        description: `View live ${name} (${symbol}) price, charts, and market data on Trade Potion.`,
+        url: `https://tradepotion.com/coins/${params.slug}`,
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary',
+        title: `${name} (${symbol}) Price`,
+        description: `${name} price: $${priceStr}. Live tracking and alerts.`,
+      },
+    };
+  } catch {
+    return {
+      title: 'Coin Price',
+      description: 'Live crypto price tracking on Trade Potion.',
+    };
+  }
+}
+
 export default async function CoinPage({ params }: Props) {
   let coin;
   try {
@@ -39,6 +72,26 @@ export default async function CoinPage({ params }: Props) {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
+
+      {/* Product schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'Product',
+            name: coin.name,
+            description: `Live price tracker for ${coin.name} (${coin.symbol.toUpperCase()})`,
+            image: coin.image,
+            offers: {
+              '@type': 'AggregateOffer',
+              priceCurrency: 'USD',
+              price: price.toString(),
+            },
+          }),
+        }}
+      />
+
       {/* Back */}
       <Link href="/" className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-300 mb-6 transition-colors">
         <ArrowLeft className="h-4 w-4" />

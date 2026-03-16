@@ -9,9 +9,22 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: {
     template: '%s | Trade Potion',
-    default: 'Trade Potion — Crypto & Altcoin Tracker',
+    default: 'Crypto Price Tracker | Live Bitcoin, Ethereum & Altcoin Prices | Trade Potion',
   },
-  description: 'Live prices, charts, and market data for 10,000+ cryptocurrencies. Find your next trade.',
+  description: 'Live crypto prices for 10,000+ coins. Real-time Bitcoin, Ethereum, altcoin tracking with price alerts. View gainers, losers, and market cap rankings.',
+  metadataBase: new URL('https://tradepotion.com'),
+  openGraph: {
+    title: 'Trade Potion - Crypto Price Tracker & Alerts',
+    description: 'Track live prices for Bitcoin, Ethereum, and 10,000+ altcoins. Get real-time alerts and market insights.',
+    url: 'https://tradepotion.com',
+    type: 'website',
+    siteName: 'Trade Potion',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Trade Potion - Crypto Price Tracker & Alerts',
+    description: 'Live prices for Bitcoin, Ethereum, and 10,000+ altcoins with price alerts.',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
@@ -30,6 +43,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
             gtag('config', 'G-XHMGHP5MWE');
           `}
         </Script>
+                <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              '@context': 'https://schema.org',
+              '@type': 'WebApplication',
+              name: 'Trade Potion',
+              description: 'Crypto price tracker with real-time alerts for 10,000+ coins',
+              url: 'https://tradepotion.com',
+              applicationCategory: 'FinanceApplication',
+              offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+            }),
+          }}
+        />
                 <Navbar />
         {children}
         <footer className="border-t border-zinc-800 mt-12 py-6 px-4 text-center text-xs text-zinc-600">

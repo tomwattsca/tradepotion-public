@@ -7,6 +7,59 @@ import { formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 
 export const revalidate = 300;
 
+const CATEGORY_META: Record<string, { title: string; description: string; h1: string }> = {
+  defi: {
+    title: 'DeFi Tokens Price Tracker | Top DeFi Cryptocurrency Prices | Trade Potion',
+    description: 'Track prices for 500+ DeFi tokens including Aave, Uniswap, Curve. Live DeFi coin prices, charts, and alerts.',
+    h1: 'DeFi Tokens — Live Prices & Price Alerts',
+  },
+  'layer-2': {
+    title: 'Layer 2 Coin Prices | Arbitrum, Optimism, Polygon Tracker | Trade Potion',
+    description: 'Live prices for Ethereum Layer 2 tokens: Arbitrum, Optimism, Polygon, and more. Real-time tracking and alerts.',
+    h1: 'Layer 2 Tokens — Ethereum Scaling Solutions',
+  },
+  'meme-token': {
+    title: 'Meme Coin Prices | Doge, Shiba, Pepe Tracker | Trade Potion',
+    description: 'Track live prices for meme coins: Dogecoin, Shiba Inu, Pepe, and 1000+ more. Real-time meme token prices.',
+    h1: 'Meme Coins — Community & Trending Tokens',
+  },
+  'stablecoins': {
+    title: 'Stablecoin Prices | USDT, USDC, DAI Tracker | Trade Potion',
+    description: 'Track live prices for stablecoins: Tether, USDC, DAI, and more. Monitor USD-pegged token prices and market cap.',
+    h1: 'Stablecoins — USD-Pegged Token Tracker',
+  },
+  'layer-1': {
+    title: 'Layer 1 Blockchain Prices | BTC, ETH, SOL Tracker | Trade Potion',
+    description: 'Live prices for Layer 1 blockchain tokens: Bitcoin, Ethereum, Solana, Avalanche, and more.',
+    h1: 'Layer 1 Blockchains — Live Prices & Market Data',
+  },
+};
+
+export async function generateMetadata({ params }: { params: { slug: string } }) {
+  const meta = CATEGORY_META[params.slug];
+  const displayName = meta?.h1 ?? params.slug.replace(/-/g, ' ');
+  const title = meta?.title ?? `${displayName} Coin Prices | Trade Potion`;
+  const description = meta?.description ?? `Live prices for ${displayName} tokens. Real-time tracking and price alerts on Trade Potion.`;
+
+  return {
+    title,
+    description,
+    openGraph: {
+      title,
+      description,
+      url: `https://tradepotion.com/category/${params.slug}`,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title,
+      description,
+    },
+  };
+}
+
+
+
 interface Props {
   params: { slug: string };
 }
