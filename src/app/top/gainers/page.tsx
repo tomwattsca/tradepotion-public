@@ -1,4 +1,4 @@
-import { getTopGainers } from '@/lib/coingecko';
+import { getTopCoins } from '@/lib/coingecko';
 import Link from 'next/link';
 import { ArrowLeft, TrendingUp } from 'lucide-react';
 import { Metadata } from 'next';
@@ -13,10 +13,15 @@ export const metadata: Metadata = {
 
 export default async function TopGainersPage() {
   let gainers: import('@/types').Coin[] = [];
+  let error = false;
   try {
-    gainers = await getTopGainers(250);
+    // Fetch top 250 by market cap, then sort/filter client-side in TierFilter
+    const all = await getTopCoins(250);
+    gainers = all
+      .filter((c) => typeof c.price_change_percentage_24h === 'number' && c.price_change_percentage_24h > 0)
+      .sort((a, b) => b.price_change_percentage_24h - a.price_change_percentage_24h);
   } catch {
-    // graceful fallback
+    error = true;
   }
 
   return (
@@ -33,7 +38,13 @@ export default async function TopGainersPage() {
         </div>
       </div>
 
-      <TierFilter coins={gainers} />
+      {error ? (
+        <div className="rounded-xl bg-zinc-900 border border-zinc-800 px-6 py-10 text-center">
+          <p className="text-zinc-400 text-sm">Price data temporarily unavailable — try refreshing in a moment.</p>
+        </div>
+      ) : (
+        <TierFilter coins={gainers} />
+      )}
     </main>
   );
 }

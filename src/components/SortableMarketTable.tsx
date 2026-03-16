@@ -7,7 +7,7 @@ import { Coin } from '@/types';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
 
-type SortKey = 'market_cap_rank' | 'current_price' | 'price_change_percentage_24h' | 'price_change_percentage_7d_in_currency' | 'market_cap' | 'total_volume';
+type SortKey = 'market_cap_rank' | 'current_price' | 'price_change_percentage_24h' | 'price_change_percentage_7d_in_currency' | 'market_cap' | 'total_volume' | 'vol_mcap_ratio';
 
 interface Props {
   coins: Coin[];
@@ -21,21 +21,30 @@ function SortIcon({ active, dir }: { active: boolean; dir: 'asc' | 'desc' }) {
     : <ChevronDown className="h-3 w-3 text-violet-400" />;
 }
 
-const COLS: { key: SortKey; label: string; align: string }[] = [
-  { key: 'market_cap_rank', label: '#', align: 'text-right' },
-  { key: 'current_price', label: 'Price', align: 'text-right' },
-  { key: 'price_change_percentage_24h', label: '24h %', align: 'text-right' },
-  { key: 'price_change_percentage_7d_in_currency', label: '7d %', align: 'text-right' },
-  { key: 'market_cap', label: 'Market Cap', align: 'text-right' },
-  { key: 'total_volume', label: 'Volume (24h)', align: 'text-right' },
+function volMcapColor(ratio: number): string {
+  if (ratio >= 1.0) return 'text-amber-400 font-semibold';
+  if (ratio >= 0.5) return 'text-zinc-300';
+  return 'text-zinc-500';
+}
+
+const BASE_COLS: { key: SortKey; label: string }[] = [
+  { key: 'market_cap_rank', label: '#' },
+  { key: 'current_price', label: 'Price' },
+  { key: 'price_change_percentage_24h', label: '24h %' },
+  { key: 'price_change_percentage_7d_in_currency', label: '7d %' },
+  { key: 'market_cap', label: 'Market Cap' },
+  { key: 'total_volume', label: 'Volume (24h)' },
 ];
 
 const PAGE_SIZE = 50;
+
+type CoinWithRatio = Coin & { vol_mcap_ratio: number };
 
 export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Props) {
   const [sortKey, setSortKey] = useState<SortKey>('market_cap_rank');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [page, setPage] = useState(0);
+  const [showVolMcap, setShowVolMcap] = useState(false);
 
   function handleSort(key: SortKey) {
     if (sortKey === key) {
@@ -47,36 +56,72 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
     setPage(0);
   }
 
+  const coinsWithRatio: CoinWithRatio[] = useMemo(
+    () => coins.map(c => ({ ...c, vol_mcap_ratio: c.market_cap > 0 ? c.total_volume / c.market_cap : 0 })),
+    [coins]
+  );
+
   const sorted = useMemo(() => {
-    return [...coins].sort((a, b) => {
-      const aVal = (a as unknown as Record<string, number>)[sortKey] ?? 0;
-      const bVal = (b as unknown as Record<string, number>)[sortKey] ?? 0;
+    return [...coinsWithRatio].sort((a, b) => {
+      const aVal = (a as Record<string, number>)[sortKey] ?? 0;
+      const bVal = (b as Record<string, number>)[sortKey] ?? 0;
       return sortDir === 'asc' ? aVal - bVal : bVal - aVal;
     });
-  }, [coins, sortKey, sortDir]);
+  }, [coinsWithRatio, sortKey, sortDir]);
 
   const totalPages = Math.ceil(sorted.length / pageSize);
   const paginated = sorted.slice(page * pageSize, (page + 1) * pageSize);
 
+  const colCount = showVolMcap ? 7 : 6;
+  const gridCols = showVolMcap
+    ? 'grid-cols-[2rem_1fr_repeat(6,8rem)]'
+    : 'grid-cols-[2rem_1fr_repeat(5,8rem)]';
+
   return (
     <div>
+      {/* Vol/MCap toggle */}
+      <div className="flex justify-end mb-2">
+        <button
+          onClick={() => setShowVolMcap(v => !v)}
+          className={`px-2.5 py-1 rounded text-xs font-medium border transition-colors ${
+            showVolMcap
+              ? 'bg-amber-500/20 border-amber-500/40 text-amber-400'
+              : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-zinc-300'
+          }`}
+        >
+          Vol/MCap Ratio {showVolMcap ? '✓' : ''}
+        </button>
+      </div>
+
       <div className="rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden">
         {/* Header */}
-        <div className="grid grid-cols-[2rem_1fr_repeat(5,8rem)] px-4 py-2 border-b border-zinc-800 text-xs text-zinc-500">
-          {COLS.map(col => (
+        <div className={`grid ${gridCols} px-4 py-2 border-b border-zinc-800 text-xs text-zinc-500`}>
+          {/* Name (not sortable) */}
+          <span />
+          <span className="pl-3">Coin</span>
+          {BASE_COLS.slice(1).map(col => (
             <button
               key={col.key}
               onClick={() => handleSort(col.key)}
-              className={`flex items-center gap-1 hover:text-zinc-300 transition-colors ${col.align} ${col.key === 'market_cap_rank' ? 'justify-end' : 'justify-end'}`}
+              className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors"
             >
               {col.label}
               <SortIcon active={sortKey === col.key} dir={sortDir} />
             </button>
           ))}
-          <span /> {/* name col — not sortable */}
+          {showVolMcap && (
+            <button
+              onClick={() => handleSort('vol_mcap_ratio')}
+              className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors"
+              title="24h Volume ÷ Market Cap. Values above 1.0 indicate unusually high volume."
+            >
+              Vol/MCap
+              <SortIcon active={sortKey === 'vol_mcap_ratio'} dir={sortDir} />
+            </button>
+          )}
         </div>
 
-        {/* Header row with Name label */}
+        {/* Rows */}
         <div className="divide-y divide-zinc-800/40">
           {paginated.map((coin) => {
             const pct24h = coin.price_change_percentage_24h;
@@ -85,7 +130,7 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
               <Link
                 key={coin.id}
                 href={`/coins/${coin.id}`}
-                className="grid grid-cols-[2rem_1fr_repeat(5,8rem)] items-center px-4 py-3 hover:bg-zinc-900 transition-colors group"
+                className={`grid ${gridCols} items-center px-4 py-3 hover:bg-zinc-900 transition-colors group`}
               >
                 <span className="text-xs text-zinc-500 text-right">{coin.market_cap_rank}</span>
                 <div className="flex items-center gap-2.5 pl-3 min-w-0">
@@ -102,6 +147,11 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
                 </span>
                 <span className="text-sm text-right text-zinc-300">{formatMarketCap(coin.market_cap)}</span>
                 <span className="text-sm text-right text-zinc-400">{formatMarketCap(coin.total_volume)}</span>
+                {showVolMcap && (
+                  <span className={`text-sm text-right ${volMcapColor(coin.vol_mcap_ratio)}`}>
+                    {coin.vol_mcap_ratio.toFixed(2)}
+                  </span>
+                )}
               </Link>
             );
           })}
@@ -143,6 +193,8 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
           </div>
         </div>
       )}
+      {/* Unused colCount variable suppressed */}
+      <span className="hidden">{colCount}</span>
     </div>
   );
 }
