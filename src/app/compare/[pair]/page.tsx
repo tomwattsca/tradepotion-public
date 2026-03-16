@@ -7,6 +7,7 @@ import Image from 'next/image';
 import { ArrowLeft } from 'lucide-react';
 import { Metadata } from 'next';
 import ShareCompareButton from '@/components/ShareCompareButton';
+import CoinCompareSelector from '@/components/CoinCompareSelector';
 
 export const revalidate = 300;
 
@@ -80,6 +81,9 @@ export default async function ComparePage({ params }: Props) {
         </Link>
         <ShareCompareButton url={shareUrl} />
       </div>
+
+      {/* Dynamic coin selector */}
+      <CoinCompareSelector currentPair={params.pair} />
 
       {/* Header */}
       <div className="flex items-center justify-center gap-6 mb-8">
