@@ -99,3 +99,39 @@ export async function searchCoins(query: string) {
   }>('/search', { query });
   return res.coins.slice(0, 20);
 }
+
+export interface GlobalMarketData {
+  active_cryptocurrencies: number;
+  total_market_cap: { usd: number };
+  total_volume: { usd: number };
+  market_cap_percentage: { btc: number; eth: number };
+  market_cap_change_percentage_24h_usd: number;
+}
+
+export async function getGlobalMarketData(): Promise<GlobalMarketData> {
+  const res = await fetchCG<{ data: GlobalMarketData }>('/global', {});
+  return (res as unknown as { data: GlobalMarketData }).data;
+}
+
+export async function getTopCoins(limit = 100, page = 1) {
+  return fetchCG<import('@/types').Coin[]>('/coins/markets', {
+    vs_currency: 'usd',
+    order: 'market_cap_desc',
+    per_page: String(Math.min(limit, 250)),
+    page: String(page),
+    sparkline: 'false',
+    price_change_percentage: '7d',
+  });
+}
+
+export async function getMultipleCoins(ids: string[]) {
+  return fetchCG<import('@/types').Coin[]>('/coins/markets', {
+    vs_currency: 'usd',
+    ids: ids.join(','),
+    order: 'market_cap_desc',
+    per_page: '10',
+    page: '1',
+    sparkline: 'false',
+    price_change_percentage: '7d,30d',
+  });
+}

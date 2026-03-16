@@ -33,6 +33,8 @@ export default function Navbar() {
           <Link href="/category/defi" className="hover:text-white transition-colors">DeFi</Link>
           <Link href="/category/layer-2" className="hover:text-white transition-colors">Layer 2</Link>
           <Link href="/category/meme-token" className="hover:text-white transition-colors">Meme</Link>
+          <Link href="/top/gainers" className="hover:text-white transition-colors text-emerald-400/80">Gainers</Link>
+          <Link href="/top/losers" className="hover:text-white transition-colors text-red-400/80">Losers</Link>
         </div>
 
         {/* Search */}
@@ -65,6 +67,8 @@ export default function Navbar() {
           <Link href="/category/defi" onClick={() => setMenuOpen(false)} className="hover:text-white">DeFi</Link>
           <Link href="/category/layer-2" onClick={() => setMenuOpen(false)} className="hover:text-white">Layer 2</Link>
           <Link href="/category/meme-token" onClick={() => setMenuOpen(false)} className="hover:text-white">Meme</Link>
+          <Link href="/top/gainers" onClick={() => setMenuOpen(false)} className="hover:text-white text-emerald-400/80">Gainers</Link>
+          <Link href="/top/losers" onClick={() => setMenuOpen(false)} className="hover:text-white text-red-400/80">Losers</Link>
         </div>
       )}
     </nav>

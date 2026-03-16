@@ -4,11 +4,11 @@ module.exports = {
       name: 'tradepotion-frontend',
       cwd: '/home/tom/projects/tradepotion-public',
       script: 'node_modules/.bin/next',
-      args: 'start -p 3001',
+      args: 'start -p 3100',
       interpreter: 'none',
       env: {
         NODE_ENV: 'production',
-        PORT: '3001'
+        PORT: '3100'
       },
       restart_delay: 3000,
       max_restarts: 10
