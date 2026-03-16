@@ -24,6 +24,19 @@ module.exports = {
       },
       restart_delay: 3000,
       max_restarts: 10
+    },
+    {
+      name: 'tradepotion-cron',
+      cwd: '/home/tom/projects/tradepotion-public',
+      script: 'cron-worker.js',
+      env: {
+        NODE_ENV: 'production',
+        POLL_URL: 'https://frontend-production-87be.up.railway.app/api/cron/poll',
+        CRON_SECRET: 'tp_cron_secret_2026',
+        POLL_INTERVAL_MS: '300000'
+      },
+      restart_delay: 5000,
+      max_restarts: 10
     }
   ]
 }
