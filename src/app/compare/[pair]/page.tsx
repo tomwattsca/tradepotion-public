@@ -267,10 +267,10 @@ export default async function ComparePage({ params }: Props) {
 
       {/* Related comparisons — auto-generated from coins in this pair */}
       {(() => {
-        const related = TOP_STATIC_PAIRS.filter(p => {
-          if (p === params.pair) return false;
-          return p.includes(a.id) || p.includes(b.id);
-        }).slice(0, 8);
+        // Split related pairs: up to 4 for coin A, up to 4 for coin B — guarantees both coins featured
+        const aRelated = TOP_STATIC_PAIRS.filter(p => p !== params.pair && p.includes(a.id)).slice(0, 4);
+        const bRelated = TOP_STATIC_PAIRS.filter(p => p !== params.pair && p.includes(b.id) && !aRelated.includes(p)).slice(0, 4);
+        const related = [...aRelated, ...bRelated];
         if (related.length === 0) return null;
         return (
           <div className="mt-8 rounded-xl bg-zinc-900/50 border border-zinc-800 p-4">

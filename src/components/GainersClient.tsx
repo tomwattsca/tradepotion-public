@@ -216,7 +216,7 @@ export default function GainersClient({ mode }: Props) {
               <div className="flex items-center gap-2.5 pl-3 min-w-0">
                 <CoinImage src={coin.image} alt={coin.name} name={coin.name} symbol={coin.symbol} width={24} height={24} />
                 <div className="min-w-0">
-                  <p className="text-sm font-medium text-white truncate group-hover:text-violet-300 transition-colors">{coin.name}</p>
+                  <p className="text-sm font-medium text-violet-200 truncate group-hover:text-violet-300 group-hover:underline transition-colors">{coin.name}</p>
                   <p className="text-xs text-zinc-500 uppercase">{coin.symbol}</p>
                 </div>
               </div>
