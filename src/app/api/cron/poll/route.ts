@@ -101,6 +101,18 @@ export async function GET(req: Request) {
       );
     }
 
+
+    // Cache top-250 coin IDs for sitemap (avoids live CoinGecko calls on sitemap requests)
+    const coinIds = markets.map((c) => c.id);
+    await query(
+      `INSERT INTO sitemap_cache (key, coin_ids, updated_at)
+       VALUES ('top_coins', $1, NOW())
+       ON CONFLICT (key) DO UPDATE
+         SET coin_ids = EXCLUDED.coin_ids,
+             updated_at = EXCLUDED.updated_at`,
+      [coinIds]
+    );
+
     // Bulk insert price snapshots
     const snapshotValues = markets
       .map((_, i) => {

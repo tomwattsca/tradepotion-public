@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo } from 'react';
 import Link from 'next/link';
-import Image from 'next/image';
+import CoinImage from '@/components/CoinImage';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 
@@ -189,7 +189,7 @@ export default function GainersClient({ mode }: Props) {
             >
               <span className="text-xs text-zinc-500 text-right">{page * PAGE_SIZE + i + 1}</span>
               <div className="flex items-center gap-2.5 pl-3 min-w-0">
-                <Image src={coin.image} alt={coin.name} width={24} height={24} className="rounded-full shrink-0" />
+                <CoinImage src={coin.image} alt={coin.name} name={coin.name} symbol={coin.symbol} width={24} height={24} />
                 <div className="min-w-0">
                   <p className="text-sm font-medium text-white truncate group-hover:text-violet-300 transition-colors">{coin.name}</p>
                   <p className="text-xs text-zinc-500 uppercase">{coin.symbol}</p>

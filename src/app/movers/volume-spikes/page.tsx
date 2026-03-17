@@ -76,8 +76,8 @@ export default async function VolumeSpilesPage() {
           a protocol launch, exchange listing, or major news.
         </p>
         <p className="text-sm text-zinc-300 leading-relaxed mb-4">
-          Trade Potion's Volume Spikes page filters the 10,000+ coin market to show only coins where today's volume 
-          is unusually high. The &quot;Spike Ratio&quot; column shows the multiplier: a 3.5x spike means today's volume 
+          Trade Potion{"'"} Volume Spikes page filters the 10,000+ coin market to show only coins where today{"'"} volume 
+          is unusually high. The &quot;Spike Ratio&quot; column shows the multiplier: a 3.5x spike means today{"'"} volume 
           is 3.5 times the 30-day average.
         </p>
         <div className="bg-zinc-950/50 rounded p-4 mb-4 border border-zinc-800/50">

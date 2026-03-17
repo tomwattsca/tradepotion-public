@@ -49,13 +49,15 @@ export default function NormalisedChart({ coinAId, coinAName, coinBId, coinBName
     setError(false);
 
     // Stagger chart fetches to avoid simultaneous CoinGecko rate-limit hits
-    const fetchWithRetry = async (url: string, retries = 2): Promise<Response> => {
+    const fetchWithRetry = async (url: string, retries = 3): Promise<Response> => {
       for (let i = 0; i <= retries; i++) {
         const res = await fetch(url);
         if (res.ok) return res;
-        if (i < retries) await new Promise(r => setTimeout(r, 400 * (i + 1)));
+        // Back off longer for rate limits
+        const delay = res.status === 429 ? 1500 * (i + 1) : 400 * (i + 1);
+        if (i < retries) await new Promise(r => setTimeout(r, delay));
       }
-      throw new Error('fetch failed');
+      throw new Error('fetch failed after retries');
     };
 
     Promise.all([

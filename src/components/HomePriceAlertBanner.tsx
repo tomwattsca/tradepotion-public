@@ -68,7 +68,7 @@ export default function HomePriceAlertBanner({ topCoins }: Props) {
       {status === 'success' ? (
         <div className="rounded-lg bg-emerald-950/60 border border-emerald-700/40 px-4 py-3">
           <p className="text-sm text-emerald-400 font-medium">
-            ✓ Alert set! We&apos;ll email you when {selectedCoin?.name ?? 'your coin'} goes{' '}
+            ✓ Alert set! We{"'"} email you when {selectedCoin?.name ?? 'your coin'} goes{' '}
             {direction} your target.
           </p>
         </div>

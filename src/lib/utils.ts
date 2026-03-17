@@ -1,6 +1,11 @@
 export function formatPrice(price: number): string {
   if (price === null || price === undefined) return '$—';
-  if (price < 0.00001) return `$${price.toExponential(2)}`;
+  if (price === 0) return '$0.00';
+  if (price < 0.000001) {
+    // e.g. $0.000000106 — show 10 decimal places for very small prices
+    return `$${price.toFixed(10).replace(/0+$/, '').replace(/\.$/, '')}`;
+  }
+  if (price < 0.0001) return `$${price.toFixed(8)}`;
   if (price < 0.01) return `$${price.toFixed(6)}`;
   if (price < 1) return `$${price.toFixed(4)}`;
   if (price < 10000) return `$${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;

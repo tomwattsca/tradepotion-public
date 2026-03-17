@@ -1,21 +1,9 @@
 import { MetadataRoute } from 'next';
+import { query } from '@/lib/db';
 import { getCategories } from '@/lib/coingecko';
 
-export const dynamic = 'force-dynamic'; // generate on-demand — avoids build-time CoinGecko rate limits
-
-// CoinGecko free tier: max 250 per page, stagger calls to avoid 429
-async function fetchCoinPage(page: number): Promise<{ id: string; market_cap_rank: number }[]> {
-  try {
-    const res = await fetch(
-      `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=${page}&sparkline=false`,
-      { next: { revalidate: 3600 } }
-    );
-    if (!res.ok) return [];
-    return res.json();
-  } catch {
-    return [];
-  }
-}
+// force-dynamic: sitemap reads from DB cache, fast + no CoinGecko rate limits
+export const dynamic = 'force-dynamic';
 
 // Top 50 curated compare pairs (high search volume)
 const TOP_COMPARE_PAIRS = [
@@ -74,38 +62,28 @@ const TOP_COMPARE_PAIRS = [
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
-  // Fetch top 1,000 coins across 4 pages with staggered timing
-  const [page1, , page2, , page3, , page4] = await Promise.all([
-    fetchCoinPage(1),
-    new Promise(r => setTimeout(r, 500)),
-    fetchCoinPage(2),
-    new Promise(r => setTimeout(r, 1000)),
-    fetchCoinPage(3),
-    new Promise(r => setTimeout(r, 1500)),
-    fetchCoinPage(4),
-  ]) as [
-    { id: string; market_cap_rank: number }[],
-    unknown,
-    { id: string; market_cap_rank: number }[],
-    unknown,
-    { id: string; market_cap_rank: number }[],
-    unknown,
-    { id: string; market_cap_rank: number }[],
-  ];
+  // Read coin IDs from DB cache (populated by cron every 10 min, ~250 coins)
+  // Falls back to empty array if cache not yet populated
+  let coinIds: string[] = [];
+  try {
+    const rows = await query<{ coin_ids: string[] }>(
+      `SELECT coin_ids FROM sitemap_cache WHERE key = 'top_coins' LIMIT 1`
+    );
+    if (rows.length > 0) {
+      coinIds = rows[0].coin_ids;
+    }
+  } catch {
+    // DB unavailable — sitemap still serves static pages
+  }
 
-  const allCoins = [...page1, ...page2, ...page3, ...page4];
-
-  const coinEntries: MetadataRoute.Sitemap = allCoins.map((coin) => ({
-    url: `https://tradepotion.com/coins/${coin.id}`,
+  const coinEntries: MetadataRoute.Sitemap = coinIds.map((id, idx) => ({
+    url: `https://tradepotion.com/coins/${id}`,
     lastModified: now,
     changeFrequency: 'hourly',
-    priority: coin.market_cap_rank <= 10 ? 0.95
-      : coin.market_cap_rank <= 100 ? 0.9
-      : coin.market_cap_rank <= 500 ? 0.8
-      : 0.7,
+    priority: idx < 10 ? 0.95 : idx < 100 ? 0.9 : idx < 250 ? 0.8 : 0.7,
   }));
 
-  // Category pages
+  // Category pages (cached via Next.js fetch, ~100 categories)
   let categoryEntries: MetadataRoute.Sitemap = [];
   try {
     const categories = await getCategories();
@@ -119,31 +97,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // silently skip
   }
 
-  // Top 50 curated compare pairs — high search volume, indexed individually
+  // Top 50 curated compare pairs
   const compareEntries: MetadataRoute.Sitemap = TOP_COMPARE_PAIRS.map((pair) => ({
     url: `https://tradepotion.com/compare/${pair}`,
     lastModified: now,
     changeFrequency: 'daily',
-    priority: pair.includes('bitcoin') || pair.includes('ethereum') ? 0.85 : 0.75,
+    priority: pair.startsWith('bitcoin') || pair.includes('-vs-ethereum') ? 0.85 : 0.75,
   }));
-
-  // Auto-generate additional compare pairs from top 20 coins (~190 more URLs)
-  const top20 = allCoins.slice(0, 20);
-  const autoPairs = new Set(TOP_COMPARE_PAIRS);
-  const autoCompareEntries: MetadataRoute.Sitemap = [];
-  for (let i = 0; i < top20.length; i++) {
-    for (let j = i + 1; j < top20.length; j++) {
-      const pair = `${top20[i].id}-vs-${top20[j].id}`;
-      if (!autoPairs.has(pair)) {
-        autoCompareEntries.push({
-          url: `https://tradepotion.com/compare/${pair}`,
-          lastModified: now,
-          changeFrequency: 'daily',
-          priority: 0.65,
-        });
-      }
-    }
-  }
 
   return [
     {
@@ -179,6 +139,5 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     ...categoryEntries,
     ...coinEntries,
     ...compareEntries,
-    ...autoCompareEntries,
   ];
 }

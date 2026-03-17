@@ -56,7 +56,7 @@ export default function PriceAlertForm({ coinId, coinName, currentPrice }: Props
 
       {status === 'success' ? (
         <p className="text-sm text-green-400">
-          ✓ Alert set! We&apos;ll email you when {coinName} goes {direction} your target.
+          ✓ Alert set! We{"'"} email you when {coinName} goes {direction} your target.
         </p>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-3">

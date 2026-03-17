@@ -71,7 +71,7 @@ function DataUnavailable({ pair }: { pair: string }) {
       <div>
         <p className="text-white font-semibold text-lg mb-1">Data temporarily unavailable</p>
         <p className="text-zinc-400 text-sm max-w-xs">
-          We couldn&apos;t load price data for {label} right now. This is usually a brief API hiccup — try again in a moment.
+          We couldn{"'"} load price data for {label} right now. This is usually a brief API hiccup — try again in a moment.
         </p>
       </div>
       <div className="flex gap-3 mt-2">
