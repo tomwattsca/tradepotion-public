@@ -165,9 +165,10 @@ export default function CoinCompareSelector({ currentPair }: CoinCompareSelector
           type="button"
           onClick={handleCompare}
           disabled={!canCompare || alreadyShowing}
+          title={alreadyShowing ? 'Currently comparing this pair' : 'Compare these two coins'}
           className="sm:pb-0 w-full sm:w-auto shrink-0 px-5 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 disabled:opacity-40 disabled:cursor-not-allowed text-white text-sm font-semibold transition-colors"
         >
-          {alreadyShowing ? 'Showing' : 'Compare →'}
+          {alreadyShowing ? '✓ Viewing this pair' : 'Compare →'}
         </button>
       </div>
     </div>
