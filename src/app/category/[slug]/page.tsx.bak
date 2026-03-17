@@ -15,23 +15,26 @@ interface CategoryMeta {
 }
 
 const CATEGORY_META: Record<string, CategoryMeta> = {
-  defi: { title: 'DeFi Tokens Price Tracker | Top DeFi Cryptocurrency Prices',
+  defi: {
+    title: 'DeFi Tokens Price Tracker | Top DeFi Cryptocurrency Prices',
     description: 'Track prices for 500+ DeFi tokens including Aave, Uniswap, Curve. Live DeFi coin prices, charts, and alerts.',
     h1: 'DeFi Tokens',
     h2: 'Top DeFi Tokens by Market Cap',
-    intro: 'DeFi tokens power open financial protocols that replace traditional intermediaries like banks and exchanges. These coins unlock lending, swaps, derivatives, and yield farming — all running on permissionless blockchains. Track prices for Aave, Uniswap, Curve, and 500+ DeFi tokens on Trade Potion with real-time price alerts. Unlike traditional finance, DeFi composability means tokens often derive value from their network activity and governance rights. A spike in DEX volume or new protocol launches can move entire category prices instantly.',
+    intro: '',
   },
-  'decentralized-finance-defi': { title: 'DeFi Tokens Price Tracker | Top DeFi Cryptocurrency Prices',
+  'decentralized-finance-defi': {
+    title: 'DeFi Tokens Price Tracker | Top DeFi Cryptocurrency Prices',
     description: 'Track prices for 500+ DeFi tokens including Aave, Uniswap, Curve. Live DeFi coin prices, charts, and alerts.',
     h1: 'DeFi Tokens',
     h2: 'Top DeFi Tokens by Market Cap',
-    intro: 'DeFi tokens power open financial protocols that replace traditional intermediaries like banks and exchanges. These coins unlock lending, swaps, derivatives, and yield farming — all running on permissionless blockchains. Track prices for Aave, Uniswap, Curve, and 500+ DeFi tokens on Trade Potion with real-time price alerts. Unlike traditional finance, DeFi composability means tokens often derive value from their network activity and governance rights. A spike in DEX volume or new protocol launches can move entire category prices instantly.',
+    intro: '',
   },
-  'layer-2': { title: 'Layer 2 Coin Prices | Arbitrum, Optimism, Polygon Tracker',
+  'layer-2': {
+    title: 'Layer 2 Coin Prices | Arbitrum, Optimism, Polygon Tracker',
     description: 'Live prices for Ethereum Layer 2 tokens: Arbitrum, Optimism, Polygon, and more. Real-time tracking and alerts.',
     h1: 'Layer 2 Tokens',
     h2: 'Top Layer 2 Tokens by Market Cap',
-    intro: 'Layer 2 tokens power the scaling solutions that make Ethereum faster and cheaper while inheriting its security. Arbitrum, Optimism, Polygon, and other Layer 2 networks reduce transaction fees from dollars to cents and settlement times from minutes to seconds. Track real-time prices for Ethereum scaling tokens on Trade Potion. Layer 2 protocols derive value from transaction volume, adoption by major dApps, and governance rights. As more DeFi and NFT activity migrates to Layer 2 to reduce costs, token prices reflect the growing ecosystem value.',
+    intro: '',
   },
   'layer-1': {
     title: 'Layer 1 Blockchain Prices | BTC, ETH, SOL Tracker',
@@ -40,11 +43,12 @@ const CATEGORY_META: Record<string, CategoryMeta> = {
     h2: 'Top Layer 1 Blockchains by Market Cap',
     intro: '',
   },
-  'meme-token': { title: 'Meme Coin Prices | Doge, Shiba, Pepe Tracker',
+  'meme-token': {
+    title: 'Meme Coin Prices | Doge, Shiba, Pepe Tracker',
     description: 'Track live prices for meme coins: Dogecoin, Shiba Inu, Pepe, and 1000+ more. Real-time meme token prices.',
     h1: 'Meme Coins',
     h2: 'Top Meme Coins by Market Cap',
-    intro: 'Meme coins are community-driven tokens that often start as jokes but have evolved into serious trading assets with billions in market cap. Dogecoin and Shiba Inu proved that internet culture and social media momentum can create genuine financial value. Track live prices for Dogecoin, Shiba Inu, Pepe, and thousands of meme tokens on Trade Potion. Meme coins thrive on viral moments and community engagement — their prices can move 10x based on a trending tweet or celebrity mention. Use our alerts to catch significant moves before they peak.',
+    intro: '',
   },
   stablecoins: {
     title: 'Stablecoin Prices | USDT, USDC, DAI Tracker',
@@ -88,17 +92,19 @@ const CATEGORY_META: Record<string, CategoryMeta> = {
     h2: 'Top Privacy Coins by Market Cap',
     intro: '',
   },
-  'artificial-intelligence': { title: 'AI Crypto Token Prices | Top Artificial Intelligence Coins',
+  'artificial-intelligence': {
+    title: 'AI Crypto Token Prices | Top Artificial Intelligence Coins',
     description: 'Live prices for AI crypto tokens: Fetch.ai, Render, Akash, and more. Track the AI and machine learning coin market.',
     h1: 'AI & Machine Learning Tokens',
     h2: 'Top AI Tokens by Market Cap',
-    intro: 'AI crypto tokens power decentralized machine learning networks, data marketplaces, and AI-driven infrastructure. Render, Fetch.ai, Akash, and other AI tokens enable distributed computing for training models, inference, and autonomous agent networks. Track live AI token prices on Trade Potion as the intersection of blockchain and artificial intelligence accelerates. These tokens capture value from GPU rental markets, data contribution, and computational services. The AI crypto sector is nascent but rapidly expanding as enterprises and researchers seek decentralized alternatives to centralized cloud AI providers.',
+    intro: '',
   },
-  'liquid-staking': { title: 'Liquid Staking Token Prices | stETH, rETH, mSOL Tracker',
+  'liquid-staking': {
+    title: 'Liquid Staking Token Prices | stETH, rETH, mSOL Tracker',
     description: 'Track live prices for liquid staking tokens: stETH, rETH, mSOL, and more. Real-time LST market data.',
     h1: 'Liquid Staking Tokens',
     h2: 'Top Liquid Staking Tokens by Market Cap',
-    intro: 'Liquid staking tokens (LSTs) like stETH and rETH let you earn Ethereum staking rewards while keeping your capital liquid to trade or use in DeFi. Instead of locking your ETH for 6+ months earning rewards passively, liquid staking derivatives represent your staked position and earn rewards in real-time. Track liquid staking token prices on Trade Potion. As Ethereum staking grows and DeFi applications stack rewards, LST liquidity and utility increase. Smart contract risk, slashing risk, and protocol governance affect LST value and trading dynamics.',
+    intro: '',
   },
 };
 

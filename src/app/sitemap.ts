@@ -1,7 +1,7 @@
 import { MetadataRoute } from 'next';
 import { getCategories } from '@/lib/coingecko';
 
-export const revalidate = 3600; // regenerate every hour
+export const dynamic = 'force-dynamic'; // generate on-demand — avoids build-time CoinGecko rate limits
 
 // CoinGecko free tier: max 250 per page, stagger calls to avoid 429
 async function fetchCoinPage(page: number): Promise<{ id: string; market_cap_rank: number }[]> {

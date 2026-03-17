@@ -25,7 +25,7 @@ const COMPARE_INTROS: Record<string, string> = {
   'polygon-vs-arbitrum': 'Both are Ethereum Layer 2 scaling solutions, but Polygon also has standalone sidechain components while Arbitrum is pure optimistic rollup. Compare their ecosystem growth and token performance.',
   'chainlink-vs-uniswap': 'Chainlink provides oracle data for smart contracts; Uniswap is a decentralized exchange. Compare two critical DeFi infrastructure tokens and their correlation.',
   'ethereum-vs-solana': 'Both are smart contract platforms, but Solana prioritizes speed and low fees while Ethereum optimizes for decentralization and security. Track their performance correlation and price movements side by side.',
-  'bitcoin-vs-dogecoin': 'Bitcoin is institutional-grade digital money; Dogecoin is a community-driven meme coin. Compare the world's most valuable cryptocurrency with a culture-driven alt coin.',
+  "bitcoin-vs-dogecoin": "Bitcoin is institutional-grade digital money; Dogecoin is a community-driven meme coin. Compare the world's most valuable cryptocurrency with a culture-driven alt coin.",
 };
 
 
