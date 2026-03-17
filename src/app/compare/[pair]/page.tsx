@@ -26,7 +26,8 @@ const NormalisedChartDynamic = dynamicImport(
   }
 );
 
-// Pre-render top 50 curated pairs at build time; all others served on-demand with ISR
+// Curated pairs list — used for related comparisons grid (not pre-rendered at build time)
+// Pre-rendering 50 pairs simultaneously at build exhausts CoinGecko free tier rate limits
 const TOP_STATIC_PAIRS = [
   'bitcoin-vs-ethereum', 'bitcoin-vs-solana', 'bitcoin-vs-dogecoin', 'bitcoin-vs-ripple',
   'bitcoin-vs-litecoin', 'bitcoin-vs-cardano', 'bitcoin-vs-avalanche', 'bitcoin-vs-bnb',
@@ -46,12 +47,8 @@ const TOP_STATIC_PAIRS = [
   'polygon-vs-arbitrum', 'polygon-vs-chainlink',
 ];
 
-export async function generateStaticParams() {
-  return TOP_STATIC_PAIRS.map((pair) => ({ pair }));
-}
-
-export const dynamicParams = true; // serve non-listed pairs on-demand
-export const revalidate = 300;     // ISR: revalidate every 5 minutes
+// Render on demand (not at build time) to avoid simultaneous CoinGecko rate-limit exhaustion
+export const dynamic = 'force-dynamic';
 
 
 
@@ -83,9 +80,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const ids = parsePair(params.pair);
   if (!ids) return { title: 'Compare Coins' };
   const [a, b] = ids.map(id => id.charAt(0).toUpperCase() + id.slice(1));
+  const title = `${a} vs ${b} Price Comparison | Trade Potion`;
+  const description = `Compare ${a} and ${b} side by side. Normalised performance chart, Pearson correlation, price, market cap, volume, ATH and more.`;
+  const url = `https://tradepotion.com/compare/${params.pair}`;
   return {
-    title: `${a} vs ${b} — Price Comparison`,
-    description: `Compare ${a} and ${b} side by side. Normalised performance chart, Pearson correlation, price, market cap, volume, ATH and more.`,
+    title,
+    description,
+    alternates: { canonical: url },
+    openGraph: {
+      title: `${a} vs ${b} — Which is the better investment?`,
+      description,
+      url,
+      type: 'website',
+    },
+    twitter: {
+      card: 'summary',
+      title: `${a} vs ${b} — Price Comparison`,
+      description,
+    },
   };
 }
 
@@ -132,7 +144,7 @@ function DataUnavailable({ pair }: { pair: string }) {
   );
 }
 
-async function fetchWithRetry<T>(fn: () => Promise<T>, retries = 3, delayMs = 500): Promise<T> {
+async function fetchWithRetry<T>(fn: () => Promise<T>, retries = 3, delayMs = 1000): Promise<T> {
   let lastErr: unknown;
   for (let i = 0; i <= retries; i++) {
     try {
