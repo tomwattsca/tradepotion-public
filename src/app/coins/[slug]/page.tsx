@@ -1,4 +1,4 @@
-import { getCoinDetail } from '@/lib/coingecko';
+import { getCoinDetail, filterCategories } from '@/lib/coingecko';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 import PriceChart from '@/components/PriceChart';
 import ExchangeCTAs from '@/components/ExchangeCTAs';
@@ -217,11 +217,11 @@ export default async function CoinPage({ params }: Props) {
           )}
 
           {/* Categories */}
-          {coin.categories?.length > 0 && (
+          {filterCategories(coin.id, coin.categories ?? []).length > 0 && (
             <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
               <h3 className="text-sm font-semibold text-zinc-300 mb-2">Categories</h3>
               <div className="flex flex-wrap gap-1.5">
-                {coin.categories.slice(0, 8).map((cat) => (
+                {filterCategories(coin.id, coin.categories ?? []).slice(0, 8).map((cat) => (
                   <span
                     key={cat}
                     className="px-2 py-0.5 rounded text-xs bg-zinc-800 text-zinc-400"

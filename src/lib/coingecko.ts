@@ -25,6 +25,26 @@ async function fetchCG<T>(path: string, params: Record<string, string> = {}): Pr
   return res.json() as Promise<T>;
 }
 
+
+// CoinGecko upstream category errors — filtered from display to protect credibility
+const CATEGORY_GLOBAL_BLOCKLIST = new Set([
+  'FTX Holdings', // Stale/defunct exchange tag
+]);
+
+// Per-coin overrides for factually wrong CoinGecko tags
+const COIN_CATEGORY_BLOCKLIST: Record<string, Set<string>> = {
+  bitcoin:       new Set(['Smart Contract Platform', 'FTX Holdings']),
+  litecoin:      new Set(['Smart Contract Platform']),
+  dogecoin:      new Set(['Smart Contract Platform']),
+  'bitcoin-cash': new Set(['Smart Contract Platform']),
+  'bitcoin-sv':  new Set(['Smart Contract Platform']),
+};
+
+export function filterCategories(coinId: string, categories: string[]): string[] {
+  const perCoin = COIN_CATEGORY_BLOCKLIST[coinId] ?? new Set<string>();
+  return categories.filter(cat => !CATEGORY_GLOBAL_BLOCKLIST.has(cat) && !perCoin.has(cat));
+}
+
 export async function getTrendingCoins(limit = 20) {
   return fetchCG<import('@/types').Coin[]>('/coins/markets', {
     vs_currency: 'usd',
