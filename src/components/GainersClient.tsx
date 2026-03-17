@@ -5,6 +5,7 @@ import Link from 'next/link';
 import CoinImage from '@/components/CoinImage';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
+import Sparkline from '@/components/Sparkline';
 
 interface Coin {
   id: string;
@@ -16,6 +17,7 @@ interface Coin {
   market_cap: number;
   total_volume: number;
   pct: number;
+  sparkline_in_7d?: { price: number[] };
 }
 
 type Range = '1h' | '24h' | '7d';
@@ -159,6 +161,7 @@ export default function GainersClient({ mode }: Props) {
           <span className="text-right">#</span>
           <span className="pl-3">Coin</span>
           <span className="text-right">Price</span>
+          <span className="text-right text-zinc-600 text-xs">7D</span>
           <span className={`text-right ${accentColor}`}>
             {range === '1h' ? '1H %' : range === '7d' ? '7D %' : '24H %'}
           </span>
@@ -185,7 +188,7 @@ export default function GainersClient({ mode }: Props) {
             <Link
               key={coin.id}
               href={`/coins/${coin.id}`}
-              className="grid grid-cols-[2rem_1fr_7rem_7rem_9rem_9rem] items-center px-4 py-3 hover:bg-zinc-900 transition-colors group"
+              className="grid grid-cols-[2rem_1fr_7rem_5rem_7rem_9rem_9rem] items-center px-4 py-3 hover:bg-zinc-900 transition-colors group"
             >
               <span className="text-xs text-zinc-500 text-right">{page * PAGE_SIZE + i + 1}</span>
               <div className="flex items-center gap-2.5 pl-3 min-w-0">
@@ -196,6 +199,9 @@ export default function GainersClient({ mode }: Props) {
                 </div>
               </div>
               <span className="text-sm text-right text-white">{formatPrice(coin.current_price)}</span>
+              <div className="flex justify-end pr-1">
+                <Sparkline prices={coin.sparkline_in_7d?.price ?? []} width={52} height={28} />
+              </div>
               <span className={`text-sm text-right font-semibold ${pctColor(coin.pct)}`}>
                 {formatPct(coin.pct)}
               </span>

@@ -13,6 +13,7 @@ interface CoinGeckoMarket {
   price_change_percentage_1h_in_currency?: number;
   price_change_percentage_24h_in_currency?: number;
   price_change_percentage_7d_in_currency?: number;
+  sparkline_in_7d?: { price: number[] };
 }
 
 // CoinGecko free tier supports price_change_percentage=1h,24h,7d on /coins/markets
@@ -22,7 +23,7 @@ async function fetchMarketsWithIntraday(): Promise<CoinGeckoMarket[]> {
   url.searchParams.set('order', 'market_cap_desc');
   url.searchParams.set('per_page', '250');
   url.searchParams.set('page', '1');
-  url.searchParams.set('sparkline', 'false');
+  url.searchParams.set('sparkline', 'true');
   url.searchParams.set('price_change_percentage', '1h,24h,7d');
 
   const res = await fetch(url.toString(), {

@@ -41,7 +41,7 @@ export async function getTopGainers(limit = 10) {
     order: 'market_cap_desc',
     per_page: '250',
     page: '1',
-    sparkline: 'false',
+    sparkline: 'true',
     price_change_percentage: '24h',
   });
   return coins
@@ -56,7 +56,7 @@ export async function getTopLosers(limit = 10) {
     order: 'market_cap_desc',
     per_page: '250',
     page: '1',
-    sparkline: 'false',
+    sparkline: 'true',
     price_change_percentage: '24h',
   });
   return coins
