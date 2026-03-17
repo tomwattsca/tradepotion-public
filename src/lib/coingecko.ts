@@ -119,7 +119,7 @@ export async function getTopCoins(limit = 100, page = 1) {
     order: 'market_cap_desc',
     per_page: String(Math.min(limit, 250)),
     page: String(page),
-    sparkline: 'false',
+    sparkline: 'true',
     price_change_percentage: '7d',
   });
 }

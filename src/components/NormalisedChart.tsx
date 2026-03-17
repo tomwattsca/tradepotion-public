@@ -48,9 +48,21 @@ export default function NormalisedChart({ coinAId, coinAName, coinBId, coinBName
     setLoading(true);
     setError(false);
 
+    // Stagger chart fetches to avoid simultaneous CoinGecko rate-limit hits
+    const fetchWithRetry = async (url: string, retries = 2): Promise<Response> => {
+      for (let i = 0; i <= retries; i++) {
+        const res = await fetch(url);
+        if (res.ok) return res;
+        if (i < retries) await new Promise(r => setTimeout(r, 400 * (i + 1)));
+      }
+      throw new Error('fetch failed');
+    };
+
     Promise.all([
-      fetch(`/api/chart/${coinAId}?days=${days}`).then(r => r.json()),
-      fetch(`/api/chart/${coinBId}?days=${days}`).then(r => r.json()),
+      fetchWithRetry(`/api/chart/${coinAId}?days=${days}`).then(r => r.json()),
+      new Promise<void>(resolve => setTimeout(resolve, 300)).then(() =>
+        fetchWithRetry(`/api/chart/${coinBId}?days=${days}`).then(r => r.json())
+      ),
       fetch(`/api/correlation?a=${coinAId}&b=${coinBId}&days=${days}`).then(r => r.json()).catch(() => null),
     ])
       .then(([aData, bData, corrData]) => {

@@ -24,6 +24,7 @@ export interface Coin {
   atl_change_percentage: number;
   atl_date: string;
   last_updated: string;
+  sparkline_in_7d?: { price: number[] };
 }
 
 export interface CoinDetail extends Coin {
