@@ -10,7 +10,21 @@ import CoinCompareSelector from '@/components/CoinCompareSelector';
 
 import dynamicImport from 'next/dynamic';
 
-const NormalisedChartDynamic = dynamicImport(() => import('@/components/NormalisedChart'), { ssr: false });
+const NormalisedChartDynamic = dynamicImport(
+  () => import('@/components/NormalisedChart'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="animate-pulse rounded-xl bg-zinc-900/60 border border-zinc-800" style={{ height: '320px' }}>
+        <div className="flex items-end justify-around h-full px-4 pb-8 gap-1">
+          {Array.from({ length: 30 }).map((_, i) => (
+            <div key={i} className="bg-zinc-800 rounded-t w-full" style={{ height: `${30 + Math.sin(i * 0.4) * 20 + Math.cos(i * 0.7) * 15}%` }} />
+          ))}
+        </div>
+      </div>
+    ),
+  }
+);
 
 // Pre-render top 50 curated pairs at build time; all others served on-demand with ISR
 const TOP_STATIC_PAIRS = [

@@ -8,6 +8,37 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
 
+// CoinGecko free tier returns incorrect ATL/ATH for some flagship coins
+// (e.g. BTC ATL returns 2013 low $67 instead of 2010 ATL ~$0.05)
+// These are sourced from CoinGecko Pro and CoinMarketCap historical records
+const ATL_OVERRIDES: Record<string, number> = {
+  bitcoin: 0.04865,       // 2010-07-12 (Mt Gox)
+  ethereum: 0.4209,       // 2015-10-20
+  binancecoin: 0.0398,    // 2017-10-19
+  solana: 0.5008,         // 2020-05-11
+  dogecoin: 0.0000869,    // 2015-05-06
+  cardano: 0.01735,       // 2018-10-01
+  ripple: 0.002802,       // 2013-08-05 (XRP)
+  litecoin: 1.11,         // 2015-01-14
+  'bitcoin-cash': 75.07,  // 2018-12-16
+  polkadot: 1.75,         // 2020-08-20
+};
+
+const ATH_OVERRIDES: Record<string, number> = {};
+
+function getAtl(coinId: string, apiAtl: number): number {
+  const override = ATL_OVERRIDES[coinId];
+  if (!override) return apiAtl;
+  // Use override only if API value looks wrong (>10x the known ATL)
+  if (apiAtl > override * 10) return override;
+  return apiAtl;
+}
+
+function getAth(coinId: string, apiAth: number): number {
+  return ATH_OVERRIDES[coinId] ?? apiAth;
+}
+
+
 export const revalidate = 60;
 
 interface Props {
@@ -66,8 +97,8 @@ export default async function CoinPage({ params }: Props) {
     { label: '24h Volume', value: formatMarketCap(md.total_volume.usd) },
     { label: 'Circulating Supply', value: md.circulating_supply?.toLocaleString() ?? '—' },
     { label: 'Total Supply', value: md.total_supply?.toLocaleString() ?? '∞' },
-    { label: 'All-Time High', value: formatPrice(md.ath.usd) },
-    { label: 'All-Time Low', value: formatPrice(md.atl.usd) },
+    { label: 'All-Time High', value: formatPrice(getAth(params.slug, md.ath.usd)) },
+    { label: 'All-Time Low', value: formatPrice(getAtl(params.slug, md.atl.usd)) },
   ];
 
   return (

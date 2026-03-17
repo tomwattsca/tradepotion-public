@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import CoinImage from '@/components/CoinImage';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 import Sparkline from '@/components/Sparkline';
+import TableSkeleton from '@/components/TableSkeleton';
 
 interface Coin {
   id: string;
@@ -56,35 +57,48 @@ export default function GainersClient({ mode }: Props) {
   const [capTier, setCapTier] = useState(0);
   const [page, setPage] = useState(0);
   const [coins, setCoins] = useState<Coin[]>([]);
+  const [staleCoins, setStaleCoins] = useState<Coin[]>([]); // last good data for graceful degradation
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  const [isStale, setIsStale] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<string | null>(null);
 
   // Reset to page 0 whenever filters change
   useEffect(() => { setPage(0); }, [range, minVol, capTier]);
 
-  useEffect(() => {
+  const fetchGainers = useCallback(async (retries = 3) => {
     setLoading(true);
     setError(false);
-    // Request full set (limit=250) — client handles pagination
+    setIsStale(false);
     const params = new URLSearchParams({ range, type: mode, minVol: String(minVol), limit: '250' });
-    fetch(`/api/gainers?${params}`)
-      .then(r => r.json())
-      .then(data => {
-        if (data?.coins) {
+    for (let attempt = 0; attempt <= retries; attempt++) {
+      try {
+        const res = await fetch(`/api/gainers?${params}`);
+        const data = await res.json();
+        if (data?.coins?.length > 0) {
           setCoins(data.coins);
+          setStaleCoins(data.coins); // save as stale fallback
           setLastUpdated(data.generated_at ?? null);
           setLoading(false);
-        } else {
-          setError(true);
-          setLoading(false);
+          return;
         }
-      })
-      .catch(() => {
-        setError(true);
-        setLoading(false);
-      });
-  }, [range, minVol, mode]);
+        if (attempt < retries) await new Promise(r => setTimeout(r, 600 * Math.pow(2, attempt)));
+      } catch {
+        if (attempt < retries) await new Promise(r => setTimeout(r, 600 * Math.pow(2, attempt)));
+      }
+    }
+    // All retries failed — use stale data if available
+    if (staleCoins.length > 0) {
+      setCoins(staleCoins);
+      setIsStale(true);
+      setLoading(false);
+    } else {
+      setError(true);
+      setLoading(false);
+    }
+  }, [range, minVol, mode, staleCoins]);
+
+  useEffect(() => { fetchGainers(); }, [range, minVol, mode]);
 
   const filtered = useMemo(() => {
     const tier = CAP_TIERS[capTier];
@@ -169,15 +183,23 @@ export default function GainersClient({ mode }: Props) {
           <span className="text-right hidden md:block">Volume (24h)</span>
         </div>
         <div className="divide-y divide-zinc-800/40">
-          {loading && (
-            <div className="flex items-center justify-center py-12">
-              <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+          {loading && <TableSkeleton rows={10} cols={6} />}
+          {isStale && (
+            <div className="flex items-center justify-between px-4 py-2 bg-amber-500/10 border-b border-amber-500/20 text-xs text-amber-400">
+              <span>⚠ Showing cached data — live data temporarily unavailable</span>
+              <button onClick={() => fetchGainers()} className="underline hover:no-underline">Retry</button>
             </div>
           )}
           {error && (
-            <p className="px-4 py-8 text-sm text-zinc-500 text-center">
-              Data temporarily unavailable — try again shortly.
-            </p>
+            <div className="px-4 py-10 text-center">
+              <p className="text-sm text-zinc-400 mb-3">Data temporarily unavailable.</p>
+              <button
+                onClick={() => fetchGainers()}
+                className="px-4 py-2 text-sm bg-violet-600 hover:bg-violet-500 text-white rounded-lg transition-colors"
+              >
+                Retry
+              </button>
+            </div>
           )}
           {!loading && !error && filtered.length === 0 && (
             <p className="px-4 py-8 text-sm text-zinc-500 text-center">
