@@ -1,4 +1,5 @@
 import { getCoinDetail, filterCategories } from '@/lib/coingecko';
+import type { CoinDetailImage } from '@/types';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 import PriceChart from '@/components/PriceChart';
 import ExchangeCTAs from '@/components/ExchangeCTAs';
@@ -114,7 +115,7 @@ export default async function CoinPage({ params }: Props) {
             '@type': 'Product',
             name: coin.name,
             description: `Live price tracker for ${coin.name} (${coin.symbol.toUpperCase()})`,
-            image: coin.image.large ?? coin.image.small,
+            image: (coin.image as unknown as CoinDetailImage).large ?? (coin.image as unknown as CoinDetailImage).small,
             offers: {
               '@type': 'AggregateOffer',
               priceCurrency: 'USD',
@@ -133,7 +134,7 @@ export default async function CoinPage({ params }: Props) {
       {/* Header */}
       <div className="flex flex-wrap items-center gap-4 mb-6">
         <Image
-          src={coin.image.small}
+          src={(coin.image as unknown as CoinDetailImage).small}
           alt={coin.name}
           width={48}
           height={48}

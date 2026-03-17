@@ -28,9 +28,11 @@ export interface Coin {
   sparkline_in_7d?: { price: number[] };
 }
 
+// CoinGecko /coins/{id} returns image as {thumb, small, large} not a plain string
+// Use CoinDetailImage when working with CoinDetail image field
+export type CoinDetailImage = { thumb: string; small: string; large: string };
+
 export interface CoinDetail extends Coin {
-  // CoinGecko /coins/{id} returns image as an object, not a string (overrides Coin.image: string)
-  image: { thumb: string; small: string; large: string };
   description: { en: string };
   categories: string[];
   links: {

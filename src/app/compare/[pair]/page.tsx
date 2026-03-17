@@ -1,4 +1,5 @@
 import { getCoinDetail } from '@/lib/coingecko';
+import type { CoinDetailImage } from '@/types';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
@@ -223,7 +224,7 @@ export default async function ComparePage({ params }: Props) {
       {/* Header */}
       <div className="flex items-center justify-center gap-6 mb-8">
         <Link href={`/coins/${a.id}`} className="flex flex-col items-center gap-2 hover:opacity-80 transition-opacity">
-          <Image src={a.image.small} alt={a.name} width={56} height={56} className="rounded-full" />
+          <Image src={(a.image as unknown as CoinDetailImage).small} alt={a.name} width={56} height={56} className="rounded-full" />
           <div className="text-center">
             <p className="font-bold text-white text-lg">{a.name}</p>
             <p className="text-xs text-zinc-500 uppercase">{a.symbol}</p>
@@ -237,7 +238,7 @@ export default async function ComparePage({ params }: Props) {
         <div className="text-2xl font-bold text-zinc-600">VS</div>
 
         <Link href={`/coins/${b.id}`} className="flex flex-col items-center gap-2 hover:opacity-80 transition-opacity">
-          <Image src={b.image.small} alt={b.name} width={56} height={56} className="rounded-full" />
+          <Image src={(b.image as unknown as CoinDetailImage).small} alt={b.name} width={56} height={56} className="rounded-full" />
           <div className="text-center">
             <p className="font-bold text-white text-lg">{b.name}</p>
             <p className="text-xs text-zinc-500 uppercase">{b.symbol}</p>
@@ -264,11 +265,11 @@ export default async function ComparePage({ params }: Props) {
         <div className="grid grid-cols-3 gap-2 pb-2 border-b border-zinc-700 text-xs font-semibold text-zinc-400 uppercase tracking-wide">
           <span></span>
           <span className="text-right flex items-center justify-end gap-1.5">
-            <Image src={a.image.thumb} alt={a.name} width={16} height={16} className="rounded-full" />
+            <Image src={(a.image as unknown as CoinDetailImage).thumb} alt={a.name} width={16} height={16} className="rounded-full" />
             {a.symbol.toUpperCase()}
           </span>
           <span className="text-right flex items-center justify-end gap-1.5">
-            <Image src={b.image.thumb} alt={b.name} width={16} height={16} className="rounded-full" />
+            <Image src={(b.image as unknown as CoinDetailImage).thumb} alt={b.name} width={16} height={16} className="rounded-full" />
             {b.symbol.toUpperCase()}
           </span>
         </div>

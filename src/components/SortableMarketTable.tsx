@@ -103,7 +103,7 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
           <button onClick={() => handleSort('price_change_percentage_1h_in_currency')} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors" title="Price change in the last 1 hour">
             1h % <SortIcon active={sortKey === 'price_change_percentage_1h_in_currency'} dir={sortDir} />
           </button>
-          <button onClick={() => handleSort('price_change_percentage_24h')}} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors">
+          <button onClick={() => handleSort('price_change_percentage_24h')} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors">
             24h % <SortIcon active={sortKey === 'price_change_percentage_24h'} dir={sortDir} />
           </button>
           <button onClick={() => handleSort('price_change_percentage_7d_in_currency')} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors">
@@ -126,6 +126,7 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
         <div className="divide-y divide-zinc-800/40">
           {paginated.map((coin, rowIdx) => {
             const pct24h = coin.price_change_percentage_24h;
+            const pct1h = coin.price_change_percentage_1h_in_currency ?? null;
             const pct7d = (coin as unknown as Record<string, number | null>).price_change_percentage_7d_in_currency ?? null;
             const sparkPrices = coin.sparkline_in_7d?.price ?? [];
             return (
@@ -146,6 +147,9 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
                 <div className="flex justify-end pr-1">
                   <Sparkline prices={sparkPrices} width={52} height={28} />
                 </div>
+                <span className={`text-sm text-right font-medium ${pct1h != null ? pctColor(pct1h) : 'text-zinc-500'}`}>
+                  {pct1h != null ? formatPct(pct1h) : '—'}
+                </span>
                 <span className={`text-sm text-right font-medium ${pctColor(pct24h)}`}>{formatPct(pct24h)}</span>
                 <span className={`text-sm text-right font-medium ${pct7d != null ? pctColor(pct7d) : 'text-zinc-500'}`}>
                   {pct7d != null ? formatPct(pct7d) : '—'}
