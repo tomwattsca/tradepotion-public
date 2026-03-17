@@ -84,7 +84,7 @@ export default async function HomePage() {
           <h2 className="text-sm font-semibold text-zinc-200">Top 100 Cryptocurrencies</h2>
           <span className="text-xs text-zinc-500">Click column headers to sort</span>
         </div>
-        <SortableMarketTable coins={coins} />
+        <SortableMarketTable coins={coins} fetchedAt={Date.now()} />
       </main>
     </>
   );

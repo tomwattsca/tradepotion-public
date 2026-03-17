@@ -6,6 +6,7 @@ import CoinImage from '@/components/CoinImage';
 import { Coin } from '@/types';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 import { ChevronUp, ChevronDown, ChevronsUpDown, Bell } from 'lucide-react';
+import FreshnessBar from '@/components/FreshnessBar';
 import Sparkline from '@/components/Sparkline';
 
 type SortKey = 'market_cap_rank' | 'current_price' | 'price_change_percentage_24h' | 'price_change_percentage_7d_in_currency' | 'market_cap' | 'total_volume' | 'vol_mcap_ratio';
@@ -13,6 +14,7 @@ type SortKey = 'market_cap_rank' | 'current_price' | 'price_change_percentage_24
 interface Props {
   coins: Coin[];
   pageSize?: number;
+  fetchedAt?: number;
 }
 
 function SortIcon({ active, dir }: { active: boolean; dir: 'asc' | 'desc' }) {
@@ -32,7 +34,7 @@ const PAGE_SIZE = 50;
 
 type CoinWithRatio = Coin & { vol_mcap_ratio: number };
 
-export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Props) {
+export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetchedAt }: Props) {
   const [sortKey, setSortKey] = useState<SortKey>('market_cap_rank');
   const [sortDir, setSortDir] = useState<'asc' | 'desc'>('asc');
   const [page, setPage] = useState(0);
@@ -66,12 +68,15 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
 
   // Grid: #, Coin, Price, Sparkline, 24h%, 7d%, Market Cap, Volume, [Vol/MCap]
   const gridCols = showVolMcap
-    ? 'grid-cols-[2rem_1fr_7rem_5rem_6rem_6rem_8rem_8rem_7rem_2.5rem]'
-    : 'grid-cols-[2rem_1fr_7rem_5rem_6rem_6rem_8rem_8rem_2.5rem]';
+    ? 'grid-cols-[2rem_1fr_7rem_5rem_6rem_6rem_2.5rem] md:grid-cols-[2rem_1fr_7rem_5rem_6rem_6rem_8rem_8rem_7rem_2.5rem]'
+    : 'grid-cols-[2rem_1fr_7rem_5rem_6rem_6rem_2.5rem] md:grid-cols-[2rem_1fr_7rem_5rem_6rem_6rem_8rem_8rem_2.5rem]';
 
   return (
     <div>
-      <div className="flex justify-end mb-2">
+      <div className="flex items-center justify-between mb-2">
+        <div>
+          {fetchedAt && <FreshnessBar fetchedAt={fetchedAt} />}
+        </div>
         <button
           onClick={() => setShowVolMcap(v => !v)}
           className={`px-2.5 py-1 rounded text-xs font-medium border transition-colors ${
@@ -98,10 +103,10 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
           <button onClick={() => handleSort('price_change_percentage_7d_in_currency')} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors">
             7d % <SortIcon active={sortKey === 'price_change_percentage_7d_in_currency'} dir={sortDir} />
           </button>
-          <button onClick={() => handleSort('market_cap')} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors">
+          <button onClick={() => handleSort('market_cap')} className="hidden md:flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors">
             Market Cap <SortIcon active={sortKey === 'market_cap'} dir={sortDir} />
           </button>
-          <button onClick={() => handleSort('total_volume')} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors">
+          <button onClick={() => handleSort('total_volume')} className="hidden md:flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors">
             Volume (24h) <SortIcon active={sortKey === 'total_volume'} dir={sortDir} />
           </button>
           {showVolMcap && (
@@ -139,8 +144,8 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
                 <span className={`text-sm text-right font-medium ${pct7d != null ? pctColor(pct7d) : 'text-zinc-500'}`}>
                   {pct7d != null ? formatPct(pct7d) : '—'}
                 </span>
-                <span className="text-sm text-right text-zinc-300">{formatMarketCap(coin.market_cap)}</span>
-                <span className="text-sm text-right text-zinc-400">{formatMarketCap(coin.total_volume)}</span>
+                <span className="hidden md:block text-sm text-right text-zinc-300">{formatMarketCap(coin.market_cap)}</span>
+                <span className="hidden md:block text-sm text-right text-zinc-400">{formatMarketCap(coin.total_volume)}</span>
                 {showVolMcap && (
                   <span className={`text-sm text-right ${volMcapColor(coin.vol_mcap_ratio)}`}>
                     {coin.vol_mcap_ratio.toFixed(2)}

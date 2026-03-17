@@ -99,6 +99,7 @@ export default function GainersClient({ mode }: Props) {
     }
   }, [range, minVol, mode, staleCoins]);
 
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => { fetchGainers(); }, [range, minVol, mode]);
 
   const filtered = useMemo(() => {
@@ -110,7 +111,6 @@ export default function GainersClient({ mode }: Props) {
   const pageCoins = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
   const accentColor = mode === 'gainers' ? 'text-emerald-400' : 'text-red-400';
-  const activeClass = mode === 'gainers' ? 'bg-emerald-600 text-white' : 'bg-red-600 text-white';
 
   return (
     <div>
