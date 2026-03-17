@@ -68,10 +68,34 @@ export default async function VolumeSpilesPage() {
         <Zap className="h-6 w-6 text-yellow-400" />
         <h1 className="text-2xl font-bold text-white">Volume Spikes</h1>
       </div>
-      <p className="text-sm text-zinc-400 mb-2">
-        Coins with unusually high trading volume today compared to their 30-day average.
-        Volume spikes often precede significant price moves.
-      </p>
+      <div className="mb-8 rounded-lg bg-zinc-900/50 border border-zinc-800 p-6">
+        <h2 className="text-lg font-semibold text-white mb-3">What Are Volume Spikes?</h2>
+        <p className="text-sm text-zinc-300 leading-relaxed mb-4">
+          Trading volume is one of the most reliable early signals of market moves. When a cryptocurrency suddenly 
+          trades 3x, 5x, or 10x its average volume, professional traders know something is happening — a whale buy, 
+          a protocol launch, exchange listing, or major news.
+        </p>
+        <p className="text-sm text-zinc-300 leading-relaxed mb-4">
+          Trade Potion's Volume Spikes page filters the 10,000+ coin market to show only coins where today's volume 
+          is unusually high. The &quot;Spike Ratio&quot; column shows the multiplier: a 3.5x spike means today's volume 
+          is 3.5 times the 30-day average.
+        </p>
+        <div className="bg-zinc-950/50 rounded p-4 mb-4 border border-zinc-800/50">
+          <p className="text-xs font-semibold text-zinc-400 uppercase mb-2">How to Use It</p>
+          <p className="text-sm text-zinc-300 leading-relaxed">
+            Sort by Spike Ratio (highest first) to find the most unusual activity. Use the 1H/24H/7D tabs to see 
+            if the spike is a short burst (1H) or sustained (24H). Cross-reference the 24h % change — spikes without 
+            price movement can signal accumulation before a move; spikes with 20%+ gains confirm volume drove price.
+          </p>
+        </div>
+        <div className="bg-zinc-950/50 rounded p-4 border border-zinc-800/50">
+          <p className="text-xs font-semibold text-zinc-400 uppercase mb-2">Example</p>
+          <p className="text-sm text-zinc-300 leading-relaxed">
+            <strong>Bitcoin spikes to 4.2x with +15% in 24h</strong> → institutional buying confirmed by volume and price. 
+            <strong> Shiba Inu spikes to 3.8x but 0% price change</strong> → smart money accumulating before expected announcement.
+          </p>
+        </div>
+      </div>
 
       {!hasHistorical && (
         <div className="rounded-lg bg-yellow-900/20 border border-yellow-700/40 px-4 py-3 text-sm text-yellow-300 mb-6">
