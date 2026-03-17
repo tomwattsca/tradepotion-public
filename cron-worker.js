@@ -1,7 +1,10 @@
-// cron-worker.js — Standalone poller, runs as a separate Railway service
+// cron-worker.js — Standalone poller, runs as a separate Railway service  
 // Calls /api/cron/poll every 5 minutes
 
-const POLL_URL = process.env.POLL_URL || 'http://localhost:3000/api/cron/poll';
+const POLL_URL = process.env.POLL_URL || (process.env.RAILWAY_PUBLIC_DOMAIN
+  ? `https://${process.env.RAILWAY_PUBLIC_DOMAIN}/api/cron/poll`
+  : 'http://localhost:3000/api/cron/poll');
+  
 const CRON_SECRET = process.env.CRON_SECRET || '';
 const INTERVAL_MS = parseInt(process.env.POLL_INTERVAL_MS || '300000', 10); // 5 min default
 
