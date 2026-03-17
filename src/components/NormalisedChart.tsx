@@ -181,7 +181,7 @@ export default function NormalisedChart({ coinAId, coinAName, coinBId, coinBName
       )}
 
       {/* Chart */}
-      <div style={{ width: '100%', height: 240 }}>
+      <div style={{ width: '100%', height: '240px' }}>
         {loading && (
           <div className="flex items-center justify-center h-full">
             <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
@@ -233,6 +233,7 @@ export default function NormalisedChart({ coinAId, coinAName, coinBId, coinBName
                 stroke="#fb923c"
                 strokeWidth={2}
                 dot={false}
+                isAnimationActive={false}
                 activeDot={{ r: 4, fill: '#fb923c' }}
               />
               <Line
@@ -242,6 +243,7 @@ export default function NormalisedChart({ coinAId, coinAName, coinBId, coinBName
                 stroke="#60a5fa"
                 strokeWidth={2}
                 dot={false}
+                isAnimationActive={false}
                 activeDot={{ r: 4, fill: '#60a5fa' }}
               />
             </LineChart>

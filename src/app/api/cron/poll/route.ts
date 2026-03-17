@@ -113,6 +113,8 @@ export async function GET(req: Request) {
       [coinIds]
     );
 
+
+
     // Bulk insert price snapshots
     const snapshotValues = markets
       .map((_, i) => {
