@@ -6,6 +6,7 @@ import Image from 'next/image';
 import { Coin } from '@/types';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
+import Sparkline from '@/components/Sparkline';
 
 type SortKey = 'market_cap_rank' | 'current_price' | 'price_change_percentage_24h' | 'price_change_percentage_7d_in_currency' | 'market_cap' | 'total_volume' | 'vol_mcap_ratio';
 
@@ -26,15 +27,6 @@ function volMcapColor(ratio: number): string {
   if (ratio >= 0.5) return 'text-zinc-300';
   return 'text-zinc-500';
 }
-
-const BASE_COLS: { key: SortKey; label: string }[] = [
-  { key: 'market_cap_rank', label: '#' },
-  { key: 'current_price', label: 'Price' },
-  { key: 'price_change_percentage_24h', label: '24h %' },
-  { key: 'price_change_percentage_7d_in_currency', label: '7d %' },
-  { key: 'market_cap', label: 'Market Cap' },
-  { key: 'total_volume', label: 'Volume (24h)' },
-];
 
 const PAGE_SIZE = 50;
 
@@ -72,13 +64,13 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
   const totalPages = Math.ceil(sorted.length / pageSize);
   const paginated = sorted.slice(page * pageSize, (page + 1) * pageSize);
 
+  // Grid: #, Coin, Price, Sparkline, 24h%, 7d%, Market Cap, Volume, [Vol/MCap]
   const gridCols = showVolMcap
-    ? 'grid-cols-[2rem_1fr_repeat(6,8rem)]'
-    : 'grid-cols-[2rem_1fr_repeat(5,8rem)]';
+    ? 'grid-cols-[2rem_1fr_7rem_5rem_6rem_6rem_8rem_8rem_7rem]'
+    : 'grid-cols-[2rem_1fr_7rem_5rem_6rem_6rem_8rem_8rem]';
 
   return (
     <div>
-      {/* Vol/MCap toggle */}
       <div className="flex justify-end mb-2">
         <button
           onClick={() => setShowVolMcap(v => !v)}
@@ -93,38 +85,37 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
       </div>
 
       <div className="rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden">
-        {/* Header */}
         <div className={`grid ${gridCols} px-4 py-2 border-b border-zinc-800 text-xs text-zinc-500`}>
-          {/* Name (not sortable) */}
           <span />
           <span className="pl-3">Coin</span>
-          {BASE_COLS.slice(1).map(col => (
-            <button
-              key={col.key}
-              onClick={() => handleSort(col.key)}
-              className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors"
-            >
-              {col.label}
-              <SortIcon active={sortKey === col.key} dir={sortDir} />
-            </button>
-          ))}
+          <button onClick={() => handleSort('current_price')} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors">
+            Price <SortIcon active={sortKey === 'current_price'} dir={sortDir} />
+          </button>
+          <span className="text-right text-zinc-600 text-xs pr-1">7D</span>
+          <button onClick={() => handleSort('price_change_percentage_24h')} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors">
+            24h % <SortIcon active={sortKey === 'price_change_percentage_24h'} dir={sortDir} />
+          </button>
+          <button onClick={() => handleSort('price_change_percentage_7d_in_currency')} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors">
+            7d % <SortIcon active={sortKey === 'price_change_percentage_7d_in_currency'} dir={sortDir} />
+          </button>
+          <button onClick={() => handleSort('market_cap')} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors">
+            Market Cap <SortIcon active={sortKey === 'market_cap'} dir={sortDir} />
+          </button>
+          <button onClick={() => handleSort('total_volume')} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors">
+            Volume (24h) <SortIcon active={sortKey === 'total_volume'} dir={sortDir} />
+          </button>
           {showVolMcap && (
-            <button
-              onClick={() => handleSort('vol_mcap_ratio')}
-              className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors"
-              title="24h Volume ÷ Market Cap. Values above 1.0 indicate unusually high volume."
-            >
-              Vol/MCap
-              <SortIcon active={sortKey === 'vol_mcap_ratio'} dir={sortDir} />
+            <button onClick={() => handleSort('vol_mcap_ratio')} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors" title="24h Volume / Market Cap">
+              Vol/MCap <SortIcon active={sortKey === 'vol_mcap_ratio'} dir={sortDir} />
             </button>
           )}
         </div>
 
-        {/* Rows */}
         <div className="divide-y divide-zinc-800/40">
           {paginated.map((coin) => {
             const pct24h = coin.price_change_percentage_24h;
             const pct7d = (coin as unknown as Record<string, number | null>).price_change_percentage_7d_in_currency ?? null;
+            const sparkPrices = coin.sparkline_in_7d?.price ?? [];
             return (
               <Link
                 key={coin.id}
@@ -140,6 +131,9 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
                   </div>
                 </div>
                 <span className="text-sm text-right text-white">{formatPrice(coin.current_price)}</span>
+                <div className="flex justify-end pr-1">
+                  <Sparkline prices={sparkPrices} width={52} height={28} />
+                </div>
                 <span className={`text-sm text-right font-medium ${pctColor(pct24h)}`}>{formatPct(pct24h)}</span>
                 <span className={`text-sm text-right font-medium ${pct7d != null ? pctColor(pct7d) : 'text-zinc-500'}`}>
                   {pct7d != null ? formatPct(pct7d) : '—'}
@@ -157,38 +151,15 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
         </div>
       </div>
 
-      {/* Pagination */}
       {totalPages > 1 && (
         <div className="flex items-center justify-between mt-4 text-sm text-zinc-400">
           <span>Showing {page * pageSize + 1}–{Math.min((page + 1) * pageSize, sorted.length)} of {sorted.length}</span>
           <div className="flex gap-2">
-            <button
-              disabled={page === 0}
-              onClick={() => setPage(p => p - 1)}
-              className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              ← Prev
-            </button>
+            <button disabled={page === 0} onClick={() => setPage(p => p - 1)} className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">← Prev</button>
             {Array.from({ length: totalPages }, (_, i) => (
-              <button
-                key={i}
-                onClick={() => setPage(i)}
-                className={`px-3 py-1.5 rounded-lg border transition-colors ${
-                  i === page
-                    ? 'bg-violet-600 border-violet-600 text-white'
-                    : 'bg-zinc-900 border-zinc-800 hover:bg-zinc-800'
-                }`}
-              >
-                {i + 1}
-              </button>
+              <button key={i} onClick={() => setPage(i)} className={`px-3 py-1.5 rounded-lg border transition-colors ${i === page ? 'bg-violet-600 border-violet-600 text-white' : 'bg-zinc-900 border-zinc-800 hover:bg-zinc-800'}`}>{i + 1}</button>
             )).slice(Math.max(0, page - 2), page + 3)}
-            <button
-              disabled={page === totalPages - 1}
-              onClick={() => setPage(p => p + 1)}
-              className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
-            >
-              Next →
-            </button>
+            <button disabled={page === totalPages - 1} onClick={() => setPage(p => p + 1)} className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">Next →</button>
           </div>
         </div>
       )}
