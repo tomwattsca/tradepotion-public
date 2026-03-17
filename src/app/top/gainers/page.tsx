@@ -1,3 +1,4 @@
+export const dynamic = 'force-dynamic';
 import Link from 'next/link';
 import { ArrowLeft, TrendingUp } from 'lucide-react';
 import { Metadata } from 'next';

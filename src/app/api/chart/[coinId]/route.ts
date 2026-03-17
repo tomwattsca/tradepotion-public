@@ -4,9 +4,12 @@ import { getCoinMarketChart } from '@/lib/coingecko';
 
 const getCachedChart = (coinId: string, days: string) =>
   unstable_cache(
-    () => getCoinMarketChart(coinId, days),
+    async () => {
+      const data = await getCoinMarketChart(coinId, days);
+      return data;
+    },
     ['chart', coinId, days],
-    { revalidate: 300 } // 5 min server-side cache — respects CoinGecko free tier
+    { revalidate: 300 } // 5 min server-side cache
   )();
 
 export async function GET(
@@ -19,7 +22,13 @@ export async function GET(
     return NextResponse.json(data, {
       headers: { 'Cache-Control': 'public, s-maxage=300, stale-while-revalidate=600' },
     });
-  } catch {
-    return NextResponse.json({ error: 'Failed to fetch chart data' }, { status: 500 });
+  } catch (err) {
+    const msg = String(err);
+    // Propagate rate-limit status so client can distinguish transient from permanent errors
+    const status = msg.includes('429') ? 429 : 500;
+    return NextResponse.json(
+      { error: 'Chart data temporarily unavailable', retryAfter: 60 },
+      { status, headers: { 'Retry-After': '60' } }
+    );
   }
 }

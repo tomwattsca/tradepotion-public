@@ -181,8 +181,14 @@ export default function NormalisedChart({ coinAId, coinAName, coinBId, coinBName
           </div>
         )}
         {error && (
-          <div className="flex items-center justify-center h-full">
-            <p className="text-xs text-zinc-500">Chart data unavailable</p>
+          <div className="flex flex-col items-center justify-center h-full gap-2">
+            <p className="text-xs text-zinc-500">Chart data temporarily unavailable</p>
+            <button
+              onClick={() => { setError(false); setLoading(true); }}
+              className="text-xs text-amber-400 hover:text-amber-300 underline"
+            >
+              Try again
+            </button>
           </div>
         )}
         {!loading && !error && data.length > 0 && (
