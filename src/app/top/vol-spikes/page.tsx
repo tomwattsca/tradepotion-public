@@ -6,7 +6,7 @@ import VolSpikesClient from '@/components/VolSpikesClient';
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: 'Crypto Volume Spikes — Coins With Unusual Trading Activity | Trade Potion',
+  title: 'Crypto Volume Spikes — Coins With Unusual Trading Activity',
   description: 'Live list of cryptocurrencies with the highest volume-to-market-cap ratio — a leading signal for momentum, news-driven moves, and potential breakouts.',
 };
 

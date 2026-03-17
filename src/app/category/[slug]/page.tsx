@@ -105,7 +105,7 @@ const CATEGORY_META: Record<string, CategoryMeta> = {
 export async function generateMetadata({ params }: { params: { slug: string } }) {
   const meta = CATEGORY_META[params.slug];
   const displayName = params.slug.replace(/-/g, ' ');
-  const title = meta?.title ?? `${displayName} Coin Prices | Trade Potion`;
+  const title = meta?.title ?? `${displayName} Coin Prices`;
   const description =
     meta?.description ??
     `Live prices for ${displayName} tokens. Real-time tracking and price alerts on Trade Potion.`;

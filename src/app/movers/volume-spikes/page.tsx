@@ -8,7 +8,7 @@ import type { Metadata } from 'next';
 export const revalidate = 600;
 
 export const metadata: Metadata = {
-  title: 'Crypto Volume Spikes — Unusual Volume Activity | Trade Potion',
+  title: 'Crypto Volume Spikes — Unusual Volume Activity',
   description: 'Find cryptocurrencies with unusual trading volume today. Coins trading 3x or more above their 30-day average volume — a key signal for traders.',
 };
 
