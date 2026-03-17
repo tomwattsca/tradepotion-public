@@ -3,36 +3,37 @@ import { getTrendingCoins, getCategories } from '@/lib/coingecko';
 
 export const revalidate = 3600; // regenerate every hour
 
-// Popular "X vs Y" pairs for SEO keyword coverage
-const COMPARE_PAIRS = [
-  'bitcoin-vs-ethereum',
-  'bitcoin-vs-solana',
-  'bitcoin-vs-dogecoin',
-  'bitcoin-vs-xrp',
-  'ethereum-vs-solana',
-  'ethereum-vs-bnb',
-  'ethereum-vs-avalanche-2',
-  'solana-vs-avalanche-2',
-  'dogecoin-vs-shiba-inu',
-  'bitcoin-vs-litecoin',
-  'ethereum-vs-cardano',
-  'bnb-vs-solana',
-];
-
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const now = new Date();
 
+  let coins: { id: string; market_cap_rank: number }[] = [];
   let coinEntries: MetadataRoute.Sitemap = [];
   let categoryEntries: MetadataRoute.Sitemap = [];
+  const compareEntries: MetadataRoute.Sitemap = [];
 
   try {
-    const coins = await getTrendingCoins(250);
+    coins = await getTrendingCoins(500);
+
+    // Individual coin pages — highest SEO value
     coinEntries = coins.map((coin) => ({
       url: `https://tradepotion.com/coins/${coin.id}`,
       lastModified: now,
-      changeFrequency: 'daily',
-      priority: coin.market_cap_rank <= 50 ? 0.9 : 0.8,
+      changeFrequency: 'hourly',
+      priority: coin.market_cap_rank <= 10 ? 0.9 : coin.market_cap_rank <= 100 ? 0.8 : 0.7,
     }));
+
+    // Auto-generate compare pairs for top 50 coins (~1,225 URLs)
+    const top50 = coins.slice(0, 50);
+    for (let i = 0; i < top50.length; i++) {
+      for (let j = i + 1; j < top50.length; j++) {
+        compareEntries.push({
+          url: `https://tradepotion.com/compare/${top50[i].id}-vs-${top50[j].id}`,
+          lastModified: now,
+          changeFrequency: 'daily',
+          priority: (i < 5 && j < 10) ? 0.7 : 0.5,
+        });
+      }
+    }
   } catch {
     // silently skip if CoinGecko unavailable during build
   }
@@ -49,13 +50,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // silently skip
   }
 
-  const compareEntries: MetadataRoute.Sitemap = COMPARE_PAIRS.map((pair) => ({
-    url: `https://tradepotion.com/compare/${pair}`,
-    lastModified: now,
-    changeFrequency: 'daily',
-    priority: 0.8,
-  }));
-
   return [
     {
       url: 'https://tradepotion.com',
@@ -64,23 +58,16 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       priority: 1.0,
     },
     {
-      url: 'https://tradepotion.com/search',
-      lastModified: now,
-      changeFrequency: 'monthly',
-      priority: 0.5,
-    },
-    // Top movers pages
-    {
       url: 'https://tradepotion.com/top/gainers',
       lastModified: now,
       changeFrequency: 'hourly',
-      priority: 0.9,
+      priority: 0.8,
     },
     {
       url: 'https://tradepotion.com/top/losers',
       lastModified: now,
       changeFrequency: 'hourly',
-      priority: 0.9,
+      priority: 0.8,
     },
     {
       url: 'https://tradepotion.com/top/vol-spikes',
@@ -88,17 +75,14 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       changeFrequency: 'hourly',
       priority: 0.8,
     },
-    // Markets
     {
-      url: 'https://tradepotion.com/markets',
+      url: 'https://tradepotion.com/search',
       lastModified: now,
-      changeFrequency: 'hourly',
-      priority: 0.9,
+      changeFrequency: 'monthly',
+      priority: 0.5,
     },
-    // Compare pairs
-    ...compareEntries,
-    // Categories and coins
     ...categoryEntries,
     ...coinEntries,
+    ...compareEntries,
   ];
 }

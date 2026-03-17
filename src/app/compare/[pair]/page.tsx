@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!ids) return { title: 'Compare Coins' };
   const [a, b] = ids.map(id => id.charAt(0).toUpperCase() + id.slice(1));
   return {
-    title: `${a} vs ${b} — Price Comparison | Trade Potion`,
+    title: `${a} vs ${b} — Price Comparison`,
     description: `Compare ${a} and ${b} side by side. Normalised performance chart, Pearson correlation, price, market cap, volume, ATH and more.`,
   };
 }
