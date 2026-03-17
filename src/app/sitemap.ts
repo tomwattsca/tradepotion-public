@@ -89,7 +89,6 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     { url: 'https://tradepotion.com', lastModified: now, changeFrequency: 'hourly', priority: 1.0 },
     { url: 'https://tradepotion.com/top/gainers', lastModified: now, changeFrequency: 'hourly', priority: 0.8 },
     { url: 'https://tradepotion.com/top/losers', lastModified: now, changeFrequency: 'hourly', priority: 0.8 },
-    { url: 'https://tradepotion.com/movers/volume-spikes', lastModified: now, changeFrequency: 'hourly', priority: 0.8 },
     { url: 'https://tradepotion.com/top/trending', lastModified: now, changeFrequency: 'hourly', priority: 0.8 },
     { url: 'https://tradepotion.com/top/new-listings', lastModified: now, changeFrequency: 'daily', priority: 0.75 },
     { url: 'https://tradepotion.com/search', lastModified: now, changeFrequency: 'monthly', priority: 0.5 },
