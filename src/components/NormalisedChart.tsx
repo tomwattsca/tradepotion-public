@@ -183,8 +183,14 @@ export default function NormalisedChart({ coinAId, coinAName, coinBId, coinBName
       {/* Chart */}
       <div style={{ width: '100%', height: '240px' }}>
         {loading && (
-          <div className="flex items-center justify-center h-full">
-            <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
+          <div className="space-y-2 h-full flex flex-col justify-between p-4">
+            {/* Skeleton bars to simulate chart lines */}
+            {[...Array(5)].map((_, i) => (
+              <div key={i} className="h-0.5 bg-gradient-to-r from-violet-500/20 via-violet-500/50 to-violet-500/20 rounded animate-pulse" style={{ width: `${60 + i * 8}%`, marginLeft: `${i * 5}%` }} />
+            ))}
+            <div className="flex-1 flex items-center justify-center">
+              <span className="text-xs text-zinc-600 animate-pulse">Loading chart...</span>
+            </div>
           </div>
         )}
         {error && (
