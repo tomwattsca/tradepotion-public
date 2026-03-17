@@ -14,8 +14,10 @@ function isAuthorised(req: Request): boolean {
 }
 
 async function fetchCoinGeckoMarkets(): Promise<CoinGeckoMarket[]> {
+  const apiKey = process.env.COINGECKO_API_KEY;
+  const apiKeyParam = apiKey ? `&x_cg_pro_api_key=${apiKey}` : '';
   const res = await fetch(
-    'https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false&price_change_percentage=24h',
+    `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=1&sparkline=false&price_change_percentage=24h${apiKeyParam}`,
     { headers: { Accept: 'application/json' } }
   );
   if (!res.ok) throw new Error(`CoinGecko error: ${res.status}`);
@@ -92,12 +94,14 @@ async function refreshSitemapCache(): Promise<void> {
     }
 
     // Paginated fetch — 250 per page, 4 pages = 1000 coins, staggered to avoid 429
+    const apiKey = process.env.COINGECKO_API_KEY;
+    const apiKeyParam = apiKey ? `&x_cg_pro_api_key=${apiKey}` : '';
     const allIds: string[] = [];
     for (let page = 1; page <= 4; page++) {
       if (page > 1) await new Promise(r => setTimeout(r, 2000)); // 2s between pages
       try {
         const res = await fetch(
-          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=${page}&sparkline=false`,
+          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=${page}&sparkline=false${apiKeyParam}`,
           { headers: { Accept: 'application/json' } }
         );
         if (!res.ok) break; // 429 or error — use what we have
