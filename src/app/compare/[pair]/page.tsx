@@ -8,11 +8,11 @@ import { Metadata } from 'next';
 import ShareCompareButton from '@/components/ShareCompareButton';
 import CoinCompareSelector from '@/components/CoinCompareSelector';
 
-import dynamic from 'next/dynamic';
+import dynamicImport from 'next/dynamic';
 
-const NormalisedChartDynamic = dynamic(() => import('@/components/NormalisedChart'), { ssr: false });
+const NormalisedChartDynamic = dynamicImport(() => import('@/components/NormalisedChart'), { ssr: false });
 
-export const revalidate = 300;
+export const dynamic = 'force-dynamic';
 
 interface Props {
   params: { pair: string };
@@ -77,13 +77,28 @@ function DataUnavailable({ pair }: { pair: string }) {
   );
 }
 
+async function fetchWithRetry<T>(fn: () => Promise<T>, retries = 3, delayMs = 500): Promise<T> {
+  let lastErr: unknown;
+  for (let i = 0; i <= retries; i++) {
+    try {
+      return await fn();
+    } catch (err) {
+      lastErr = err;
+      if (i < retries) await new Promise(r => setTimeout(r, delayMs * (i + 1)));
+    }
+  }
+  throw lastErr;
+}
+
 export default async function ComparePage({ params }: Props) {
   const ids = parsePair(params.pair);
   if (!ids) notFound();
 
+  // Stagger fetches to avoid simultaneous CoinGecko rate-limit hits
   const [coinAResult, coinBResult] = await Promise.allSettled([
-    getCoinDetail(ids[0]),
-    getCoinDetail(ids[1]),
+    fetchWithRetry(() => getCoinDetail(ids[0])),
+    new Promise<void>(r => setTimeout(r, 400))
+      .then(() => fetchWithRetry(() => getCoinDetail(ids[1]))),
   ]);
 
   // Graceful degradation: show a friendly error instead of 404ing on API failures

@@ -113,7 +113,7 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
         </div>
 
         <div className="divide-y divide-zinc-800/40">
-          {paginated.map((coin) => {
+          {paginated.map((coin, rowIdx) => {
             const pct24h = coin.price_change_percentage_24h;
             const pct7d = (coin as unknown as Record<string, number | null>).price_change_percentage_7d_in_currency ?? null;
             const sparkPrices = coin.sparkline_in_7d?.price ?? [];
@@ -123,7 +123,7 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
                 href={`/coins/${coin.id}`}
                 className={`grid ${gridCols} items-center px-4 py-3 hover:bg-zinc-900 transition-colors group`}
               >
-                <span className="text-xs text-zinc-500 text-right">{coin.market_cap_rank}</span>
+                <span className="text-xs text-zinc-500 text-right">{coin.market_cap_rank ?? (page * pageSize + rowIdx + 1)}</span>
                 <div className="flex items-center gap-2.5 pl-3 min-w-0">
                   <Image src={coin.image} alt={coin.name} width={24} height={24} className="rounded-full shrink-0" />
                   <div className="min-w-0">
