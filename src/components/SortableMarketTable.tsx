@@ -5,7 +5,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { Coin } from '@/types';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
-import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
+import { ChevronUp, ChevronDown, ChevronsUpDown, Bell } from 'lucide-react';
 import Sparkline from '@/components/Sparkline';
 
 type SortKey = 'market_cap_rank' | 'current_price' | 'price_change_percentage_24h' | 'price_change_percentage_7d_in_currency' | 'market_cap' | 'total_volume' | 'vol_mcap_ratio';
@@ -66,8 +66,8 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
 
   // Grid: #, Coin, Price, Sparkline, 24h%, 7d%, Market Cap, Volume, [Vol/MCap]
   const gridCols = showVolMcap
-    ? 'grid-cols-[2rem_1fr_7rem_5rem_6rem_6rem_8rem_8rem_7rem]'
-    : 'grid-cols-[2rem_1fr_7rem_5rem_6rem_6rem_8rem_8rem]';
+    ? 'grid-cols-[2rem_1fr_7rem_5rem_6rem_6rem_8rem_8rem_7rem_2.5rem]'
+    : 'grid-cols-[2rem_1fr_7rem_5rem_6rem_6rem_8rem_8rem_2.5rem]';
 
   return (
     <div>
@@ -109,6 +109,7 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
               Vol/MCap <SortIcon active={sortKey === 'vol_mcap_ratio'} dir={sortDir} />
             </button>
           )}
+          <span title="Set price alert" className="text-center"><Bell className="h-3 w-3 text-zinc-700 mx-auto" /></span>
         </div>
 
         <div className="divide-y divide-zinc-800/40">
@@ -145,6 +146,15 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
                     {coin.vol_mcap_ratio.toFixed(2)}
                   </span>
                 )}
+                <a
+                  href={`/coins/${coin.id}#alert`}
+                  onClick={(e) => e.stopPropagation()}
+                  className="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+                  title={`Set price alert for ${coin.name}`}
+                  aria-label={`Set price alert for ${coin.name}`}
+                >
+                  <Bell className="h-3.5 w-3.5 text-violet-400" />
+                </a>
               </Link>
             );
           })}

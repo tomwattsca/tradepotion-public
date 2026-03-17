@@ -1,7 +1,12 @@
 const BASE_URL = 'https://api.coingecko.com/api/v3';
 
-const DEFAULT_HEADERS = {
+const DEFAULT_HEADERS: Record<string, string> = {
   'Accept': 'application/json',
+  // Demo API key — raises free tier rate limit from 30 to 50 req/min
+  // Get your own free key at https://www.coingecko.com/en/api/pricing
+  ...(process.env.COINGECKO_API_KEY
+    ? { 'x-cg-demo-api-key': process.env.COINGECKO_API_KEY }
+    : {}),
 };
 
 async function fetchCG<T>(path: string, params: Record<string, string> = {}): Promise<T> {

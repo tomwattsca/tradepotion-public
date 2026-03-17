@@ -175,7 +175,7 @@ export default async function CoinPage({ params }: Props) {
         <div className="flex flex-col gap-4">
           <ExchangeCTAs coinSymbol={coin.symbol} coinName={coin.name} />
 
-          <PriceAlertForm coinId={coin.id} coinName={coin.name} currentPrice={price} />
+          <div id="alert"><PriceAlertForm coinId={coin.id} coinName={coin.name} currentPrice={price} /></div>
 
           {/* Links */}
           {coin.links?.homepage?.[0] && (
