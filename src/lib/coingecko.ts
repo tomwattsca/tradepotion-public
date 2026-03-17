@@ -177,7 +177,7 @@ export async function getTopCoins(limit = 100, page = 1) {
     per_page: String(Math.min(limit, 250)),
     page: String(page),
     sparkline: 'true',
-    price_change_percentage: '7d',
+    price_change_percentage: '1h,7d',
   });
 }
 

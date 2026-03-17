@@ -114,7 +114,7 @@ export default async function CoinPage({ params }: Props) {
             '@type': 'Product',
             name: coin.name,
             description: `Live price tracker for ${coin.name} (${coin.symbol.toUpperCase()})`,
-            image: coin.image,
+            image: coin.image.large ?? coin.image.small,
             offers: {
               '@type': 'AggregateOffer',
               priceCurrency: 'USD',
@@ -133,7 +133,7 @@ export default async function CoinPage({ params }: Props) {
       {/* Header */}
       <div className="flex flex-wrap items-center gap-4 mb-6">
         <Image
-          src={coin.image}
+          src={coin.image.small}
           alt={coin.name}
           width={48}
           height={48}
