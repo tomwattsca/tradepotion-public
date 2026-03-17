@@ -5,7 +5,8 @@ import Link from 'next/link';
 import CoinImage from '@/components/CoinImage';
 import { Coin } from '@/types';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
-import { ChevronUp, ChevronDown, ChevronsUpDown, Bell } from 'lucide-react';
+import { ChevronUp, ChevronDown, ChevronsUpDown } from 'lucide-react';
+import WatchlistStar from '@/components/WatchlistStar';
 import FreshnessBar from '@/components/FreshnessBar';
 import Sparkline from '@/components/Sparkline';
 
@@ -114,7 +115,7 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
               Vol/MCap <SortIcon active={sortKey === 'vol_mcap_ratio'} dir={sortDir} />
             </button>
           )}
-          <span title="Set price alert" className="text-center"><Bell className="h-3 w-3 text-zinc-700 mx-auto" /></span>
+          <span title="Watchlist" className="text-center">★</span>
         </div>
 
         <div className="divide-y divide-zinc-800/40">
@@ -151,15 +152,9 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
                     {coin.vol_mcap_ratio.toFixed(2)}
                   </span>
                 )}
-                <a
-                  href={`/coins/${coin.id}#alert`}
-                  onClick={(e) => e.stopPropagation()}
-                  className="flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity"
-                  title={`Set price alert for ${coin.name}`}
-                  aria-label={`Set price alert for ${coin.name}`}
-                >
-                  <Bell className="h-3.5 w-3.5 text-violet-400" />
-                </a>
+                <div className="flex justify-center">
+                  <WatchlistStar coinId={coin.id} coinName={coin.name} />
+                </div>
               </Link>
             );
           })}

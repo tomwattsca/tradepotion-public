@@ -7,6 +7,7 @@ import CoinImage from '@/components/CoinImage';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 import Sparkline from '@/components/Sparkline';
+import WatchlistStar from '@/components/WatchlistStar';
 import TableSkeleton from '@/components/TableSkeleton';
 
 interface Coin {
@@ -220,7 +221,7 @@ export default function GainersClient({ mode }: Props) {
             <Link
               key={coin.id}
               href={`/coins/${coin.id}`}
-              className="grid grid-cols-[2rem_1fr_7rem_5rem_7rem_9rem_9rem] items-center px-4 py-3 hover:bg-zinc-900 transition-colors group"
+              className="grid grid-cols-[2rem_1fr_7rem_5rem_7rem_9rem_9rem_1.5rem] items-center px-4 py-3 hover:bg-zinc-900 transition-colors group"
             >
               <span className="text-xs text-zinc-500 text-right">{page * PAGE_SIZE + i + 1}</span>
               <div className="flex items-center gap-2.5 pl-3 min-w-0">
@@ -239,6 +240,9 @@ export default function GainersClient({ mode }: Props) {
               </span>
               <span className="text-sm text-right text-zinc-300 hidden sm:block">{formatMarketCap(coin.market_cap)}</span>
               <span className="text-sm text-right text-zinc-400 hidden md:block">{formatMarketCap(coin.total_volume)}</span>
+              <div className="flex justify-center">
+                <WatchlistStar coinId={coin.id} coinName={coin.name} />
+              </div>
             </Link>
           ))}
         </div>

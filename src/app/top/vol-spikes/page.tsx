@@ -8,6 +8,17 @@ export const revalidate = 300;
 export const metadata: Metadata = {
   title: 'Crypto Volume Spikes — Coins With Unusual Trading Activity',
   description: 'Live list of cryptocurrencies with the highest volume-to-market-cap ratio — a leading signal for momentum, news-driven moves, and potential breakouts.',
+  openGraph: {
+    title: 'Crypto Volume Spikes — Unusual Trading Activity Scanner',
+    description: 'Find coins with unusually high volume relative to market cap — a leading signal for price moves. Unique to Trade Potion.',
+    url: 'https://tradepotion.com/top/vol-spikes',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Crypto Volume Spikes Scanner',
+    description: 'Coins with unusual volume vs market cap — a leading signal for breakouts.',
+  },
 };
 
 export default function VolSpikesPage() {

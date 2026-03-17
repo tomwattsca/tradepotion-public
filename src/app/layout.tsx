@@ -13,17 +13,14 @@ export const metadata: Metadata = {
   },
   description: 'Live crypto prices for 10,000+ coins. Real-time Bitcoin, Ethereum, altcoin tracking with price alerts. View gainers, losers, and market cap rankings.',
   metadataBase: new URL('https://tradepotion.com'),
+  // openGraph and twitter are intentionally absent here so page-level metadata
+  // is not overridden by layout defaults. Each page sets its own og tags.
   openGraph: {
-    title: 'Trade Potion - Crypto Price Tracker & Alerts',
-    description: 'Track live prices for Bitcoin, Ethereum, and 10,000+ altcoins. Get real-time alerts and market insights.',
-    url: 'https://tradepotion.com',
-    type: 'website',
     siteName: 'Trade Potion',
+    type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Trade Potion - Crypto Price Tracker & Alerts',
-    description: 'Live prices for Bitcoin, Ethereum, and 10,000+ altcoins with price alerts.',
   },
 };
 
