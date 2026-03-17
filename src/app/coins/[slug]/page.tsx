@@ -3,6 +3,7 @@ import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 import PriceChart from '@/components/PriceChart';
 import ExchangeCTAs from '@/components/ExchangeCTAs';
 import PriceAlertForm from '@/components/PriceAlertForm';
+import WatchlistStar from '@/components/WatchlistStar';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -147,11 +148,14 @@ export default async function CoinPage({ params }: Props) {
             <span className="text-xs text-zinc-500">Rank #{coin.market_cap_rank}</span>
           )}
         </div>
-        <div className="ml-auto text-right">
-          <p className="text-3xl font-bold text-white">{formatPrice(price)}</p>
-          <p className={`text-sm font-medium ${pctColor(pct24h)}`}>
-            {formatPct(pct24h)} (24h)
-          </p>
+        <div className="ml-auto flex items-start gap-3">
+          <div className="text-right">
+            <p className="text-3xl font-bold text-white">{formatPrice(price)}</p>
+            <p className={`text-sm font-medium ${pctColor(pct24h)}`}>
+              {formatPct(pct24h)} (24h)
+            </p>
+          </div>
+          <WatchlistStar coinId={coin.id} coinName={coin.name} />
         </div>
       </div>
 
