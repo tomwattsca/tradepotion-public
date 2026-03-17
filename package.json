@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "cron": "node cron-worker.js"
   },
   "dependencies": {
     "@types/pg": "^8.18.0",
