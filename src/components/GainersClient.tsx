@@ -1,4 +1,5 @@
 'use client';
+import FreshnessBar from '@/components/FreshnessBar';
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
@@ -78,7 +79,7 @@ export default function GainersClient({ mode }: Props) {
         if (data?.coins?.length > 0) {
           setCoins(data.coins);
           setStaleCoins(data.coins); // save as stale fallback
-          setLastUpdated(data.generated_at ?? null);
+          setLastUpdated(data.fetchedAt ? String(data.fetchedAt) : (data.generated_at ?? null));
           setLoading(false);
           return;
         }
@@ -114,57 +115,66 @@ export default function GainersClient({ mode }: Props) {
   return (
     <div>
       {/* Controls row */}
-      <div className="flex flex-wrap gap-2 mb-4 items-center">
-        {/* Time range */}
-        <div className="flex gap-1 bg-zinc-900 rounded-lg p-1 border border-zinc-800">
-          {RANGES.map(r => (
-            <button
-              key={r.value}
-              onClick={() => setRange(r.value)}
-              className={`px-3 py-1 text-xs rounded-md font-medium transition-colors ${
-                range === r.value ? activeClass : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              {r.label}
-            </button>
-          ))}
+      <div className="flex flex-wrap gap-x-4 gap-y-2 mb-4 items-end">
+        {/* Timeframe */}
+        <div className="flex flex-col gap-1">
+          <span className="text-xs text-zinc-500 font-medium uppercase tracking-wide">Timeframe</span>
+          <div className="flex gap-1 bg-zinc-900 rounded-lg p-1 border border-zinc-800">
+            {RANGES.map(r => (
+              <button
+                key={r.value}
+                onClick={() => setRange(r.value)}
+                className={`px-3 py-1 text-xs rounded-md font-medium transition-colors ${
+                  range === r.value ? 'bg-violet-600 text-white' : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                {r.label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Volume filter */}
-        <div className="flex gap-1 bg-zinc-900 rounded-lg p-1 border border-zinc-800">
-          {VOL_FILTERS.map(v => (
-            <button
-              key={v.value}
-              onClick={() => setMinVol(v.value)}
-              className={`px-3 py-1 text-xs rounded-md font-medium transition-colors ${
-                minVol === v.value ? 'bg-violet-600 text-white' : 'text-zinc-400 hover:text-white'
-              }`}
-            >
-              {v.label}
-            </button>
-          ))}
+        {/* Min Volume */}
+        <div className="flex flex-col gap-1">
+          <span className="text-xs text-zinc-500 font-medium uppercase tracking-wide">Min Volume</span>
+          <div className="flex gap-1 bg-zinc-900 rounded-lg p-1 border border-zinc-800">
+            {VOL_FILTERS.map(v => (
+              <button
+                key={v.value}
+                onClick={() => setMinVol(v.value)}
+                className={`px-3 py-1 text-xs rounded-md font-medium transition-colors ${
+                  minVol === v.value ? 'bg-violet-600 text-white' : 'text-zinc-400 hover:text-white'
+                }`}
+              >
+                {v.label}
+              </button>
+            ))}
+          </div>
         </div>
 
-        {/* Cap tier */}
-        <div className="flex gap-1 flex-wrap">
-          {CAP_TIERS.map((t, i) => (
-            <button
-              key={t.label}
-              onClick={() => setCapTier(i)}
-              className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-colors ${
-                capTier === i ? 'bg-zinc-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:text-white'
-              }`}
-            >
-              {t.label}
-              {t.sublabel && <span className="ml-1 opacity-60">{t.sublabel}</span>}
-            </button>
-          ))}
+        {/* Market Cap */}
+        <div className="flex flex-col gap-1">
+          <span className="text-xs text-zinc-500 font-medium uppercase tracking-wide">Market Cap</span>
+          <div className="flex gap-1 flex-wrap">
+            {CAP_TIERS.map((t, i) => (
+              <button
+                key={t.label}
+                onClick={() => setCapTier(i)}
+                className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-colors ${
+                  capTier === i ? 'bg-violet-600 text-white' : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white'
+                }`}
+              >
+                {t.label}
+                {t.sublabel && <span className="ml-1 opacity-60">{t.sublabel}</span>}
+              </button>
+            ))}
+          </div>
         </div>
 
         <span className="ml-auto text-xs text-zinc-600">
           {loading ? 'Loading…' : `${filtered.length} coins`}
           {lastUpdated && !loading && (
-            <span className="ml-2 opacity-60">{new Date(lastUpdated).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })} UTC</span>
+            <span className="ml-2"><FreshnessBar fetchedAt={Number(lastUpdated)} /></span>
           )}
         </span>
       </div>

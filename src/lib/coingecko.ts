@@ -9,20 +9,52 @@ const DEFAULT_HEADERS: Record<string, string> = {
     : {}),
 };
 
+// In-process stale cache — survives CoinGecko rate-limit windows
+const _cgCache = new Map<string, { data: unknown; ts: number }>();
+const CG_CACHE_TTL_MS = 5 * 60 * 1000; // 5 min fresh window
+const CG_STALE_TTL_MS = 30 * 60 * 1000; // 30 min stale-while-unavailable window
+
 async function fetchCG<T>(path: string, params: Record<string, string> = {}): Promise<T> {
   const url = new URL(`${BASE_URL}${path}`);
   Object.entries(params).forEach(([k, v]) => url.searchParams.set(k, v));
+  const cacheKey = url.toString();
 
-  const res = await fetch(url.toString(), {
-    headers: DEFAULT_HEADERS,
-    next: { revalidate: 300 }, // ISR — revalidate every 5 min (respect CoinGecko free tier)
-  });
+  const cached = _cgCache.get(cacheKey);
+  const now = Date.now();
 
-  if (!res.ok) {
-    throw new Error(`CoinGecko API error: ${res.status} ${res.statusText}`);
+  // Serve fresh cache immediately
+  if (cached && now - cached.ts < CG_CACHE_TTL_MS) {
+    return cached.data as T;
   }
 
-  return res.json() as Promise<T>;
+  // Try to fetch with 3x retry + exponential backoff
+  let lastError: unknown;
+  for (let attempt = 0; attempt <= 3; attempt++) {
+    try {
+      if (attempt > 0) {
+        await new Promise(r => setTimeout(r, 500 * Math.pow(2, attempt - 1)));
+      }
+      const res = await fetch(url.toString(), {
+        headers: DEFAULT_HEADERS,
+        next: { revalidate: 300 },
+        signal: AbortSignal.timeout(10_000), // 10s hard timeout
+      });
+      if (!res.ok) throw new Error(`CoinGecko API error: ${res.status} ${res.statusText}`);
+      const data = await res.json() as T;
+      _cgCache.set(cacheKey, { data, ts: now });
+      return data;
+    } catch (err) {
+      lastError = err;
+    }
+  }
+
+  // All retries exhausted — serve stale cache if within stale window
+  if (cached && now - cached.ts < CG_STALE_TTL_MS) {
+    console.warn(`[CoinGecko] Serving stale cache for ${path} (${Math.round((now - cached.ts) / 60000)}min old)`);
+    return cached.data as T;
+  }
+
+  throw lastError;
 }
 
 

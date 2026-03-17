@@ -10,7 +10,7 @@ export const revalidate = 300;
 
 export default async function HomePage() {
   const results = await Promise.allSettled([
-    getTopCoins(100),
+    getTopCoins(250),
     getTopGainers(10),
     getTopLosers(10),
   ]);

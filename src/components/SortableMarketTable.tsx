@@ -162,14 +162,64 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE }: Pro
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center justify-between mt-4 text-sm text-zinc-400">
-          <span>Showing {page * pageSize + 1}–{Math.min((page + 1) * pageSize, sorted.length)} of {sorted.length}</span>
-          <div className="flex gap-2">
-            <button disabled={page === 0} onClick={() => setPage(p => p - 1)} className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">← Prev</button>
-            {Array.from({ length: totalPages }, (_, i) => (
-              <button key={i} onClick={() => setPage(i)} className={`px-3 py-1.5 rounded-lg border transition-colors ${i === page ? 'bg-violet-600 border-violet-600 text-white' : 'bg-zinc-900 border-zinc-800 hover:bg-zinc-800'}`}>{i + 1}</button>
-            )).slice(Math.max(0, page - 2), page + 3)}
-            <button disabled={page === totalPages - 1} onClick={() => setPage(p => p + 1)} className="px-3 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors">Next →</button>
+        <div className="flex flex-wrap items-center justify-between gap-2 mt-4 text-sm text-zinc-400">
+          <span>Showing {page * pageSize + 1}–{Math.min((page + 1) * pageSize, sorted.length)} of {sorted.length} coins</span>
+          <div className="flex items-center gap-1 flex-wrap">
+            <button
+              disabled={page === 0}
+              onClick={() => setPage(0)}
+              className="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs"
+            >
+              «
+            </button>
+            <button
+              disabled={page === 0}
+              onClick={() => setPage(p => p - 1)}
+              className="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              ← Prev
+            </button>
+            {page > 2 && (
+              <>
+                <button onClick={() => setPage(0)} className="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 transition-colors">1</button>
+                {page > 3 && <span className="px-1 text-zinc-600">…</span>}
+              </>
+            )}
+            {Array.from({ length: totalPages }, (_, i) => i)
+              .filter(i => i >= Math.max(0, page - 2) && i <= Math.min(totalPages - 1, page + 2))
+              .map(i => (
+                <button
+                  key={i}
+                  onClick={() => setPage(i)}
+                  className={`px-2.5 py-1.5 rounded-lg border transition-colors ${
+                    i === page
+                      ? 'bg-violet-600 border-violet-600 text-white font-medium'
+                      : 'bg-zinc-900 border-zinc-800 hover:bg-zinc-800'
+                  }`}
+                >
+                  {i + 1}
+                </button>
+              ))}
+            {page < totalPages - 3 && (
+              <>
+                {page < totalPages - 4 && <span className="px-1 text-zinc-600">…</span>}
+                <button onClick={() => setPage(totalPages - 1)} className="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 transition-colors">{totalPages}</button>
+              </>
+            )}
+            <button
+              disabled={page >= totalPages - 1}
+              onClick={() => setPage(p => p + 1)}
+              className="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors"
+            >
+              Next →
+            </button>
+            <button
+              disabled={page >= totalPages - 1}
+              onClick={() => setPage(totalPages - 1)}
+              className="px-2.5 py-1.5 rounded-lg bg-zinc-900 border border-zinc-800 hover:bg-zinc-800 disabled:opacity-40 disabled:cursor-not-allowed transition-colors text-xs"
+            >
+              »
+            </button>
           </div>
         </div>
       )}
