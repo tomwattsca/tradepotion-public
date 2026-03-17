@@ -14,6 +14,21 @@ const NormalisedChartDynamic = dynamicImport(() => import('@/components/Normalis
 
 export const dynamic = 'force-dynamic';
 
+
+const COMPARE_INTROS: Record<string, string> = {
+  'bitcoin-vs-ethereum': 'Bitcoin is the original proof-of-work blockchain, while Ethereum enables smart contracts and decentralized applications. Use the normalised chart to compare price performance and correlation over your chosen time frame.',
+  'solana-vs-ethereum': 'Both are smart contract platforms, but Solana prioritizes speed and low fees while Ethereum optimizes for decentralization and security. Track their performance correlation and price movements side by side.',
+  'bitcoin-vs-solana': 'Bitcoin is a proof-of-work settlement layer; Solana is a high-speed proof-of-stake smart contract platform. Compare these fundamentally different blockchain architectures and their market valuations.',
+  'cardano-vs-ethereum': 'Cardano uses peer-reviewed research for protocol upgrades; Ethereum prioritizes rapid iteration and DeFi ecosystem. See how these different development philosophies affect token prices.',
+  'ripple-vs-ethereum': 'Ripple focuses on cross-border payments and enterprise adoption; Ethereum is the DeFi and smart contracts leader. Compare their market performance and adoption drivers.',
+  'dogecoin-vs-shiba-inu': 'Both meme coins with cult followings, but Doge has 13+ year brand recognition while Shiba Inu launched in 2020 with DeFi utility. Track how social hype and community engagement drive their prices.',
+  'polygon-vs-arbitrum': 'Both are Ethereum Layer 2 scaling solutions, but Polygon also has standalone sidechain components while Arbitrum is pure optimistic rollup. Compare their ecosystem growth and token performance.',
+  'chainlink-vs-uniswap': 'Chainlink provides oracle data for smart contracts; Uniswap is a decentralized exchange. Compare two critical DeFi infrastructure tokens and their correlation.',
+  'ethereum-vs-solana': 'Both are smart contract platforms, but Solana prioritizes speed and low fees while Ethereum optimizes for decentralization and security. Track their performance correlation and price movements side by side.',
+  'bitcoin-vs-dogecoin': 'Bitcoin is institutional-grade digital money; Dogecoin is a community-driven meme coin. Compare the world's most valuable cryptocurrency with a culture-driven alt coin.',
+};
+
+
 interface Props {
   params: { pair: string };
 }
@@ -145,6 +160,13 @@ export default async function ComparePage({ params }: Props) {
 
       {/* Dynamic coin selector */}
       <CoinCompareSelector currentPair={params.pair} />
+
+      {/* Compare intro text */}
+      {params.pair && COMPARE_INTROS[params.pair] && (
+        <div className="mb-6 p-4 rounded-lg bg-zinc-900/50 border border-zinc-800 text-sm text-zinc-300 leading-relaxed">
+          {COMPARE_INTROS[params.pair]}
+        </div>
+      )}
 
       {/* Header */}
       <div className="flex items-center justify-center gap-6 mb-8">
