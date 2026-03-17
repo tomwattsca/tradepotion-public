@@ -79,6 +79,50 @@ async function checkAndFireAlerts(markets: CoinGeckoMarket[]) {
   }
 }
 
+
+// Fetch top 1000 coin IDs for sitemap — paginated across 4 CoinGecko pages
+// Only runs once per hour to avoid rate limit pressure
+async function refreshSitemapCache(): Promise<void> {
+  try {
+    // Check if we updated recently (within 55 minutes)
+    const cached = await query<{ updated_at: Date }>('SELECT updated_at FROM sitemap_cache WHERE key = $1', ['top_coins']);
+    if (cached.length > 0) {
+      const ageMs = Date.now() - new Date(cached[0].updated_at).getTime();
+      if (ageMs < 55 * 60 * 1000) return; // skip if updated <55 min ago
+    }
+
+    // Paginated fetch — 250 per page, 4 pages = 1000 coins, staggered to avoid 429
+    const allIds: string[] = [];
+    for (let page = 1; page <= 4; page++) {
+      if (page > 1) await new Promise(r => setTimeout(r, 2000)); // 2s between pages
+      try {
+        const res = await fetch(
+          `https://api.coingecko.com/api/v3/coins/markets?vs_currency=usd&order=market_cap_desc&per_page=250&page=${page}&sparkline=false`,
+          { headers: { Accept: 'application/json' } }
+        );
+        if (!res.ok) break; // 429 or error — use what we have
+        const coins: { id: string }[] = await res.json();
+        allIds.push(...coins.map(c => c.id));
+      } catch {
+        break;
+      }
+    }
+
+    if (allIds.length > 0) {
+      await query(
+        `INSERT INTO sitemap_cache (key, coin_ids, updated_at)
+         VALUES ('top_coins', $1, NOW())
+         ON CONFLICT (key) DO UPDATE
+           SET coin_ids = EXCLUDED.coin_ids, updated_at = EXCLUDED.updated_at`,
+        [allIds]
+      );
+      console.log(`[sitemap-cache] Updated with ${allIds.length} coin IDs`);
+    }
+  } catch (err) {
+    console.error('[sitemap-cache] Failed to refresh:', err);
+  }
+}
+
 export async function GET(req: Request) {
   if (!isAuthorised(req)) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
@@ -102,16 +146,8 @@ export async function GET(req: Request) {
     }
 
 
-    // Cache top-250 coin IDs for sitemap (avoids live CoinGecko calls on sitemap requests)
-    const coinIds = markets.map((c) => c.id);
-    await query(
-      `INSERT INTO sitemap_cache (key, coin_ids, updated_at)
-       VALUES ('top_coins', $1, NOW())
-       ON CONFLICT (key) DO UPDATE
-         SET coin_ids = EXCLUDED.coin_ids,
-             updated_at = EXCLUDED.updated_at`,
-      [coinIds]
-    );
+    // Refresh sitemap cache (top 1000 coins) if stale — runs inline but skips if updated <55min ago
+    refreshSitemapCache().catch(err => console.error('[sitemap] refresh error:', err));
 
 
 
