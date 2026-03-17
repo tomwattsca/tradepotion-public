@@ -36,7 +36,7 @@ export default function Navbar() {
           <Link href="/top/gainers" className="hover:text-white transition-colors text-emerald-400/80">Gainers</Link>
           <Link href="/top/losers" className="hover:text-white transition-colors text-red-400/80">Losers</Link>
           <Link href="/top/trending" className="hover:text-white transition-colors text-orange-400/80">Trending</Link>
-          <Link href="/top/vol-spikes" className="hover:text-white transition-colors text-yellow-400/80">Vol Spikes</Link>
+          <Link href="/movers/volume-spikes" className="hover:text-white transition-colors text-yellow-400/80">Vol Spikes</Link>
         </div>
 
         {/* Search */}
@@ -72,7 +72,7 @@ export default function Navbar() {
           <Link href="/top/gainers" onClick={() => setMenuOpen(false)} className="hover:text-white text-emerald-400/80">Gainers</Link>
           <Link href="/top/losers" onClick={() => setMenuOpen(false)} className="hover:text-white text-red-400/80">Losers</Link>
           <Link href="/top/trending" onClick={() => setMenuOpen(false)} className="hover:text-white text-orange-400/80">Trending</Link>
-          <Link href="/top/vol-spikes" onClick={() => setMenuOpen(false)} className="hover:text-white text-yellow-400/80">Vol Spikes</Link>
+          <Link href="/movers/volume-spikes" onClick={() => setMenuOpen(false)} className="hover:text-white text-yellow-400/80">Vol Spikes</Link>
         </div>
       )}
     </nav>
