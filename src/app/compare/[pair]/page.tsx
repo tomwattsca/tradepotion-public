@@ -12,7 +12,33 @@ import dynamicImport from 'next/dynamic';
 
 const NormalisedChartDynamic = dynamicImport(() => import('@/components/NormalisedChart'), { ssr: false });
 
-export const dynamic = 'force-dynamic';
+// Pre-render top 50 curated pairs at build time; all others served on-demand with ISR
+const TOP_STATIC_PAIRS = [
+  'bitcoin-vs-ethereum', 'bitcoin-vs-solana', 'bitcoin-vs-dogecoin', 'bitcoin-vs-ripple',
+  'bitcoin-vs-litecoin', 'bitcoin-vs-cardano', 'bitcoin-vs-avalanche', 'bitcoin-vs-bnb',
+  'bitcoin-vs-polkadot', 'bitcoin-vs-chainlink', 'bitcoin-vs-near', 'bitcoin-vs-sui',
+  'ethereum-vs-solana', 'ethereum-vs-bnb', 'ethereum-vs-cardano', 'ethereum-vs-avalanche',
+  'ethereum-vs-polygon', 'ethereum-vs-dogecoin', 'ethereum-vs-ripple', 'ethereum-vs-arbitrum',
+  'ethereum-vs-shiba-inu', 'ethereum-vs-polkadot', 'ethereum-vs-chainlink', 'ethereum-vs-uniswap',
+  'ethereum-vs-near', 'ethereum-vs-sui',
+  'solana-vs-avalanche', 'solana-vs-cardano', 'solana-vs-polygon', 'solana-vs-bnb',
+  'solana-vs-ripple', 'solana-vs-dogecoin', 'solana-vs-polkadot', 'solana-vs-chainlink',
+  'bnb-vs-cardano', 'bnb-vs-avalanche', 'bnb-vs-ripple',
+  'ripple-vs-cardano', 'ripple-vs-dogecoin', 'ripple-vs-litecoin',
+  'cardano-vs-avalanche', 'cardano-vs-polygon',
+  'dogecoin-vs-shiba-inu', 'dogecoin-vs-pepe',
+  'shiba-inu-vs-pepe',
+  'avalanche-vs-polygon', 'avalanche-vs-chainlink',
+  'polygon-vs-arbitrum', 'polygon-vs-chainlink',
+];
+
+export async function generateStaticParams() {
+  return TOP_STATIC_PAIRS.map((pair) => ({ pair }));
+}
+
+export const dynamicParams = true; // serve non-listed pairs on-demand
+export const revalidate = 300;     // ISR: revalidate every 5 minutes
+
 
 
 const COMPARE_INTROS: Record<string, string> = {
@@ -225,20 +251,33 @@ export default async function ComparePage({ params }: Props) {
         ))}
       </div>
 
-      {/* Other comparisons */}
-      <div className="mt-6 text-center">
-        <p className="text-xs text-zinc-600 mb-2">More comparisons</p>
-        <div className="flex flex-wrap gap-2 justify-center">
-          {['bitcoin-vs-solana', 'ethereum-vs-solana', 'bitcoin-vs-dogecoin', 'ethereum-vs-bnb'].filter(p => p !== params.pair).slice(0, 4).map(pair => {
-            const [pa, pb] = pair.split('-vs-');
-            return (
-              <Link key={pair} href={`/compare/${pair}`} className="text-xs text-violet-400 hover:text-violet-300 bg-zinc-900 border border-zinc-800 px-3 py-1.5 rounded-lg transition-colors">
-                {pa.charAt(0).toUpperCase() + pa.slice(1)} vs {pb.charAt(0).toUpperCase() + pb.slice(1)}
-              </Link>
-            );
-          })}
-        </div>
-      </div>
+      {/* Related comparisons — auto-generated from coins in this pair */}
+      {(() => {
+        const related = TOP_STATIC_PAIRS.filter(p => {
+          if (p === params.pair) return false;
+          return p.includes(a.id) || p.includes(b.id);
+        }).slice(0, 8);
+        if (related.length === 0) return null;
+        return (
+          <div className="mt-8 rounded-xl bg-zinc-900/50 border border-zinc-800 p-4">
+            <h2 className="text-sm font-semibold text-zinc-400 mb-3">Related Comparisons</h2>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {related.map(pair => {
+                const parts = pair.match(/^(.+)-vs-(.+)$/);
+                if (!parts) return null;
+                const [, pa, pb] = parts;
+                const label = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+                return (
+                  <Link key={pair} href={`/compare/${pair}`}
+                    className="text-xs text-violet-400 hover:text-violet-300 bg-zinc-900 border border-zinc-800 px-3 py-2 rounded-lg transition-colors text-center">
+                    {label(pa)} vs {label(pb)}
+                  </Link>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
     </main>
   );
 }
