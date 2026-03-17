@@ -48,43 +48,48 @@ export default function NormalisedChart({ coinAId, coinAName, coinBId, coinBName
     setLoading(true);
     setError(false);
 
-    // Stagger chart fetches to avoid simultaneous CoinGecko rate-limit hits
-    const fetchWithRetry = async (url: string, retries = 3): Promise<Response> => {
+    // Sequential fetches to avoid simultaneous CoinGecko rate-limit hits
+    const fetchJson = async (url: string, retries = 3): Promise<unknown> => {
       for (let i = 0; i <= retries; i++) {
         const res = await fetch(url);
-        if (res.ok) return res;
+        if (res.ok) return res.json();
         // Back off longer for rate limits
-        const delay = res.status === 429 ? 1500 * (i + 1) : 400 * (i + 1);
+        const delay = res.status === 429 ? 2000 * (i + 1) : 600 * (i + 1);
         if (i < retries) await new Promise(r => setTimeout(r, delay));
       }
       throw new Error('fetch failed after retries');
     };
 
-    Promise.all([
-      fetchWithRetry(`/api/chart/${coinAId}?days=${days}`).then(r => r.json()),
-      new Promise<void>(resolve => setTimeout(resolve, 300)).then(() =>
-        fetchWithRetry(`/api/chart/${coinBId}?days=${days}`).then(r => r.json())
-      ),
-      fetch(`/api/correlation?a=${coinAId}&b=${coinBId}&days=${days}`).then(r => r.json()).catch(() => null),
-    ])
-      .then(([aData, bData, corrData]) => {
+    (async () => {
+      // Sequential: fetch A, then B (500ms gap), then correlation in parallel with B
+      const aData = await fetchJson(`/api/chart/${coinAId}?days=${days}`) as { prices?: [number,number][] } | null;
+      await new Promise(r => setTimeout(r, 500));
+      const [bData, corrData] = await Promise.all([
+        fetchJson(`/api/chart/${coinBId}?days=${days}`).catch(() => null) as Promise<{ prices?: [number,number][] } | null>,
+        fetch(`/api/correlation?a=${coinAId}&b=${coinBId}&days=${days}`).then(r => r.json()).catch(() => null),
+      ]);
+
+      Promise.resolve().then(() => {
         if (!aData?.prices?.length || !bData?.prices?.length) {
           setError(true);
+          setLoading(false);
           return;
         }
+        const safeA = aData as { prices: [number, number][] };
+        const safeB = bData as { prices: [number, number][] };
 
-        const aBase = aData.prices[0][1] as number;
-        const bBase = bData.prices[0][1] as number;
+        const aBase = safeA.prices[0][1];
+        const bBase = safeB.prices[0][1];
 
         // Normalise: (price / basePrice - 1) * 100 = % return from start
         const aNorm = new Map<number, number>();
-        (aData.prices as [number, number][]).forEach(([ts, p]) => {
+        safeA.prices.forEach(([ts, p]) => {
           aNorm.set(ts, ((p / aBase) - 1) * 100);
         });
 
         // Align to coin A's timestamps
-        const bPrices = bData.prices as [number, number][];
-        const merged = (aData.prices as [number, number][]).map(([ts, ap]) => {
+        const bPrices = safeB.prices;
+        const merged = safeA.prices.map(([ts, ap]) => {
           // Find closest B price
           const bClose = bPrices.reduce((prev, curr) =>
             Math.abs(curr[0] - ts) < Math.abs(prev[0] - ts) ? curr : prev
@@ -105,11 +110,11 @@ export default function NormalisedChart({ coinAId, coinAName, coinBId, coinBName
           setCorrelation({ value: corrData.correlation, label: corrData.label });
         }
         setLoading(false);
-      })
-      .catch(() => {
-        setError(true);
-        setLoading(false);
       });
+    })().catch(() => {
+      setError(true);
+      setLoading(false);
+    });
   }, [coinAId, coinBId, days]);
 
   const aFinal = data.length > 0 ? data[data.length - 1]?.a : null;
