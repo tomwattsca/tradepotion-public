@@ -106,6 +106,22 @@ export default async function CoinPage({ params }: Props) {
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
 
+      {/* Breadcrumb schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Markets', item: 'https://tradepotion.com' },
+              { '@type': 'ListItem', position: 2, name: 'Coins', item: 'https://tradepotion.com' },
+              { '@type': 'ListItem', position: 3, name: `${coin.name} (${coin.symbol.toUpperCase()})`, item: `https://tradepotion.com/coins/${params.slug}` },
+            ],
+          }),
+        }}
+      />
+
       {/* Product schema */}
       <script
         type="application/ld+json"
@@ -113,14 +129,19 @@ export default async function CoinPage({ params }: Props) {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'Product',
-            name: coin.name,
-            description: `Live price tracker for ${coin.name} (${coin.symbol.toUpperCase()})`,
+            name: `${coin.name} (${coin.symbol.toUpperCase()})`,
+            description: `Live ${coin.name} price tracker with real-time charts, market data, and price alerts. Current price: $${formatPrice(price)}.`,
             image: (coin.image as unknown as CoinDetailImage).large ?? (coin.image as unknown as CoinDetailImage).small,
+            brand: { '@type': 'Brand', name: coin.name },
+            category: 'Cryptocurrency',
             offers: {
-              '@type': 'AggregateOffer',
+              '@type': 'Offer',
               priceCurrency: 'USD',
               price: price.toString(),
+              availability: 'https://schema.org/InStock',
+              url: `https://tradepotion.com/coins/${params.slug}`,
             },
+            ...(coin.market_cap_rank ? { sku: params.slug, mpn: coin.symbol.toUpperCase() } : {}),
           }),
         }}
       />
