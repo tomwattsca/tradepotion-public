@@ -180,9 +180,25 @@ export async function GET(req: Request) {
     // Check and fire alerts
     await checkAndFireAlerts(markets);
 
+    // Prune old snapshots — keep 90 days of history
+    const retentionDays = parseInt(process.env.SNAPSHOT_RETENTION_DAYS || '90');
+    const pruned = await query<{ count: string }>(
+      `WITH deleted AS (
+         DELETE FROM price_snapshots
+         WHERE captured_at < NOW() - MAKE_INTERVAL(days => $1)
+         RETURNING 1
+       ) SELECT COUNT(*)::text AS count FROM deleted`,
+      [retentionDays]
+    );
+    const prunedCount = parseInt(pruned[0]?.count ?? '0');
+    if (prunedCount > 0) {
+      console.log(`[retention] Pruned ${prunedCount} snapshots older than ${retentionDays}d`);
+    }
+
     return NextResponse.json({
       ok: true,
       polled: markets.length,
+      pruned: prunedCount,
       timestamp: new Date().toISOString(),
     });
   } catch (err) {
