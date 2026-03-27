@@ -12,6 +12,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@sentry/nextjs": "^10.46.0",
     "@types/pg": "^8.18.0",
     "@types/recharts": "^1.8.29",
     "clsx": "^2.1.1",
