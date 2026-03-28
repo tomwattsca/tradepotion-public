@@ -10,7 +10,7 @@ export async function register() {
     const PORT = process.env.PORT || '3000';
     const BASE_URL = `http://localhost:${PORT}`;
 
-    async function poll() {
+    const poll = async () => {
       try {
         const res = await fetch(`${BASE_URL}/api/cron/poll`, {
           headers: { 'x-cron-secret': CRON_SECRET },
