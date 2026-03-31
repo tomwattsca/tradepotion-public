@@ -1,4 +1,6 @@
 import { Pool } from 'pg';
+import { drizzle } from 'drizzle-orm/node-postgres';
+import * as schema from './schema';
 
 declare global {
   // eslint-disable-next-line no-var
@@ -6,7 +8,6 @@ declare global {
 }
 
 function createPool(): Pool {
-  // Disable SSL for Railway postgres:16 image (no SSL configured)
   const sslConfig = process.env.DATABASE_SSL === 'true'
     ? { rejectUnauthorized: false }
     : false;
@@ -23,6 +24,8 @@ function createPool(): Pool {
 // Reuse pool across hot reloads in dev
 const pool = global._pgPool ?? createPool();
 if (process.env.NODE_ENV !== 'production') global._pgPool = pool;
+
+export const db = drizzle(pool, { schema });
 
 export default pool;
 

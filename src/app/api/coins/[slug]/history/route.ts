@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
+import { db } from '@/lib/db';
+import { priceSnapshots } from '@/lib/schema';
+import { eq, gte, asc, sql } from 'drizzle-orm';
 import { getCoinMarketChart } from '@/lib/coingecko';
 
 export async function GET(
@@ -11,19 +13,21 @@ export async function GET(
 
   // Try DB first
   try {
-    const rows = await query<{ captured_at: string; price_usd: string }>(
-      `SELECT captured_at, price_usd
-       FROM price_snapshots
-       WHERE coin_id = $1
-         AND captured_at >= NOW() - $2::interval
-       ORDER BY captured_at ASC`,
-      [params.slug, `${hours} hours`]
-    );
+    const rows = await db
+      .select({
+        capturedAt: priceSnapshots.capturedAt,
+        priceUsd: priceSnapshots.priceUsd,
+      })
+      .from(priceSnapshots)
+      .where(
+        sql`${priceSnapshots.coinId} = ${params.slug} AND ${priceSnapshots.capturedAt} >= NOW() - ${`${hours} hours`}::interval`
+      )
+      .orderBy(asc(priceSnapshots.capturedAt));
 
     if (rows.length >= 2) {
       const prices: [number, number][] = rows.map((r) => [
-        new Date(r.captured_at).getTime(),
-        parseFloat(r.price_usd),
+        new Date(r.capturedAt).getTime(),
+        parseFloat(r.priceUsd!),
       ]);
       return NextResponse.json({ prices });
     }

@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
-import { query } from '@/lib/db';
+import { db } from '@/lib/db';
+import { sql } from 'drizzle-orm';
 
 export const runtime = 'nodejs';
 export const dynamic = 'force-dynamic';
@@ -8,7 +9,7 @@ export async function GET() {
   const checks: Record<string, 'ok' | 'fail'> = {};
 
   try {
-    await query('SELECT 1');
+    await db.execute(sql`SELECT 1`);
     checks.database = 'ok';
   } catch {
     checks.database = 'fail';

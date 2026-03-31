@@ -1,51 +1,58 @@
-import { query } from './db';
+import {
+  pgTable,
+  text,
+  bigserial,
+  numeric,
+  timestamp,
+  boolean,
+  index,
+} from 'drizzle-orm/pg-core';
 
-export async function ensureSchema() {
-  await query(`
-    CREATE TABLE IF NOT EXISTS coins (
-      id TEXT PRIMARY KEY,
-      slug TEXT UNIQUE NOT NULL,
-      name TEXT NOT NULL,
-      symbol TEXT NOT NULL,
-      image_url TEXT
-    )
-  `);
+export const coins = pgTable('coins', {
+  id: text('id').primaryKey(),
+  slug: text('slug').unique().notNull(),
+  name: text('name').notNull(),
+  symbol: text('symbol').notNull(),
+  imageUrl: text('image_url'),
+});
 
-  await query(`
-    CREATE TABLE IF NOT EXISTS price_snapshots (
-      id BIGSERIAL PRIMARY KEY,
-      coin_id TEXT NOT NULL REFERENCES coins(id) ON DELETE CASCADE,
-      price_usd NUMERIC NOT NULL,
-      market_cap NUMERIC,
-      volume_24h NUMERIC,
-      price_change_24h NUMERIC,
-      captured_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-    )
-  `);
+export const priceSnapshots = pgTable(
+  'price_snapshots',
+  {
+    id: bigserial('id', { mode: 'number' }).primaryKey(),
+    coinId: text('coin_id')
+      .notNull()
+      .references(() => coins.id, { onDelete: 'cascade' }),
+    priceUsd: numeric('price_usd').notNull(),
+    marketCap: numeric('market_cap'),
+    volume24h: numeric('volume_24h'),
+    priceChange24h: numeric('price_change_24h'),
+    capturedAt: timestamp('captured_at', { withTimezone: true })
+      .notNull()
+      .defaultNow(),
+  },
+  (table) => [
+    index('idx_snapshots_coin_captured').on(table.coinId, table.capturedAt),
+  ]
+);
 
-  await query(`
-    CREATE INDEX IF NOT EXISTS idx_snapshots_coin_captured
-    ON price_snapshots (coin_id, captured_at DESC)
-  `);
+export const priceAlerts = pgTable('price_alerts', {
+  id: bigserial('id', { mode: 'number' }).primaryKey(),
+  email: text('email').notNull(),
+  coinId: text('coin_id').notNull(),
+  targetPrice: numeric('target_price').notNull(),
+  direction: text('direction').notNull(),
+  triggered: boolean('triggered').notNull().default(false),
+  triggeredAt: timestamp('triggered_at', { withTimezone: true }),
+  createdAt: timestamp('created_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
 
-  await query(`
-    CREATE TABLE IF NOT EXISTS price_alerts (
-      id BIGSERIAL PRIMARY KEY,
-      email TEXT NOT NULL,
-      coin_id TEXT NOT NULL,
-      target_price NUMERIC NOT NULL,
-      direction TEXT NOT NULL CHECK (direction IN ('above', 'below')),
-      triggered BOOLEAN NOT NULL DEFAULT FALSE,
-      triggered_at TIMESTAMPTZ,
-      created_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-    )
-  `);
-
-  await query(`
-    CREATE TABLE IF NOT EXISTS sitemap_cache (
-      key TEXT PRIMARY KEY,
-      coin_ids TEXT[] NOT NULL,
-      updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-    )
-  `);
-}
+export const sitemapCache = pgTable('sitemap_cache', {
+  key: text('key').primaryKey(),
+  coinIds: text('coin_ids').array().notNull(),
+  updatedAt: timestamp('updated_at', { withTimezone: true })
+    .notNull()
+    .defaultNow(),
+});
