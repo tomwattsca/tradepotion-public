@@ -3,6 +3,7 @@ import { Inter } from 'next/font/google';
 import Script from 'next/script';
 import './globals.css';
 import Navbar from '@/components/Navbar';
+import NewsletterSignup from '@/components/NewsletterSignup';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -56,8 +57,16 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
                 <Navbar />
         {children}
-        <footer className="border-t border-zinc-800 mt-12 py-6 px-4 text-center text-xs text-zinc-600">
-          © {new Date().getFullYear()} Trade Potion. Crypto data via CoinGecko. Not financial advice.
+        <footer className="border-t border-zinc-800 mt-12 py-8 px-4">
+          <div className="mx-auto max-w-7xl">
+            <div className="mb-6 max-w-md mx-auto">
+              <p className="text-sm font-medium text-zinc-300 text-center mb-3">Get crypto market signals in your inbox</p>
+              <NewsletterSignup compact />
+            </div>
+            <p className="text-center text-xs text-zinc-600">
+              © {new Date().getFullYear()} Trade Potion. Crypto data via CoinGecko. Not financial advice.
+            </p>
+          </div>
         </footer>
       </body>
     </html>
