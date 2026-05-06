@@ -1,8 +1,11 @@
-import { getCoinDetail, filterCategories } from '@/lib/coingecko';
+import { getCoinDetail, getCoinMarketChart, filterCategories } from '@/lib/coingecko';
+import type { CoinDetailImage } from '@/types';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 import PriceChart from '@/components/PriceChart';
 import ExchangeCTAs from '@/components/ExchangeCTAs';
 import PriceAlertForm from '@/components/PriceAlertForm';
+import WatchlistStar from '@/components/WatchlistStar';
+import InsightPanel from '@/components/InsightPanel';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -91,6 +94,14 @@ export default async function CoinPage({ params }: Props) {
   const pct24h = md.price_change_percentage_24h ?? coin.price_change_percentage_24h ?? 0;
   const pct7d = md.price_change_percentage_7d;
   const pct30d = md.price_change_percentage_30d;
+  const filteredCategories = filterCategories(coin.id, coin.categories ?? []);
+
+  let chart30d = { market_caps: [] as [number, number][], total_volumes: [] as [number, number][] };
+  try {
+    chart30d = await getCoinMarketChart(coin.id, '30');
+  } catch (error) {
+    console.warn(`[CoinPage] Could not load 30d market insight data for ${coin.id}`, error);
+  }
 
   const stats = [
     { label: 'Market Cap', value: formatMarketCap(md.market_cap.usd) },
@@ -104,6 +115,22 @@ export default async function CoinPage({ params }: Props) {
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
 
+      {/* Breadcrumb schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Markets', item: 'https://tradepotion.com' },
+              { '@type': 'ListItem', position: 2, name: 'Coins', item: 'https://tradepotion.com' },
+              { '@type': 'ListItem', position: 3, name: `${coin.name} (${coin.symbol.toUpperCase()})`, item: `https://tradepotion.com/coins/${params.slug}` },
+            ],
+          }),
+        }}
+      />
+
       {/* Product schema */}
       <script
         type="application/ld+json"
@@ -111,14 +138,19 @@ export default async function CoinPage({ params }: Props) {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'Product',
-            name: coin.name,
-            description: `Live price tracker for ${coin.name} (${coin.symbol.toUpperCase()})`,
-            image: coin.image,
+            name: `${coin.name} (${coin.symbol.toUpperCase()})`,
+            description: `Live ${coin.name} price tracker with real-time charts, market data, and price alerts. Current price: $${formatPrice(price)}.`,
+            image: (coin.image as unknown as CoinDetailImage).large ?? (coin.image as unknown as CoinDetailImage).small,
+            brand: { '@type': 'Brand', name: coin.name },
+            category: 'Cryptocurrency',
             offers: {
-              '@type': 'AggregateOffer',
+              '@type': 'Offer',
               priceCurrency: 'USD',
               price: price.toString(),
+              availability: 'https://schema.org/InStock',
+              url: `https://tradepotion.com/coins/${params.slug}`,
             },
+            ...(coin.market_cap_rank ? { sku: params.slug, mpn: coin.symbol.toUpperCase() } : {}),
           }),
         }}
       />
@@ -132,7 +164,7 @@ export default async function CoinPage({ params }: Props) {
       {/* Header */}
       <div className="flex flex-wrap items-center gap-4 mb-6">
         <Image
-          src={coin.image}
+          src={(coin.image as unknown as CoinDetailImage).small}
           alt={coin.name}
           width={48}
           height={48}
@@ -147,11 +179,14 @@ export default async function CoinPage({ params }: Props) {
             <span className="text-xs text-zinc-500">Rank #{coin.market_cap_rank}</span>
           )}
         </div>
-        <div className="ml-auto text-right">
-          <p className="text-3xl font-bold text-white">{formatPrice(price)}</p>
-          <p className={`text-sm font-medium ${pctColor(pct24h)}`}>
-            {formatPct(pct24h)} (24h)
-          </p>
+        <div className="ml-auto flex items-start gap-3">
+          <div className="text-right">
+            <p className="text-3xl font-bold text-white">{formatPrice(price)}</p>
+            <p className={`text-sm font-medium ${pctColor(pct24h)}`}>
+              {formatPct(pct24h)} (24h)
+            </p>
+          </div>
+          <WatchlistStar coinId={coin.id} coinName={coin.name} />
         </div>
       </div>
 
@@ -204,6 +239,17 @@ export default async function CoinPage({ params }: Props) {
 
         {/* Sidebar */}
         <div className="flex flex-col gap-4">
+          <InsightPanel
+            coinId={coin.id}
+            coinName={coin.name}
+            symbol={coin.symbol}
+            marketCap={md.market_cap.usd}
+            volume24h={md.total_volume.usd}
+            marketCaps={chart30d.market_caps}
+            totalVolumes={chart30d.total_volumes}
+            categories={filteredCategories}
+          />
+
           <ExchangeCTAs coinSymbol={coin.symbol} coinName={coin.name} />
 
           <div id="alert"><PriceAlertForm coinId={coin.id} coinName={coin.name} currentPrice={price} /></div>
@@ -248,11 +294,11 @@ export default async function CoinPage({ params }: Props) {
           )}
 
           {/* Categories */}
-          {filterCategories(coin.id, coin.categories ?? []).length > 0 && (
+          {filteredCategories.length > 0 && (
             <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
               <h3 className="text-sm font-semibold text-zinc-300 mb-2">Categories</h3>
               <div className="flex flex-wrap gap-1.5">
-                {filterCategories(coin.id, coin.categories ?? []).slice(0, 8).map((cat) => (
+                {filteredCategories.slice(0, 8).map((cat) => (
                   <span
                     key={cat}
                     className="px-2 py-0.5 rounded text-xs bg-zinc-800 text-zinc-400"

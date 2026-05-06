@@ -11,6 +11,7 @@ export interface Coin {
   high_24h: number;
   low_24h: number;
   price_change_24h: number;
+  price_change_percentage_1h_in_currency?: number;
   price_change_percentage_24h: number;
   market_cap_change_24h: number;
   market_cap_change_percentage_24h: number;
@@ -27,6 +28,10 @@ export interface Coin {
   sparkline_in_7d?: { price: number[] };
 }
 
+// CoinGecko /coins/{id} returns image as {thumb, small, large} not a plain string
+// Use CoinDetailImage when working with CoinDetail image field
+export type CoinDetailImage = { thumb: string; small: string; large: string };
+
 export interface CoinDetail extends Coin {
   description: { en: string };
   categories: string[];
@@ -40,6 +45,7 @@ export interface CoinDetail extends Coin {
   };
   market_data: {
     current_price: { usd: number };
+    price_change_percentage_1h_in_currency?: number;
     price_change_percentage_24h: number;
     price_change_percentage_7d: number;
     price_change_percentage_30d: number;

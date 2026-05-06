@@ -159,6 +159,21 @@ export default async function CategoryPage({ params }: Props) {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
+      {/* Breadcrumb schema */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Markets', item: 'https://tradepotion.com' },
+              { '@type': 'ListItem', position: 2, name: h1, item: `https://tradepotion.com/category/${params.slug}` },
+            ],
+          }),
+        }}
+      />
+
       <Link
         href="/"
         className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-300 mb-6 transition-colors"

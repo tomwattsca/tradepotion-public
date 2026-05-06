@@ -10,7 +10,7 @@ import WatchlistStar from '@/components/WatchlistStar';
 import FreshnessBar from '@/components/FreshnessBar';
 import Sparkline from '@/components/Sparkline';
 
-type SortKey = 'market_cap_rank' | 'current_price' | 'price_change_percentage_24h' | 'price_change_percentage_7d_in_currency' | 'market_cap' | 'total_volume' | 'vol_mcap_ratio';
+type SortKey = 'market_cap_rank' | 'current_price' | 'price_change_percentage_1h_in_currency' | 'price_change_percentage_24h' | 'price_change_percentage_7d_in_currency' | 'market_cap' | 'total_volume' | 'vol_mcap_ratio';
 
 interface Props {
   coins: Coin[];
@@ -69,8 +69,8 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
 
   // Grid: #, Coin, Price, Sparkline, 24h%, 7d%, Market Cap, Volume, [Vol/MCap]
   const gridCols = showVolMcap
-    ? 'grid-cols-[2rem_1fr_7rem_5rem_6rem_6rem_2.5rem] md:grid-cols-[2rem_1fr_7rem_5rem_6rem_6rem_8rem_8rem_7rem_2.5rem]'
-    : 'grid-cols-[2rem_1fr_7rem_5rem_6rem_6rem_2.5rem] md:grid-cols-[2rem_1fr_7rem_5rem_6rem_6rem_8rem_8rem_2.5rem]';
+    ? 'grid-cols-[2rem_1fr_7rem_5rem_5rem_6rem_6rem_2.5rem] md:grid-cols-[2rem_1fr_7rem_5rem_5rem_6rem_6rem_8rem_8rem_7rem_2.5rem]'
+    : 'grid-cols-[2rem_1fr_7rem_5rem_5rem_6rem_6rem_2.5rem] md:grid-cols-[2rem_1fr_7rem_5rem_5rem_6rem_6rem_8rem_8rem_2.5rem]';
 
   return (
     <div>
@@ -85,6 +85,7 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
               ? 'bg-amber-500/20 border-amber-500/40 text-amber-400'
               : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-zinc-300'
           }`}
+          title="Shows 24h Volume ÷ Market Cap. Higher = more trading relative to coin size. Useful for spotting unusual activity."
         >
           Vol/MCap Ratio {showVolMcap ? '✓' : ''}
         </button>
@@ -98,6 +99,9 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
             Price <SortIcon active={sortKey === 'current_price'} dir={sortDir} />
           </button>
           <span className="text-right text-zinc-600 text-xs pr-1">7D</span>
+          <button onClick={() => handleSort('price_change_percentage_1h_in_currency')} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors" title="Price change in the last 1 hour">
+            1h % <SortIcon active={sortKey === 'price_change_percentage_1h_in_currency'} dir={sortDir} />
+          </button>
           <button onClick={() => handleSort('price_change_percentage_24h')} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors">
             24h % <SortIcon active={sortKey === 'price_change_percentage_24h'} dir={sortDir} />
           </button>
@@ -111,7 +115,7 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
             Volume (24h) <SortIcon active={sortKey === 'total_volume'} dir={sortDir} />
           </button>
           {showVolMcap && (
-            <button onClick={() => handleSort('vol_mcap_ratio')} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors" title="24h Volume / Market Cap">
+            <button onClick={() => handleSort('vol_mcap_ratio')} className="flex items-center gap-1 justify-end hover:text-zinc-300 transition-colors" title="24h Volume ÷ Market Cap. A ratio above 0.1 suggests unusually high trading activity for the coin's size.">
               Vol/MCap <SortIcon active={sortKey === 'vol_mcap_ratio'} dir={sortDir} />
             </button>
           )}
@@ -121,6 +125,7 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
         <div className="divide-y divide-zinc-800/40">
           {paginated.map((coin, rowIdx) => {
             const pct24h = coin.price_change_percentage_24h;
+            const pct1h = coin.price_change_percentage_1h_in_currency ?? null;
             const pct7d = (coin as unknown as Record<string, number | null>).price_change_percentage_7d_in_currency ?? null;
             const sparkPrices = coin.sparkline_in_7d?.price ?? [];
             return (
@@ -141,6 +146,9 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
                 <div className="flex justify-end pr-1">
                   <Sparkline prices={sparkPrices} width={52} height={28} />
                 </div>
+                <span className={`text-sm text-right font-medium ${pct1h != null ? pctColor(pct1h) : 'text-zinc-500'}`}>
+                  {pct1h != null ? formatPct(pct1h) : '—'}
+                </span>
                 <span className={`text-sm text-right font-medium ${pctColor(pct24h)}`}>{formatPct(pct24h)}</span>
                 <span className={`text-sm text-right font-medium ${pct7d != null ? pctColor(pct7d) : 'text-zinc-500'}`}>
                   {pct7d != null ? formatPct(pct7d) : '—'}

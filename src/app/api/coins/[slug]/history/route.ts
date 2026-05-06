@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { priceSnapshots } from '@/lib/schema';
-import { eq, gte, asc, sql } from 'drizzle-orm';
+import { asc, sql } from 'drizzle-orm';
 import { getCoinMarketChart } from '@/lib/coingecko';
 
 export async function GET(
