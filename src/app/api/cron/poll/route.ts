@@ -1,8 +1,10 @@
 export const runtime = 'nodejs';
 
 import { NextResponse } from 'next/server';
-import { query } from '@/lib/db';
-import { ensureSchema } from '@/lib/schema';
+import { db } from '@/lib/db';
+import { coins, priceSnapshots, priceAlerts, sitemapCache } from '@/lib/schema';
+import { eq, sql } from 'drizzle-orm';
+import { runMigrations } from '@/lib/migrate';
 import { sendAlertEmail } from '@/lib/mailer';
 
 // Protect this route — Railway cron passes the secret as a header
@@ -38,19 +40,22 @@ interface CoinGeckoMarket {
 async function checkAndFireAlerts(markets: CoinGeckoMarket[]) {
   const priceMap = new Map(markets.map((c) => [c.id, c.current_price]));
 
-  const alerts = await query<{
-    id: string;
-    email: string;
-    coin_id: string;
-    target_price: string;
-    direction: 'above' | 'below';
-  }>(`SELECT id, email, coin_id, target_price, direction FROM price_alerts WHERE triggered = FALSE`);
+  const alerts = await db
+    .select({
+      id: priceAlerts.id,
+      email: priceAlerts.email,
+      coinId: priceAlerts.coinId,
+      targetPrice: priceAlerts.targetPrice,
+      direction: priceAlerts.direction,
+    })
+    .from(priceAlerts)
+    .where(eq(priceAlerts.triggered, false));
 
   for (const alert of alerts) {
-    const currentPrice = priceMap.get(alert.coin_id);
+    const currentPrice = priceMap.get(alert.coinId);
     if (currentPrice === undefined) continue;
 
-    const target = parseFloat(alert.target_price);
+    const target = parseFloat(alert.targetPrice!);
     const shouldFire =
       (alert.direction === 'above' && currentPrice >= target) ||
       (alert.direction === 'below' && currentPrice <= target);
@@ -58,25 +63,24 @@ async function checkAndFireAlerts(markets: CoinGeckoMarket[]) {
     if (!shouldFire) continue;
 
     // Mark triggered first to avoid double-fire on error
-    await query(
-      `UPDATE price_alerts SET triggered = TRUE, triggered_at = NOW() WHERE id = $1`,
-      [alert.id]
-    );
+    await db
+      .update(priceAlerts)
+      .set({ triggered: true, triggeredAt: new Date() })
+      .where(eq(priceAlerts.id, alert.id));
 
-    const coin = markets.find((c) => c.id === alert.coin_id);
+    const coin = markets.find((c) => c.id === alert.coinId);
     try {
       await sendAlertEmail({
         to: alert.email,
-        coinName: coin?.name ?? alert.coin_id,
-        coinSymbol: coin?.symbol ?? alert.coin_id,
+        coinName: coin?.name ?? alert.coinId,
+        coinSymbol: coin?.symbol ?? alert.coinId,
         targetPrice: target,
         currentPrice,
-        direction: alert.direction,
+        direction: alert.direction as 'above' | 'below',
       });
-      console.log(`[poll] Alert fired: ${alert.email} → ${alert.coin_id} ${alert.direction} $${target}`);
+      console.log(`[poll] Alert fired: ${alert.email} → ${alert.coinId} ${alert.direction} $${target}`);
     } catch (err) {
       console.error(`[poll] Alert email failed for id=${alert.id}:`, err);
-      // Don't un-trigger — avoid spam on email failures
     }
   }
 }
@@ -87,9 +91,13 @@ async function checkAndFireAlerts(markets: CoinGeckoMarket[]) {
 async function refreshSitemapCache(): Promise<void> {
   try {
     // Check if we updated recently (within 55 minutes)
-    const cached = await query<{ updated_at: Date }>('SELECT updated_at FROM sitemap_cache WHERE key = $1', ['top_coins']);
+    const cached = await db
+      .select({ updatedAt: sitemapCache.updatedAt })
+      .from(sitemapCache)
+      .where(eq(sitemapCache.key, 'top_coins'));
+
     if (cached.length > 0) {
-      const ageMs = Date.now() - new Date(cached[0].updated_at).getTime();
+      const ageMs = Date.now() - new Date(cached[0].updatedAt).getTime();
       if (ageMs < 55 * 60 * 1000) return; // skip if updated <55 min ago
     }
 
@@ -105,21 +113,21 @@ async function refreshSitemapCache(): Promise<void> {
           { headers: { Accept: 'application/json' } }
         );
         if (!res.ok) break; // 429 or error — use what we have
-        const coins: { id: string }[] = await res.json();
-        allIds.push(...coins.map(c => c.id));
+        const fetchedCoins: { id: string }[] = await res.json();
+        allIds.push(...fetchedCoins.map(c => c.id));
       } catch {
         break;
       }
     }
 
     if (allIds.length > 0) {
-      await query(
-        `INSERT INTO sitemap_cache (key, coin_ids, updated_at)
-         VALUES ('top_coins', $1, NOW())
-         ON CONFLICT (key) DO UPDATE
-           SET coin_ids = EXCLUDED.coin_ids, updated_at = EXCLUDED.updated_at`,
-        [allIds]
-      );
+      await db
+        .insert(sitemapCache)
+        .values({ key: 'top_coins', coinIds: allIds, updatedAt: new Date() })
+        .onConflictDoUpdate({
+          target: sitemapCache.key,
+          set: { coinIds: allIds, updatedAt: new Date() },
+        });
       console.log(`[sitemap-cache] Updated with ${allIds.length} coin IDs`);
     }
   } catch (err) {
@@ -133,56 +141,62 @@ export async function GET(req: Request) {
   }
 
   try {
-    await ensureSchema();
+    await runMigrations();
 
     const markets = await fetchCoinGeckoMarkets();
 
     // Upsert coins
     for (const coin of markets) {
-      await query(
-        `INSERT INTO coins (id, slug, name, symbol, image_url)
-         VALUES ($1, $2, $3, $4, $5)
-         ON CONFLICT (id) DO UPDATE
-           SET name = EXCLUDED.name,
-               image_url = EXCLUDED.image_url`,
-        [coin.id, coin.id, coin.name, coin.symbol, coin.image]
-      );
+      await db
+        .insert(coins)
+        .values({
+          id: coin.id,
+          slug: coin.id,
+          name: coin.name,
+          symbol: coin.symbol,
+          imageUrl: coin.image,
+        })
+        .onConflictDoUpdate({
+          target: coins.id,
+          set: { name: coin.name, imageUrl: coin.image },
+        });
     }
 
-
-    // Refresh sitemap cache (top 1000 coins) if stale — runs inline but skips if updated <55min ago
+    // Refresh sitemap cache (top 1000 coins) if stale
     refreshSitemapCache().catch(err => console.error('[sitemap] refresh error:', err));
 
-
-
     // Bulk insert price snapshots
-    const snapshotValues = markets
-      .map((_, i) => {
-        const base = i * 5;
-        return `($${base + 1}, $${base + 2}, $${base + 3}, $${base + 4}, $${base + 5})`;
-      })
-      .join(', ');
-
-    const snapshotParams = markets.flatMap((c) => [
-      c.id,
-      c.current_price,
-      c.market_cap,
-      c.total_volume,
-      c.price_change_24h,
-    ]);
-
-    await query(
-      `INSERT INTO price_snapshots (coin_id, price_usd, market_cap, volume_24h, price_change_24h)
-       VALUES ${snapshotValues}`,
-      snapshotParams
+    await db.insert(priceSnapshots).values(
+      markets.map((c) => ({
+        coinId: c.id,
+        priceUsd: String(c.current_price),
+        marketCap: String(c.market_cap),
+        volume24h: String(c.total_volume),
+        priceChange24h: String(c.price_change_24h),
+      }))
     );
 
     // Check and fire alerts
     await checkAndFireAlerts(markets);
 
+    // Prune old snapshots — keep 90 days of history
+    const retentionDays = parseInt(process.env.SNAPSHOT_RETENTION_DAYS || '90');
+    const pruned = await db.execute<{ count: string }>(sql`
+      WITH deleted AS (
+        DELETE FROM price_snapshots
+        WHERE captured_at < NOW() - MAKE_INTERVAL(days => ${retentionDays})
+        RETURNING 1
+      ) SELECT COUNT(*)::text AS count FROM deleted
+    `);
+    const prunedCount = parseInt(pruned.rows[0]?.count ?? '0');
+    if (prunedCount > 0) {
+      console.log(`[retention] Pruned ${prunedCount} snapshots older than ${retentionDays}d`);
+    }
+
     return NextResponse.json({
       ok: true,
       polled: markets.length,
+      pruned: prunedCount,
       timestamp: new Date().toISOString(),
     });
   } catch (err) {

@@ -1,5 +1,7 @@
 import { MetadataRoute } from 'next';
-import { query } from '@/lib/db';
+import { db } from '@/lib/db';
+import { sitemapCache } from '@/lib/schema';
+import { eq } from 'drizzle-orm';
 import { getCategories } from '@/lib/coingecko';
 
 export const dynamic = 'force-dynamic';
@@ -26,12 +28,13 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   // Read cached coin IDs from DB (populated by cron every 10min) — fast, no CoinGecko calls
   let coinIds: string[] = [];
   try {
-    const cached = await query<{ coin_ids: string[] }>(
-      'SELECT coin_ids FROM sitemap_cache WHERE key = $1',
-      ['top_coins']
-    );
+    const cached = await db
+      .select({ coinIds: sitemapCache.coinIds })
+      .from(sitemapCache)
+      .where(eq(sitemapCache.key, 'top_coins'));
+
     if (cached.length > 0) {
-      coinIds = cached[0].coin_ids;
+      coinIds = cached[0].coinIds;
     }
   } catch {
     // DB unavailable or cache empty — return minimal sitemap

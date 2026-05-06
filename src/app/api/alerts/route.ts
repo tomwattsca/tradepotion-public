@@ -1,7 +1,9 @@
 export const runtime = 'nodejs';
 
 import { NextRequest, NextResponse } from 'next/server';
-import { query } from '@/lib/db';
+import { db } from '@/lib/db';
+import { priceAlerts } from '@/lib/schema';
+import { eq, desc } from 'drizzle-orm';
 
 // POST /api/alerts — create a price alert
 export async function POST(req: NextRequest) {
@@ -34,12 +36,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Invalid email address' }, { status: 400 });
   }
 
-  const rows = await query<{ id: string }>(
-    `INSERT INTO price_alerts (email, coin_id, target_price, direction)
-     VALUES ($1, $2, $3, $4)
-     RETURNING id`,
-    [email, coin_id, target_price, direction]
-  );
+  const rows = await db
+    .insert(priceAlerts)
+    .values({
+      email,
+      coinId: coin_id,
+      targetPrice: String(target_price),
+      direction,
+    })
+    .returning({ id: priceAlerts.id });
 
   return NextResponse.json({ ok: true, id: rows[0].id }, { status: 201 });
 }
@@ -51,13 +56,19 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'email query param required' }, { status: 400 });
   }
 
-  const alerts = await query(
-    `SELECT id, coin_id, target_price, direction, triggered, triggered_at, created_at
-     FROM price_alerts
-     WHERE email = $1
-     ORDER BY created_at DESC`,
-    [email]
-  );
+  const alerts = await db
+    .select({
+      id: priceAlerts.id,
+      coin_id: priceAlerts.coinId,
+      target_price: priceAlerts.targetPrice,
+      direction: priceAlerts.direction,
+      triggered: priceAlerts.triggered,
+      triggered_at: priceAlerts.triggeredAt,
+      created_at: priceAlerts.createdAt,
+    })
+    .from(priceAlerts)
+    .where(eq(priceAlerts.email, email))
+    .orderBy(desc(priceAlerts.createdAt));
 
   return NextResponse.json(alerts);
 }
