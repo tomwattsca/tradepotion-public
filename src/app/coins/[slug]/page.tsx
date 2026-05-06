@@ -1,10 +1,11 @@
-import { getCoinDetail, filterCategories } from '@/lib/coingecko';
+import { getCoinDetail, getCoinMarketChart, filterCategories } from '@/lib/coingecko';
 import type { CoinDetailImage } from '@/types';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 import PriceChart from '@/components/PriceChart';
 import ExchangeCTAs from '@/components/ExchangeCTAs';
 import PriceAlertForm from '@/components/PriceAlertForm';
 import WatchlistStar from '@/components/WatchlistStar';
+import InsightPanel from '@/components/InsightPanel';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -93,6 +94,14 @@ export default async function CoinPage({ params }: Props) {
   const pct24h = md.price_change_percentage_24h ?? coin.price_change_percentage_24h ?? 0;
   const pct7d = md.price_change_percentage_7d;
   const pct30d = md.price_change_percentage_30d;
+  const filteredCategories = filterCategories(coin.id, coin.categories ?? []);
+
+  let chart30d = { market_caps: [] as [number, number][], total_volumes: [] as [number, number][] };
+  try {
+    chart30d = await getCoinMarketChart(coin.id, '30');
+  } catch (error) {
+    console.warn(`[CoinPage] Could not load 30d market insight data for ${coin.id}`, error);
+  }
 
   const stats = [
     { label: 'Market Cap', value: formatMarketCap(md.market_cap.usd) },
@@ -230,6 +239,17 @@ export default async function CoinPage({ params }: Props) {
 
         {/* Sidebar */}
         <div className="flex flex-col gap-4">
+          <InsightPanel
+            coinId={coin.id}
+            coinName={coin.name}
+            symbol={coin.symbol}
+            marketCap={md.market_cap.usd}
+            volume24h={md.total_volume.usd}
+            marketCaps={chart30d.market_caps}
+            totalVolumes={chart30d.total_volumes}
+            categories={filteredCategories}
+          />
+
           <ExchangeCTAs coinSymbol={coin.symbol} coinName={coin.name} />
 
           <div id="alert"><PriceAlertForm coinId={coin.id} coinName={coin.name} currentPrice={price} /></div>
@@ -274,11 +294,11 @@ export default async function CoinPage({ params }: Props) {
           )}
 
           {/* Categories */}
-          {filterCategories(coin.id, coin.categories ?? []).length > 0 && (
+          {filteredCategories.length > 0 && (
             <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
               <h3 className="text-sm font-semibold text-zinc-300 mb-2">Categories</h3>
               <div className="flex flex-wrap gap-1.5">
-                {filterCategories(coin.id, coin.categories ?? []).slice(0, 8).map((cat) => (
+                {filteredCategories.slice(0, 8).map((cat) => (
                   <span
                     key={cat}
                     className="px-2 py-0.5 rounded text-xs bg-zinc-800 text-zinc-400"

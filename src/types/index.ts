@@ -46,7 +46,7 @@ export interface CoinDetail extends Coin {
   market_data: {
     current_price: { usd: number };
     price_change_percentage_1h_in_currency?: number;
-  price_change_percentage_24h: number;
+    price_change_percentage_24h: number;
     price_change_percentage_7d: number;
     price_change_percentage_30d: number;
     price_change_percentage_1y: number;
