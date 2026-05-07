@@ -10,6 +10,7 @@ import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, ExternalLink } from 'lucide-react';
+import type { Metadata } from 'next';
 
 // CoinGecko free tier returns incorrect ATL/ATH for some flagship coins
 // (e.g. BTC ATL returns 2013 low $67 instead of 2010 ATL ~$0.05)
@@ -28,6 +29,86 @@ const ATL_OVERRIDES: Record<string, number> = {
 };
 
 const ATH_OVERRIDES: Record<string, number> = {};
+
+
+function categorySlug(category: string): string {
+  return category.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+function CoinMarketContext({
+  coinName,
+  symbol,
+  price,
+  marketCap,
+  volume24h,
+  pct24h,
+  pct7d,
+  pct30d,
+  categories,
+}: {
+  coinName: string;
+  symbol: string;
+  price: number;
+  marketCap: number;
+  volume24h: number;
+  pct24h: number;
+  pct7d: number;
+  pct30d: number;
+  categories: string[];
+}) {
+  const uppercaseSymbol = symbol.toUpperCase();
+  const primaryCategory = categories[0];
+  return (
+    <section className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
+      <h2 className="text-sm font-semibold text-zinc-300 mb-3">How to read the {uppercaseSymbol} market data</h2>
+      <div className="space-y-4 text-sm text-zinc-400 leading-relaxed">
+        <p>
+          This page tracks live {coinName} ({uppercaseSymbol}) market data: current USD price, 24-hour volume, market cap,
+          supply figures, recent percentage changes, and historical high/low levels. These signals describe recent market
+          activity; they are not a forecast or a recommendation.
+        </p>
+        <div>
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-300 mb-1">{uppercaseSymbol} market snapshot</h3>
+          <p>
+            Current price is {formatPrice(price)}, market cap is {formatMarketCap(marketCap)}, and 24-hour volume is {formatMarketCap(volume24h)}.
+            Recent moves: {formatPct(pct24h)} over 24 hours, {formatPct(pct7d)} over 7 days, and {formatPct(pct30d)} over 30 days.
+          </p>
+        </div>
+        <div>
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-300 mb-1">What can affect {uppercaseSymbol} price?</h3>
+          <p>
+            Price can move with broader crypto liquidity, exchange volume, protocol news, token supply changes, category-specific sentiment,
+            and large market orders. For smaller assets, thin liquidity can make short-term percentage changes noisier.
+          </p>
+        </div>
+        {categories.length > 0 && (
+          <div>
+            <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-300 mb-2">Categories and related research</h3>
+            <div className="flex flex-wrap gap-2">
+              {categories.slice(0, 5).map((category) => (
+                <Link
+                  key={category}
+                  href={`/category/${categorySlug(category)}`}
+                  className="rounded-full border border-zinc-700 px-2.5 py-1 text-xs text-violet-300 hover:border-violet-500 hover:text-violet-200"
+                >
+                  {category}
+                </Link>
+              ))}
+            </div>
+            {primaryCategory && (
+              <p className="mt-2 text-xs text-zinc-500">
+                Category pages help compare {coinName} with other assets in similar market segments when category data is available.
+              </p>
+            )}
+          </div>
+        )}
+        <p className="text-xs text-zinc-500">
+          Crypto assets are volatile. Use this page for market research alongside independent due diligence; Trade Potion does not provide financial advice.
+        </p>
+      </div>
+    </section>
+  );
+}
 
 function getAtl(coinId: string, apiAtl: number): number {
   const override = ATL_OVERRIDES[coinId];
@@ -48,7 +129,7 @@ interface Props {
   params: { slug: string };
 }
 
-export async function generateMetadata({ params }: Props) {
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
     const coin = await getCoinDetail(params.slug);
     const price = coin.market_data.current_price.usd;
@@ -61,6 +142,7 @@ export async function generateMetadata({ params }: Props) {
     return {
       title: `${name} (${symbol}) Price`,
       description: `Live ${name} (${symbol}) price: $${priceStr}. Track ${name} price history, market cap, and charts. Set price alerts on Trade Potion.`,
+      alternates: { canonical: `https://tradepotion.com/coins/${params.slug}` },
       openGraph: {
         title: `${name} Price: $${priceStr} USD`,
         description: `View live ${name} (${symbol}) price, charts, and market data on Trade Potion.`,
@@ -139,7 +221,7 @@ export default async function CoinPage({ params }: Props) {
             '@context': 'https://schema.org',
             '@type': 'Product',
             name: `${coin.name} (${coin.symbol.toUpperCase()})`,
-            description: `Live ${coin.name} price tracker with real-time charts, market data, and price alerts. Current price: $${formatPrice(price)}.`,
+            description: `Live ${coin.name} price tracker with real-time charts, market data, and price alerts. Current price: ${formatPrice(price)}.`,
             image: (coin.image as unknown as CoinDetailImage).large ?? (coin.image as unknown as CoinDetailImage).small,
             brand: { '@type': 'Brand', name: coin.name },
             category: 'Cryptocurrency',
@@ -223,16 +305,26 @@ export default async function CoinPage({ params }: Props) {
             </div>
           </div>
 
+          <CoinMarketContext
+            coinName={coin.name}
+            symbol={coin.symbol}
+            price={price}
+            marketCap={md.market_cap.usd}
+            volume24h={md.total_volume.usd}
+            pct24h={pct24h}
+            pct7d={pct7d}
+            pct30d={pct30d}
+            categories={filteredCategories}
+          />
+
           {/* About */}
           {coin.description?.en && (
             <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
               <h2 className="text-sm font-semibold text-zinc-300 mb-2">About {coin.name}</h2>
-              <p
-                className="text-sm text-zinc-400 leading-relaxed line-clamp-6"
-                dangerouslySetInnerHTML={{
-                  __html: coin.description.en.replace(/<a /g, '<a class="text-violet-400 hover:underline" '),
-                }}
-              />
+              <p className="text-sm text-zinc-400 leading-relaxed">
+                {coin.name} is tracked on Trade Potion with live market data from CoinGecko, including price, market cap, volume, supply, and recent performance windows.
+                Project descriptions and external links can change over time, so use official sources for protocol-specific details.
+              </p>
             </div>
           )}
         </div>

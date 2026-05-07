@@ -82,14 +82,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   if (!ids) return { title: 'Compare Coins' };
   const [a, b] = ids.map(id => id.charAt(0).toUpperCase() + id.slice(1));
   const title = `${a} vs ${b} Price Comparison`;
-  const description = `Compare ${a} and ${b} side by side. Normalised performance chart, Pearson correlation, price, market cap, volume, ATH and more.`;
+  const description = `Compare ${a} and ${b} side by side with live price, market cap, volume, supply, ATH, ATL, and normalised performance data.`;
   const url = `https://tradepotion.com/compare/${params.pair}`;
   return {
     title,
     description,
     alternates: { canonical: url },
     openGraph: {
-      title: `${a} vs ${b} — Which is the better investment?`,
+      title: `${a} vs ${b} price and market data comparison`,
       description,
       url,
       type: 'website',
@@ -109,6 +109,55 @@ function StatRow({ label, aVal, bVal }: { label: string; aVal: string; bVal: str
       <span className="text-white font-medium text-right">{aVal}</span>
       <span className="text-white font-medium text-right">{bVal}</span>
     </div>
+  );
+}
+
+
+function ComparisonJsonLd({ pair, coinAName, coinBName }: { pair: string; coinAName: string; coinBName: string }) {
+  const pageUrl = `https://tradepotion.com/compare/${pair}`;
+  return (
+    <script
+      type="application/ld+json"
+      dangerouslySetInnerHTML={{
+        __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@graph': [
+            {
+              '@type': 'BreadcrumbList',
+              '@id': `${pageUrl}#breadcrumb`,
+              itemListElement: [
+                { '@type': 'ListItem', position: 1, name: 'Markets', item: 'https://tradepotion.com' },
+                { '@type': 'ListItem', position: 2, name: 'Compare', item: 'https://tradepotion.com/compare' },
+                { '@type': 'ListItem', position: 3, name: `${coinAName} vs ${coinBName}`, item: pageUrl },
+              ],
+            },
+            {
+              '@type': 'WebPage',
+              '@id': `${pageUrl}#webpage`,
+              url: pageUrl,
+              name: `${coinAName} vs ${coinBName} price comparison`,
+              description: `Side-by-side cryptocurrency market data comparison for ${coinAName} and ${coinBName}.`,
+              breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
+              mainEntity: { '@id': `${pageUrl}#comparison` },
+            },
+            {
+              '@type': 'Dataset',
+              '@id': `${pageUrl}#comparison`,
+              name: `${coinAName} vs ${coinBName} market comparison`,
+              description: `Live price, market cap, volume, supply, all-time high, all-time low, and normalised performance comparison for ${coinAName} and ${coinBName}.`,
+              url: pageUrl,
+              variableMeasured: ['Price (USD)', '24h Change', '7d Change', '30d Change', 'Market Cap', '24h Volume', 'Circulating Supply', 'All-Time High', 'All-Time Low'],
+              about: [
+                { '@type': 'Thing', name: coinAName },
+                { '@type': 'Thing', name: coinBName },
+              ],
+              isAccessibleForFree: true,
+              inLanguage: 'en',
+            },
+          ],
+        }),
+      }}
+    />
   );
 }
 
@@ -201,9 +250,12 @@ export default async function ComparePage({ params }: Props) {
   ];
 
   const shareUrl = `https://tradepotion.com/compare/${params.pair}`;
+  const intro = COMPARE_INTROS[params.pair]
+    ?? `${a.name} and ${b.name} can be compared using live market data, recent percentage changes, liquidity, supply, and historical high/low levels. This page is for market research and does not recommend buying or selling either asset.`;
 
   return (
     <main className="mx-auto max-w-5xl px-4 py-8">
+      <ComparisonJsonLd pair={params.pair} coinAName={a.name} coinBName={b.name} />
       <div className="flex items-center justify-between mb-6">
         <Link href="/" className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-300 transition-colors">
           <ArrowLeft className="h-4 w-4" /> Markets
@@ -211,15 +263,27 @@ export default async function ComparePage({ params }: Props) {
         <ShareCompareButton url={shareUrl} />
       </div>
 
+      <nav aria-label="Breadcrumb" className="mb-4 text-xs text-zinc-500">
+        <Link href="/" className="hover:text-zinc-300">Markets</Link>
+        <span className="mx-2">/</span>
+        <Link href="/compare" className="hover:text-zinc-300">Compare</Link>
+        <span className="mx-2">/</span>
+        <span className="text-zinc-400">{a.name} vs {b.name}</span>
+      </nav>
+
+      <section className="mb-6 rounded-xl bg-zinc-900/50 border border-zinc-800 p-5">
+        <p className="text-xs uppercase tracking-[0.2em] text-violet-300 mb-2">Crypto comparison</p>
+        <h1 className="text-3xl font-bold text-white mb-3">
+          {a.name} vs {b.name}: price, market cap, volume, and performance comparison
+        </h1>
+        <p className="text-sm text-zinc-300 leading-relaxed">{intro}</p>
+        <p className="text-xs text-zinc-500 mt-3">
+          Use the table and normalised chart to compare market data side by side. Trade Potion does not provide financial advice.
+        </p>
+      </section>
+
       {/* Dynamic coin selector */}
       <CoinCompareSelector currentPair={params.pair} />
-
-      {/* Compare intro text */}
-      {params.pair && COMPARE_INTROS[params.pair] && (
-        <div className="mb-6 p-4 rounded-lg bg-zinc-900/50 border border-zinc-800 text-sm text-zinc-300 leading-relaxed">
-          {COMPARE_INTROS[params.pair]}
-        </div>
-      )}
 
       {/* Header */}
       <div className="flex items-center justify-center gap-6 mb-8">
