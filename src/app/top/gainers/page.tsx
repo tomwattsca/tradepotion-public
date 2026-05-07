@@ -9,6 +9,7 @@ export const revalidate = 300;
 export const metadata: Metadata = {
   title: 'Top Crypto Gainers Today | 1H, 24H, 7D Best Performing Coins',
   description: 'Live list of the top cryptocurrency gainers filterable by 1H, 24H, and 7D performance and market cap tier. See which altcoins are pumping right now on Trade Potion.',
+  alternates: { canonical: 'https://tradepotion.com/top/gainers' },
   openGraph: {
     title: 'Top Crypto Gainers Today',
     description: 'Best performing coins filtered by 1H, 24H, 7D — with volume and market cap tier filters. More actionable than CoinGecko.',

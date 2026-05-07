@@ -113,6 +113,9 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   return {
     title,
     description,
+    alternates: {
+      canonical: `https://tradepotion.com/category/${params.slug}`,
+    },
     openGraph: {
       title,
       description,

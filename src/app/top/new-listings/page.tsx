@@ -8,11 +8,36 @@ export const revalidate = 600;
 export const metadata: Metadata = {
   title: 'New Crypto Listings 2026 | Recently Added Coins & Tokens',
   description: 'Discover newly listed cryptocurrencies tracked by Trade Potion. See the latest coins added in the last 30 days sorted by listing date.',
+  alternates: { canonical: 'https://tradepotion.com/top/new-listings' },
+  openGraph: {
+    title: 'New Crypto Listings 2026',
+    description: 'Recently added cryptocurrencies tracked by Trade Potion, sorted by listing date.',
+    url: 'https://tradepotion.com/top/new-listings',
+    type: 'website',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'New Crypto Listings 2026',
+    description: 'Recently added cryptocurrencies tracked by Trade Potion.',
+  },
 };
 
 export default function NewListingsPage() {
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'BreadcrumbList',
+            itemListElement: [
+              { '@type': 'ListItem', position: 1, name: 'Markets', item: 'https://tradepotion.com' },
+              { '@type': 'ListItem', position: 2, name: 'New Listings', item: 'https://tradepotion.com/top/new-listings' },
+            ],
+          }),
+        }}
+      />
       <Link href="/" className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-300 mb-6 transition-colors">
         <ArrowLeft className="h-4 w-4" /> Markets
       </Link>

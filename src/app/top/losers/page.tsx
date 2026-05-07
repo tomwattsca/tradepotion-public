@@ -9,6 +9,7 @@ export const revalidate = 300;
 export const metadata: Metadata = {
   title: 'Top Crypto Losers Today | 1H, 24H, 7D Worst Performing Coins',
   description: 'Live list of the top cryptocurrency losers filterable by 1H, 24H, and 7D performance and market cap tier. Track which coins are down the most on Trade Potion.',
+  alternates: { canonical: 'https://tradepotion.com/top/losers' },
   openGraph: {
     title: 'Top Crypto Losers Today',
     description: 'Worst performing coins filtered by 1H, 24H, 7D — with volume and market cap tier filters.',

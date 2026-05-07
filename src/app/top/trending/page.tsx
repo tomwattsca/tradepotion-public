@@ -8,6 +8,7 @@ export const revalidate = 300;
 export const metadata: Metadata = {
   title: 'Trending Crypto Coins Right Now | Most Searched & Popular Tokens',
   description: 'See which cryptocurrencies are trending right now based on search volume and community interest. Live trending coins updated every 5 minutes on Trade Potion.',
+  alternates: { canonical: 'https://tradepotion.com/top/trending' },
   openGraph: {
     title: 'Trending Crypto Coins Right Now',
     description: 'The most searched and discussed cryptocurrencies right now — updated every 5 minutes.',
