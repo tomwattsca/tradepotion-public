@@ -9,7 +9,7 @@ import InsightPanel from '@/components/InsightPanel';
 import { notFound } from 'next/navigation';
 import Image from 'next/image';
 import Link from 'next/link';
-import { ArrowLeft, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Bell, ExternalLink, Search } from 'lucide-react';
 import type { Metadata } from 'next';
 
 // CoinGecko free tier returns incorrect ATL/ATH for some flagship coins
@@ -267,6 +267,26 @@ export default async function CoinPage({ params }: Props) {
             <span className="text-xs text-zinc-500">Rank #{coin.market_cap_rank}</span>
           )}
         </div>
+        <div className="flex flex-wrap gap-2 md:ml-2">
+          <a
+            href="#alert"
+            className="inline-flex items-center gap-2 rounded-lg bg-violet-600 px-3 py-2 text-sm font-medium text-white hover:bg-violet-500 transition-colors"
+            data-event="price_alert_click"
+            data-cta-location="coin_hero"
+            data-coin-id={coin.id}
+            aria-label={`Set a price alert for ${coin.name}`}
+          >
+            <Bell className="h-4 w-4" />
+            Set {coin.symbol.toUpperCase()} alert
+          </a>
+          <Link
+            href={`/search?q=${encodeURIComponent(coin.symbol.toUpperCase())}`}
+            className="inline-flex items-center gap-2 rounded-lg border border-zinc-700 px-3 py-2 text-sm font-medium text-zinc-300 hover:border-violet-500 hover:text-violet-200 transition-colors"
+          >
+            <Search className="h-4 w-4" />
+            Search markets
+          </Link>
+        </div>
         <div className="ml-auto flex items-start gap-3">
           <div className="text-right">
             <p className="text-3xl font-bold text-white">{formatPrice(price)}</p>
@@ -350,7 +370,7 @@ export default async function CoinPage({ params }: Props) {
 
           <ExchangeCTAs coinSymbol={coin.symbol} coinName={coin.name} />
 
-          <div id="alert"><PriceAlertForm coinId={coin.id} coinName={coin.name} currentPrice={price} /></div>
+          <div id="alert"><PriceAlertForm coinId={coin.id} coinName={coin.name} currentPrice={price} ctaLocation="coin_alert_form" /></div>
 
           {/* Links */}
           {coin.links?.homepage?.[0] && (

@@ -7,9 +7,10 @@ interface Props {
   coinId: string;
   coinName: string;
   currentPrice: number;
+  ctaLocation?: string;
 }
 
-export default function PriceAlertForm({ coinId, coinName, currentPrice }: Props) {
+export default function PriceAlertForm({ coinId, coinName, currentPrice, ctaLocation }: Props) {
   const [email, setEmail] = useState('');
   const [targetPrice, setTargetPrice] = useState('');
   const [direction, setDirection] = useState<'above' | 'below'>('above');
@@ -107,6 +108,9 @@ export default function PriceAlertForm({ coinId, coinName, currentPrice }: Props
             type="submit"
             disabled={status === 'loading'}
             className="w-full rounded-lg bg-violet-600 hover:bg-violet-500 disabled:opacity-50 px-4 py-2 text-sm font-medium text-white transition-colors"
+            data-event={ctaLocation ? 'price_alert_click' : undefined}
+            data-cta-location={ctaLocation}
+            data-coin-id={coinId}
           >
             {status === 'loading' ? 'Setting alert…' : 'Set Alert'}
           </button>
