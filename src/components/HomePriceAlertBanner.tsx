@@ -148,6 +148,8 @@ export default function HomePriceAlertBanner({ topCoins }: Props) {
             <button
               type="submit"
               disabled={status === 'loading'}
+              data-event="price_alert_click"
+              data-cta-location="home_alert_form"
               className="w-full rounded-lg bg-violet-600 hover:bg-violet-500 disabled:opacity-50 px-4 py-2 text-sm font-medium text-white transition-colors h-[38px]"
             >
               {status === 'loading' ? 'Setting…' : 'Set Alert'}
