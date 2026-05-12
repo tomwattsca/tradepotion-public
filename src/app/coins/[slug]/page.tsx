@@ -213,26 +213,32 @@ export default async function CoinPage({ params }: Props) {
         }}
       />
 
-      {/* Product schema */}
+      {/* Coin market data page schema. Keep this informational: do not model crypto assets as in-stock products/offers. */}
       <script
         type="application/ld+json"
         dangerouslySetInnerHTML={{
           __html: JSON.stringify({
             '@context': 'https://schema.org',
-            '@type': 'Product',
-            name: `${coin.name} (${coin.symbol.toUpperCase()})`,
-            description: `Live ${coin.name} price tracker with real-time charts, market data, and price alerts. Current price: ${formatPrice(price)}.`,
-            image: (coin.image as unknown as CoinDetailImage).large ?? (coin.image as unknown as CoinDetailImage).small,
-            brand: { '@type': 'Brand', name: coin.name },
-            category: 'Cryptocurrency',
-            offers: {
-              '@type': 'Offer',
-              priceCurrency: 'USD',
-              price: price.toString(),
-              availability: 'https://schema.org/InStock',
-              url: `https://tradepotion.com/coins/${params.slug}`,
+            '@type': 'WebPage',
+            '@id': `https://tradepotion.com/coins/${params.slug}#webpage`,
+            url: `https://tradepotion.com/coins/${params.slug}`,
+            name: `${coin.name} (${coin.symbol.toUpperCase()}) Price`,
+            description: `Live ${coin.name} (${coin.symbol.toUpperCase()}) market data including USD price, market cap, volume, supply, and recent performance.`,
+            isPartOf: {
+              '@type': 'WebSite',
+              '@id': 'https://tradepotion.com/#website',
+              name: 'Trade Potion',
+              url: 'https://tradepotion.com',
             },
-            ...(coin.market_cap_rank ? { sku: params.slug, mpn: coin.symbol.toUpperCase() } : {}),
+            about: {
+              '@type': 'Thing',
+              name: `${coin.name} (${coin.symbol.toUpperCase()})`,
+              url: coin.links?.homepage?.[0] || `https://tradepotion.com/coins/${params.slug}`,
+            },
+            primaryImageOfPage: {
+              '@type': 'ImageObject',
+              url: (coin.image as unknown as CoinDetailImage).large ?? (coin.image as unknown as CoinDetailImage).small,
+            },
           }),
         }}
       />
