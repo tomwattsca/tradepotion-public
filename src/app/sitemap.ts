@@ -3,6 +3,7 @@ import { db } from '@/lib/db';
 import { sitemapCache } from '@/lib/schema';
 import { eq } from 'drizzle-orm';
 import { getCategories } from '@/lib/coingecko';
+import { mergeCoinIdsForSitemap } from '@/lib/public-coin-seo';
 
 export const dynamic = 'force-dynamic';
 
@@ -40,8 +41,10 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     // DB unavailable or cache empty — return minimal sitemap
   }
 
-  // Coin pages (up to 1000) — ranked by market cap via cron cache
-  const coinEntries: MetadataRoute.Sitemap = coinIds.slice(0, 1000).map((id, rank) => ({
+  // Coin pages (up to 1000) — ranked by market cap via cron cache, with a tiny GSC-backed
+  // retention list for indexed public coin URLs that have fallen out of the top-coin cache.
+  const sitemapCoinIds = mergeCoinIdsForSitemap(coinIds).slice(0, 1000);
+  const coinEntries: MetadataRoute.Sitemap = sitemapCoinIds.map((id, rank) => ({
     url: `https://tradepotion.com/coins/${id}`,
     lastModified: now,
     changeFrequency: 'hourly',
