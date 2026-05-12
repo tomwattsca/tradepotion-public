@@ -1,33 +1,10 @@
 import { ExternalLink } from 'lucide-react';
+import { enabledExchangePartners, exchangePartnerRel } from '@/lib/exchange-partners';
 
 interface Props {
   coinSymbol: string;
   coinName: string;
 }
-
-const EXCHANGES = [
-  {
-    name: 'Binance',
-    url: (symbol: string) =>
-      `https://www.binance.com/en/trade/${symbol.toUpperCase()}_USDT`,
-    color: 'bg-yellow-500/10 border-yellow-500/30 hover:bg-yellow-500/20 text-yellow-400',
-    badge: 'Large spot market',
-  },
-  {
-    name: 'Bybit',
-    url: (symbol: string) =>
-      `https://www.bybit.com/en/trade/spot/${symbol.toUpperCase()}/USDT`,
-    color: 'bg-orange-500/10 border-orange-500/30 hover:bg-orange-500/20 text-orange-400',
-    badge: 'Spot market',
-  },
-  {
-    name: 'KuCoin',
-    url: (symbol: string) =>
-      `https://www.kucoin.com/trade/${symbol.toUpperCase()}-USDT`,
-    color: 'bg-green-500/10 border-green-500/30 hover:bg-green-500/20 text-green-400',
-    badge: 'Altcoin market',
-  },
-];
 
 export default function ExchangeCTAs({ coinSymbol, coinName }: Props) {
   return (
@@ -36,13 +13,20 @@ export default function ExchangeCTAs({ coinSymbol, coinName }: Props) {
         Research {coinName} markets
       </h3>
       <div className="flex flex-col gap-2">
-        {EXCHANGES.map((ex) => (
+        {enabledExchangePartners.map((ex) => (
           <a
             key={ex.name}
-            href={ex.url(coinSymbol)}
+            href={ex.buildUrl(coinSymbol)}
             target="_blank"
-            rel="noopener noreferrer"
-            className={`flex items-center justify-between rounded-lg border px-4 py-3 transition-colors ${ex.color}`}
+            rel={exchangePartnerRel(ex)}
+            className={`flex items-center justify-between rounded-lg border px-4 py-3 transition-colors ${ex.colorClassName}`}
+            data-event="exchange_outbound_click"
+            data-exchange-name={ex.name}
+            data-coin-symbol={coinSymbol.toUpperCase()}
+            data-page-type="coin"
+            data-cta-location="coin_sidebar"
+            data-sponsored={ex.sponsored ? 'true' : 'false'}
+            aria-label={`Research ${coinName} markets on ${ex.name}`}
           >
             <div>
               <span className="text-sm font-semibold">{ex.name}</span>
