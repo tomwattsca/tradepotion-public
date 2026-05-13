@@ -1,3 +1,4 @@
+import type { Metadata } from 'next';
 import { getTopCoins, getTopGainers, getTopLosers } from '@/lib/coingecko';
 import MarketStatsBar from '@/components/MarketStatsBar';
 import SortableMarketTable from '@/components/SortableMarketTable';
@@ -8,6 +9,12 @@ import { formatPct, pctColor } from '@/lib/utils';
 import { TrendingUp, TrendingDown, ArrowRight, Bell, Search, Star } from 'lucide-react';
 
 export const revalidate = 300;
+
+export const metadata: Metadata = {
+  alternates: {
+    canonical: '/',
+  },
+};
 
 export default async function HomePage() {
   const results = await Promise.allSettled([

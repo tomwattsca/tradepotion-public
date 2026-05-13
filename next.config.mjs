@@ -1,7 +1,20 @@
 import { withSentryConfig } from '@sentry/nextjs';
 
 /** @type {import('next').NextConfig} */
+const LEGACY_PUBLIC_REDIRECTS = [
+  { source: '/defi', destination: '/category/decentralized-finance-defi' },
+  { source: '/layer2', destination: '/category/layer-2' },
+  { source: '/meme', destination: '/category/meme-token' },
+  { source: '/markets', destination: '/' },
+];
+
 const nextConfig = {
+  async redirects() {
+    return LEGACY_PUBLIC_REDIRECTS.map((redirect) => ({
+      ...redirect,
+      permanent: true,
+    }));
+  },
   experimental: {
     instrumentationHook: true,
   },
