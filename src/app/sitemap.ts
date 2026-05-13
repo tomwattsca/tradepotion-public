@@ -4,6 +4,7 @@ import { sitemapCache } from '@/lib/schema';
 import { eq } from 'drizzle-orm';
 import { getCategories } from '@/lib/coingecko';
 import { mergeCoinIdsForSitemap } from '@/lib/public-coin-seo';
+import { FALLBACK_CATEGORY_IDS } from '@/lib/category-sitemap-fallback';
 
 export const dynamic = 'force-dynamic';
 
@@ -51,19 +52,24 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     priority: rank < 10 ? 0.95 : rank < 100 ? 0.9 : rank < 500 ? 0.8 : 0.7,
   }));
 
-  // Categories — quick single call, has its own ISR cache
-  let categoryEntries: MetadataRoute.Sitemap = [];
+  // Categories — quick single call, has its own ISR cache. If CoinGecko is
+  // unavailable/rate-limited, preserve the last-known top category footprint
+  // instead of dropping 100 existing category URLs from the sitemap.
+  let categoryIds = FALLBACK_CATEGORY_IDS as readonly string[];
   try {
     const categories = await getCategories();
-    categoryEntries = categories.slice(0, 100).map((cat) => ({
-      url: `https://tradepotion.com/category/${cat.id}`,
-      lastModified: now,
-      changeFrequency: 'daily',
-      priority: 0.7,
-    }));
+    if (categories.length > 0) {
+      categoryIds = categories.slice(0, 100).map((cat) => cat.id);
+    }
   } catch {
-    // skip
+    // keep fallback IDs
   }
+  const categoryEntries: MetadataRoute.Sitemap = categoryIds.slice(0, 100).map((id) => ({
+    url: `https://tradepotion.com/category/${id}`,
+    lastModified: now,
+    changeFrequency: 'daily',
+    priority: 0.7,
+  }));
 
   // Top 50 curated compare pairs
   const compareEntries: MetadataRoute.Sitemap = TOP_COMPARE_PAIRS.map((pair) => ({

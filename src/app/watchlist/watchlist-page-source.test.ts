@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 const pageSource = readFileSync('src/app/watchlist/page.tsx', 'utf8');
 const clientSource = readFileSync('src/app/watchlist/WatchlistClient.tsx', 'utf8');
 const sitemapSource = readFileSync('src/app/sitemap.ts', 'utf8');
+const categoryFallbackSource = readFileSync('src/lib/category-sitemap-fallback.ts', 'utf8');
 
 describe('watchlist utility SEO and tracking source guards', () => {
   it('keeps the nav-linked watchlist as a noindexed utility with self-canonical metadata', () => {
@@ -27,5 +28,13 @@ describe('watchlist utility SEO and tracking source guards', () => {
     expect(pageSource).not.toContain("'@type': 'Product'");
     expect(pageSource).not.toContain('InStock');
     expect(clientSource).not.toContain('>Buy ');
+  });
+
+  it('keeps existing category sitemap coverage stable when CoinGecko categories are unavailable', () => {
+    expect(sitemapSource).toContain('FALLBACK_CATEGORY_IDS');
+    expect(sitemapSource).toContain('keep fallback IDs');
+    expect(categoryFallbackSource).toContain("'decentralized-finance-defi'");
+    expect(categoryFallbackSource).toContain("'layer-2'");
+    expect(categoryFallbackSource).toContain("'artificial-intelligence'");
   });
 });
