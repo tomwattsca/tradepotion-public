@@ -1,5 +1,5 @@
 import { getCoinDetail, getCoinMarketChart, filterCategories } from '@/lib/coingecko';
-import type { CoinDetailImage } from '@/types';
+import type { CoinDetail, CoinDetailImage } from '@/types';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 import PriceChart from '@/components/PriceChart';
 import ExchangeCTAs from '@/components/ExchangeCTAs';
@@ -7,6 +7,9 @@ import PriceAlertForm from '@/components/PriceAlertForm';
 import WatchlistStar from '@/components/WatchlistStar';
 import InsightPanel from '@/components/InsightPanel';
 import { notFound } from 'next/navigation';
+import { db } from '@/lib/db';
+import { coins, priceSnapshots } from '@/lib/schema';
+import { desc, eq } from 'drizzle-orm';
 import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, Bell, ExternalLink, Search } from 'lucide-react';
@@ -30,6 +33,102 @@ const ATL_OVERRIDES: Record<string, number> = {
 
 const ATH_OVERRIDES: Record<string, number> = {};
 
+
+const FALLBACK_IMAGE_URL = '/favicon.ico';
+const SCHEMA_FALLBACK_IMAGE_URL = 'https://tradepotion.com/favicon.ico';
+
+function numericValue(value: unknown): number {
+  const parsed = typeof value === 'number' ? value : Number(value ?? 0);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+async function getCachedCoinDetail(coinId: string): Promise<CoinDetail | null> {
+  try {
+    const [coinRow] = await db
+      .select()
+      .from(coins)
+      .where(eq(coins.id, coinId))
+      .limit(1);
+
+    if (!coinRow) return null;
+
+    const [snapshot] = await db
+      .select()
+      .from(priceSnapshots)
+      .where(eq(priceSnapshots.coinId, coinId))
+      .orderBy(desc(priceSnapshots.capturedAt))
+      .limit(1);
+
+    const price = numericValue(snapshot?.priceUsd);
+    const marketCap = numericValue(snapshot?.marketCap);
+    const volume24h = numericValue(snapshot?.volume24h);
+    const pct24h = numericValue(snapshot?.priceChange24h);
+    const image = coinRow.imageUrl || FALLBACK_IMAGE_URL;
+
+    return {
+      id: coinRow.id,
+      name: coinRow.name,
+      symbol: coinRow.symbol,
+      image: { thumb: image, small: image, large: image } as unknown as string,
+      current_price: price,
+      market_cap: marketCap,
+      market_cap_rank: 0,
+      fully_diluted_valuation: null,
+      total_volume: volume24h,
+      high_24h: 0,
+      low_24h: 0,
+      price_change_24h: 0,
+      price_change_percentage_24h: pct24h,
+      market_cap_change_24h: 0,
+      market_cap_change_percentage_24h: 0,
+      circulating_supply: 0,
+      total_supply: null,
+      max_supply: null,
+      ath: 0,
+      ath_change_percentage: 0,
+      ath_date: '',
+      atl: 0,
+      atl_change_percentage: 0,
+      atl_date: '',
+      last_updated: snapshot?.capturedAt?.toISOString?.() ?? '',
+      description: { en: '' },
+      categories: [],
+      links: {
+        homepage: [],
+        blockchain_site: [],
+        official_forum_url: [],
+        twitter_screen_name: '',
+        telegram_channel_identifier: '',
+        subreddit_url: '',
+      },
+      market_data: {
+        current_price: { usd: price },
+        price_change_percentage_24h: pct24h,
+        price_change_percentage_7d: 0,
+        price_change_percentage_30d: 0,
+        price_change_percentage_1y: 0,
+        market_cap: { usd: marketCap },
+        total_volume: { usd: volume24h },
+        circulating_supply: 0,
+        total_supply: null,
+        ath: { usd: 0 },
+        atl: { usd: 0 },
+      },
+    };
+  } catch (error) {
+    console.warn(`[CoinPage] Cached coin fallback failed for ${coinId}`, error);
+    return null;
+  }
+}
+
+async function getCoinDetailWithCacheFallback(coinId: string): Promise<CoinDetail | null> {
+  try {
+    return await getCoinDetail(coinId);
+  } catch (error) {
+    console.warn(`[CoinPage] CoinGecko detail unavailable for ${coinId}; trying cached public data`, error);
+    return getCachedCoinDetail(coinId);
+  }
+}
 
 function categorySlug(category: string): string {
   return category.toLowerCase().replace(/&/g, 'and').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
@@ -131,7 +230,8 @@ interface Props {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   try {
-    const coin = await getCoinDetail(params.slug);
+    const coin = await getCoinDetailWithCacheFallback(params.slug);
+    if (!coin) throw new Error('Coin detail unavailable');
     const price = coin.market_data.current_price.usd;
     const priceStr = price >= 1
       ? price.toLocaleString('en-US', { maximumFractionDigits: 2 })
@@ -166,7 +266,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function CoinPage({ params }: Props) {
   let coin;
   try {
-    coin = await getCoinDetail(params.slug);
+    coin = await getCoinDetailWithCacheFallback(params.slug);
+    if (!coin) {
+      notFound();
+    }
   } catch {
     notFound();
   }
@@ -237,7 +340,9 @@ export default async function CoinPage({ params }: Props) {
             },
             primaryImageOfPage: {
               '@type': 'ImageObject',
-              url: (coin.image as unknown as CoinDetailImage).large ?? (coin.image as unknown as CoinDetailImage).small,
+              url: ((coin.image as unknown as CoinDetailImage).large ?? (coin.image as unknown as CoinDetailImage).small).startsWith('http')
+                ? ((coin.image as unknown as CoinDetailImage).large ?? (coin.image as unknown as CoinDetailImage).small)
+                : SCHEMA_FALLBACK_IMAGE_URL,
             },
           }),
         }}

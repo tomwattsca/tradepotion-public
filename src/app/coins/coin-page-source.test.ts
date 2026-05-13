@@ -33,4 +33,12 @@ describe('coin page alert/tracking source guards', () => {
     expect(coinPageSource).not.toContain('InStock');
     expect(coinPageSource).not.toContain('>Buy ');
   });
+
+  it('keeps GSC-visible coin URLs renderable during CoinGecko rate limits', () => {
+    expect(coinPageSource).toContain('getCoinDetailWithCacheFallback');
+    expect(coinPageSource).toContain('getCachedCoinDetail');
+    expect(coinPageSource).toContain('CoinGecko detail unavailable');
+    expect(coinPageSource).toContain('priceSnapshots');
+    expect(coinPageSource).toContain('if (!coin) {\n      notFound();\n    }');
+  });
 });
