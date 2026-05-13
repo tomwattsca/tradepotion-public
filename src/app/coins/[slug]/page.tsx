@@ -140,19 +140,19 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     const symbol = coin.symbol.toUpperCase();
 
     return {
-      title: `${name} (${symbol}) Price`,
-      description: `Live ${name} (${symbol}) price: $${priceStr}. Track ${name} price history, market cap, and charts. Set price alerts on Trade Potion.`,
+      title: `${name} (${symbol}) Price, Market Cap & Alerts`,
+      description: `Live ${name} (${symbol}) price: $${priceStr}. Track ${name} price history, market cap, volume, and set non-advisory price alerts on Trade Potion.`,
       alternates: { canonical: `https://tradepotion.com/coins/${params.slug}` },
       openGraph: {
-        title: `${name} Price: $${priceStr} USD`,
-        description: `View live ${name} (${symbol}) price, charts, and market data on Trade Potion.`,
+        title: `${name} Price, Market Cap & Alerts`,
+        description: `View live ${name} (${symbol}) price, market cap, charts, and non-advisory alerts on Trade Potion.`,
         url: `https://tradepotion.com/coins/${params.slug}`,
         type: 'website',
       },
       twitter: {
         card: 'summary',
-        title: `${name} (${symbol}) Price`,
-        description: `${name} price: $${priceStr}. Live tracking and alerts.`,
+        title: `${name} (${symbol}) Price & Market Cap`,
+        description: `${name} price: $${priceStr}. Live market cap, charts, and non-advisory alerts.`,
       },
     };
   } catch {
@@ -260,11 +260,13 @@ export default async function CoinPage({ params }: Props) {
         />
         <div>
           <h1 className="text-2xl font-bold text-white">
-            {coin.name}{' '}
-            <span className="text-zinc-500 font-normal text-base uppercase">{coin.symbol}</span>
+            {coin.name} price ({coin.symbol.toUpperCase()})
           </h1>
+          <p className="mt-1 text-sm text-zinc-400">
+            Live USD price, market cap, 24h volume, chart history, and non-advisory price alerts for {coin.name}.
+          </p>
           {coin.market_cap_rank && (
-            <span className="text-xs text-zinc-500">Rank #{coin.market_cap_rank}</span>
+            <span className="mt-1 inline-block text-xs text-zinc-500">Rank #{coin.market_cap_rank}</span>
           )}
         </div>
         <div className="flex flex-wrap gap-2 md:ml-2">

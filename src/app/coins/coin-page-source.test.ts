@@ -12,6 +12,13 @@ describe('coin page alert/tracking source guards', () => {
     expect(coinPageSource).toContain('Set {coin.symbol.toUpperCase()} alert');
   });
 
+  it('aligns GSC-visible coin pages with price and market-cap search intent', () => {
+    expect(coinPageSource).toContain('`${name} (${symbol}) Price, Market Cap & Alerts`');
+    expect(coinPageSource).toContain('{coin.name} price');
+    expect(coinPageSource).toContain('Live USD price, market cap, 24h volume, chart history');
+    expect(coinPageSource).toContain('non-advisory price alerts for {coin.name}');
+  });
+
   it('keeps the reusable price alert form measurable without collecting PII in attributes', () => {
     expect(alertFormSource).toContain('ctaLocation?: string');
     expect(alertFormSource).toContain("data-event={ctaLocation ? 'price_alert_click' : undefined}");
