@@ -3,16 +3,17 @@ import Link from 'next/link';
 import { ArrowLeft, TrendingUp } from 'lucide-react';
 import { Metadata } from 'next';
 import GainersClient from '@/components/GainersClient';
+import TopListContextPanel from '@/components/TopListContextPanel';
 
 export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Top Crypto Gainers Today | 1H, 24H, 7D Best Performing Coins',
-  description: 'Live list of the top cryptocurrency gainers filterable by 1H, 24H, and 7D performance and market cap tier. See which altcoins are pumping right now on Trade Potion.',
+  description: 'Live informational list of the top cryptocurrency gainers filterable by 1H, 24H, 7D performance, volume, and market cap tier. Use Trade Potion to research market moves and set price alerts.',
   alternates: { canonical: 'https://tradepotion.com/top/gainers' },
   openGraph: {
     title: 'Top Crypto Gainers Today',
-    description: 'Best performing coins filtered by 1H, 24H, 7D — with volume and market cap tier filters. More actionable than CoinGecko.',
+    description: 'Best performing coins filtered by 1H, 24H, 7D — with volume and market cap tier filters plus alert and watchlist handoffs.',
     url: 'https://tradepotion.com/top/gainers',
     type: 'website',
   },
@@ -39,6 +40,20 @@ export default function TopGainersPage() {
           }),
         }}
       />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify({
+            '@context': 'https://schema.org',
+            '@type': 'WebPage',
+            name: 'Top Crypto Gainers Today',
+            url: 'https://tradepotion.com/top/gainers',
+            description: 'Informational list of crypto gainers filtered by timeframe, volume and market-cap tier using CoinGecko market data.',
+            isPartOf: { '@type': 'WebSite', name: 'Trade Potion', url: 'https://tradepotion.com' },
+            about: 'Cryptocurrency market data',
+          }),
+        }}
+      />
       <Link href="/" className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-300 mb-6 transition-colors">
         <ArrowLeft className="h-4 w-4" /> Markets
       </Link>
@@ -47,9 +62,11 @@ export default function TopGainersPage() {
         <TrendingUp className="h-6 w-6 text-emerald-400" />
         <div>
           <h1 className="text-2xl font-bold text-white">Top Crypto Gainers</h1>
-          <p className="text-sm text-zinc-400">Best performing coins — filter by time range, volume, and market cap</p>
+          <p className="text-sm text-zinc-400">Research large upside moves by timeframe, volume, and market cap — informational only</p>
         </div>
       </div>
+
+      <TopListContextPanel kind="gainers" />
 
       <GainersClient mode="gainers" />
     </main>
