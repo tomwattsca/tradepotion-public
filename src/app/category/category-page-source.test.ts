@@ -2,8 +2,15 @@ import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
 const source = readFileSync('src/app/category/[slug]/page.tsx', 'utf8');
+const nextConfigSource = readFileSync('next.config.mjs', 'utf8');
 
 describe('category page SEO/CRO source guards', () => {
+
+  it('consolidates the legacy DeFi category alias into the canonical category URL', () => {
+    expect(nextConfigSource).toContain("source: '/category/defi'");
+    expect(nextConfigSource).toContain("destination: '/category/decentralized-finance-defi'");
+  });
+
   it('keeps category pages connected to alert/search actions and compliance context', () => {
     expect(source).toContain('data-event="price_alert_click"');
     expect(source).toContain('data-cta-location="category_hero"');
