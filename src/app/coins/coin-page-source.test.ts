@@ -13,9 +13,11 @@ describe('coin page alert/tracking source guards', () => {
   });
 
   it('aligns GSC-visible coin pages with price and market-cap search intent', () => {
-    expect(coinPageSource).toContain('`${name} (${symbol}) Price, Market Cap & Alerts`');
-    expect(coinPageSource).toContain('{coin.name} price');
-    expect(coinPageSource).toContain('Live USD price, market cap, 24h volume, chart history');
+    expect(coinPageSource).toContain('`${name} (${symbol}) Coin Price, Market Cap & Alerts`');
+    expect(coinPageSource).toContain('{coin.name} coin price');
+    expect(coinPageSource).toContain('Live USD coin/token price, market cap, 24h volume, chart history');
+    expect(coinPageSource).toContain('{coinName} coin, token, and crypto price context');
+    expect(coinPageSource).toContain('Coin research guide');
     expect(coinPageSource).toContain('non-advisory price alerts for {coin.name}');
   });
 
@@ -32,6 +34,8 @@ describe('coin page alert/tracking source guards', () => {
     expect(coinPageSource).not.toContain("'@type': 'Product'");
     expect(coinPageSource).not.toContain('InStock');
     expect(coinPageSource).not.toContain('>Buy ');
+    expect(coinPageSource).not.toContain('Trade now');
+    expect(coinPageSource).toContain('informational market data and research links only');
   });
 
   it('keeps GSC-visible coin URLs renderable during CoinGecko rate limits', () => {
