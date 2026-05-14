@@ -4,7 +4,7 @@ import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import Image from 'next/image';
-import { ArrowLeft, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, AlertTriangle, Bell, Search } from 'lucide-react';
 import { Metadata } from 'next';
 import ShareCompareButton from '@/components/ShareCompareButton';
 import CoinCompareSelector from '@/components/CoinCompareSelector';
@@ -161,6 +161,71 @@ function ComparisonJsonLd({ pair, coinAName, coinBName }: { pair: string; coinAN
   );
 }
 
+function ComparisonDecisionPanel({
+  coinAName,
+  coinASymbol,
+  coinAId,
+  coinBName,
+  coinBSymbol,
+  coinBId,
+}: {
+  coinAName: string;
+  coinASymbol: string;
+  coinAId: string;
+  coinBName: string;
+  coinBSymbol: string;
+  coinBId: string;
+}) {
+  return (
+    <section className="mb-8 rounded-xl border border-zinc-800 bg-zinc-900/80 p-4 sm:p-5">
+      <div className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_260px] lg:items-center">
+        <div>
+          <p className="mb-2 text-xs font-medium uppercase tracking-[0.18em] text-violet-300">Comparison research workflow</p>
+          <h2 className="text-lg font-semibold text-white">Compare the pair, then track the coin that matters</h2>
+          <p className="mt-2 text-sm leading-6 text-zinc-400">
+            Use this page to compare live price, market cap, volume, supply, and normalised performance for {coinAName} and {coinBName}.
+            If one side deserves follow-up, open its coin page to set a non-advisory price alert or continue with broader market search.
+          </p>
+        </div>
+        <div className="grid gap-2 text-sm">
+          <Link
+            href={`/coins/${coinAId}#alert`}
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-violet-600 px-3 py-2 font-medium text-white transition-colors hover:bg-violet-500"
+            data-event="price_alert_click"
+            data-cta-location="compare_coin_a"
+            data-coin-id={coinAId}
+            aria-label={`Set a price alert for ${coinAName}`}
+          >
+            <Bell className="h-4 w-4" />
+            Track {coinASymbol.toUpperCase()}
+          </Link>
+          <Link
+            href={`/coins/${coinBId}#alert`}
+            className="inline-flex items-center justify-center gap-2 rounded-lg bg-zinc-800 px-3 py-2 font-medium text-zinc-100 transition-colors hover:bg-zinc-700"
+            data-event="price_alert_click"
+            data-cta-location="compare_coin_b"
+            data-coin-id={coinBId}
+            aria-label={`Set a price alert for ${coinBName}`}
+          >
+            <Bell className="h-4 w-4" />
+            Track {coinBSymbol.toUpperCase()}
+          </Link>
+          <Link
+            href="/search"
+            className="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-700 px-3 py-2 font-medium text-zinc-300 transition-colors hover:border-violet-500 hover:text-violet-200"
+          >
+            <Search className="h-4 w-4" />
+            Search more coins
+          </Link>
+        </div>
+      </div>
+      <p className="mt-4 text-xs text-zinc-500">
+        Data is sourced from CoinGecko where available. Trade Potion comparison pages are informational market-research tools, not recommendations to buy, sell, or trade crypto assets.
+      </p>
+    </section>
+  );
+}
+
 function DataUnavailable({ pair }: { pair: string }) {
   const ids = parsePair(pair);
   const label = ids
@@ -284,6 +349,15 @@ export default async function ComparePage({ params }: Props) {
 
       {/* Dynamic coin selector */}
       <CoinCompareSelector currentPair={params.pair} />
+
+      <ComparisonDecisionPanel
+        coinAName={a.name}
+        coinASymbol={a.symbol}
+        coinAId={a.id}
+        coinBName={b.name}
+        coinBSymbol={b.symbol}
+        coinBId={b.id}
+      />
 
       {/* Header */}
       <div className="flex items-center justify-center gap-6 mb-8">
