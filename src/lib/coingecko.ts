@@ -1,3 +1,6 @@
+import { query } from '@/lib/db';
+import type { Coin } from '@/types';
+
 const BASE_URL = 'https://api.coingecko.com/api/v3';
 
 const DEFAULT_HEADERS: Record<string, string> = {
@@ -191,4 +194,76 @@ export async function getMultipleCoins(ids: string[]) {
     sparkline: 'false',
     price_change_percentage: '7d,30d',
   });
+}
+
+
+interface CachedMarketCoinRow {
+  id: string;
+  slug: string;
+  name: string;
+  symbol: string;
+  image_url: string | null;
+  price_usd: string | number | null;
+  market_cap: string | number | null;
+  volume_24h: string | number | null;
+  price_change_24h: string | number | null;
+  captured_at: Date | string | null;
+}
+
+function toNumber(value: string | number | null | undefined): number {
+  const parsed = typeof value === 'number' ? value : Number(value ?? 0);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+export async function getCachedTopCoins(limit = 100): Promise<Coin[]> {
+  const rows = await query<CachedMarketCoinRow>(`
+    SELECT DISTINCT ON (c.id)
+      c.id,
+      c.slug,
+      c.name,
+      c.symbol,
+      c.image_url,
+      ps.price_usd,
+      ps.market_cap,
+      ps.volume_24h,
+      ps.price_change_24h,
+      ps.captured_at
+    FROM coins c
+    JOIN price_snapshots ps ON ps.coin_id = c.id
+    WHERE ps.price_usd IS NOT NULL
+    ORDER BY c.id, ps.captured_at DESC
+  `);
+
+  return rows
+    .map((row) => ({
+      id: row.slug || row.id,
+      symbol: row.symbol,
+      name: row.name,
+      image: row.image_url || '/favicon.ico',
+      current_price: toNumber(row.price_usd),
+      market_cap: toNumber(row.market_cap),
+      market_cap_rank: 0,
+      fully_diluted_valuation: null,
+      total_volume: toNumber(row.volume_24h),
+      high_24h: 0,
+      low_24h: 0,
+      price_change_24h: 0,
+      price_change_percentage_24h: toNumber(row.price_change_24h),
+      market_cap_change_24h: 0,
+      market_cap_change_percentage_24h: 0,
+      circulating_supply: 0,
+      total_supply: null,
+      max_supply: null,
+      ath: 0,
+      ath_change_percentage: 0,
+      ath_date: '',
+      atl: 0,
+      atl_change_percentage: 0,
+      atl_date: '',
+      last_updated: row.captured_at ? new Date(row.captured_at).toISOString() : '',
+      sparkline_in_7d: { price: [] },
+    }))
+    .sort((a, b) => b.market_cap - a.market_cap)
+    .slice(0, limit)
+    .map((coin, index) => ({ ...coin, market_cap_rank: index + 1 }));
 }

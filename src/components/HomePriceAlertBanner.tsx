@@ -61,8 +61,11 @@ export default function HomePriceAlertBanner({ topCoins }: Props) {
         <Bell className="h-5 w-5 text-violet-400" />
         <h2 className="text-base font-semibold text-white">Set a Price Alert</h2>
       </div>
-      <p className="text-xs text-zinc-400 mb-4">
+      <p className="text-xs text-zinc-400 mb-2">
         Get notified by email when any coin hits your target price.
+      </p>
+      <p className="mb-4 text-xs leading-5 text-zinc-500">
+        Alerts are informational market-data notifications only. Confirm prices, venue availability, and regional rules independently; no investment advice.
       </p>
 
       {status === 'success' ? (
@@ -91,6 +94,7 @@ export default function HomePriceAlertBanner({ topCoins }: Props) {
           <div>
             <label className="block text-xs text-zinc-500 mb-1">Coin</label>
             <select
+              disabled={topCoins.length === 0}
               value={coinId}
               onChange={(e) => {
                 setCoinId(e.target.value);
@@ -98,6 +102,7 @@ export default function HomePriceAlertBanner({ topCoins }: Props) {
               }}
               className="w-full rounded-lg bg-zinc-800 border border-zinc-700 px-3 py-2 text-sm text-white focus:outline-none focus:border-violet-500 transition-colors h-[38px]"
             >
+              {topCoins.length === 0 && <option value="">Market data unavailable</option>}
               {topCoins.map((c) => (
                 <option key={c.id} value={c.id}>
                   {c.name} ({c.symbol.toUpperCase()})
@@ -147,12 +152,12 @@ export default function HomePriceAlertBanner({ topCoins }: Props) {
             )}
             <button
               type="submit"
-              disabled={status === 'loading'}
+              disabled={status === 'loading' || topCoins.length === 0}
               data-event="price_alert_click"
               data-cta-location="home_alert_form"
               className="w-full rounded-lg bg-violet-600 hover:bg-violet-500 disabled:opacity-50 px-4 py-2 text-sm font-medium text-white transition-colors h-[38px]"
             >
-              {status === 'loading' ? 'Setting…' : 'Set Alert'}
+              {topCoins.length === 0 ? 'Market data unavailable' : status === 'loading' ? 'Setting…' : 'Set Alert'}
             </button>
           </div>
         </form>

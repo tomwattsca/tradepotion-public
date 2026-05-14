@@ -123,6 +123,14 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
         </div>
 
         <div className="divide-y divide-zinc-800/40">
+          {paginated.length === 0 && (
+            <div className="px-4 py-10 text-center">
+              <p className="text-sm font-medium text-zinc-300">Market table data is temporarily unavailable.</p>
+              <p className="mx-auto mt-2 max-w-md text-xs leading-5 text-zinc-500">
+                CoinGecko data can be rate-limited or delayed. Try search, top-list pages, or check back shortly for refreshed market rows.
+              </p>
+            </div>
+          )}
           {paginated.map((coin, rowIdx) => {
             const pct24h = coin.price_change_percentage_24h;
             const pct1h = coin.price_change_percentage_1h_in_currency ?? null;
