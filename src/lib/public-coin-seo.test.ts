@@ -13,10 +13,11 @@ describe('public coin SEO retention list', () => {
   });
 
   it('deduplicates retained IDs that already exist in the cached sitemap rows', () => {
-    const merged = mergeCoinIdsForSitemap(['bitcoin', 'altlayer', 'aria-ai', 'ethereum']);
+    const merged = mergeCoinIdsForSitemap(['bitcoin', 'altlayer', 'aria-ai', 'ethereum', 'zero-gravity']);
 
     expect(merged.filter((id) => id === 'altlayer')).toHaveLength(1);
     expect(merged.filter((id) => id === 'aria-ai')).toHaveLength(1);
-    expect(merged).toEqual(['altlayer', 'aria-ai', 'stakestone', 'bitcoin', 'ethereum']);
+    expect(merged.filter((id) => id === 'zero-gravity')).toHaveLength(1);
+    expect(merged).toEqual(['altlayer', 'aria-ai', 'stakestone', 'zero-gravity', 'bitcoin', 'ethereum']);
   });
 });
