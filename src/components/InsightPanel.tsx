@@ -88,18 +88,19 @@ export default function InsightPanel({
   const currentRatio = marketCap > 0 ? volume24h / marketCap : 0;
 
   // Stats
-  const min30 = dailyRatios.length ? Math.min(...dailyRatios) : 0;
-  const max30 = dailyRatios.length ? Math.max(...dailyRatios) : 0;
-  const avg30 = dailyRatios.length
+  const hasHistoryBaseline = dailyRatios.length >= 5 && dailyRatios.some((ratio) => ratio > 0);
+  const min30 = hasHistoryBaseline ? Math.min(...dailyRatios) : 0;
+  const max30 = hasHistoryBaseline ? Math.max(...dailyRatios) : 0;
+  const avg30 = hasHistoryBaseline
     ? dailyRatios.reduce((a, b) => a + b, 0) / dailyRatios.length
     : 0;
 
   // Anomaly: top 10% = above 90th percentile of 30-day ratios
-  const sorted = [...dailyRatios].sort((a, b) => a - b);
+  const sorted = hasHistoryBaseline ? [...dailyRatios].sort((a, b) => a - b) : [];
   const p90 = sorted.length
     ? sorted[Math.floor(sorted.length * 0.9)]
     : Infinity;
-  const isAnomaly = dailyRatios.length >= 5 && currentRatio > p90;
+  const isAnomaly = hasHistoryBaseline && currentRatio > p90;
 
   const { text: rLabel, color: rColor } = ratioLabel(currentRatio);
 
@@ -147,7 +148,7 @@ export default function InsightPanel({
         </div>
 
         {/* 30-day bar chart */}
-        {barData.length > 0 && (
+        {hasHistoryBaseline && barData.length > 0 && (
           <div className="flex items-end gap-px h-12 mb-2" title="30-day Vol/MCap history">
             {barData.map((r, i) => {
               const pct = barMax > 0 ? (r / barMax) * 100 : 0;
@@ -181,20 +182,29 @@ export default function InsightPanel({
         </div>
 
         {/* 30-day stats row */}
-        <div className="grid grid-cols-3 gap-2 text-center">
-          <div>
-            <p className="text-xs text-zinc-500">30d Low</p>
-            <p className="text-xs font-medium text-zinc-300">{(min30 * 100).toFixed(2)}%</p>
+        {hasHistoryBaseline ? (
+          <div className="grid grid-cols-3 gap-2 text-center">
+            <div>
+              <p className="text-xs text-zinc-500">30d Low</p>
+              <p className="text-xs font-medium text-zinc-300">{(min30 * 100).toFixed(2)}%</p>
+            </div>
+            <div>
+              <p className="text-xs text-zinc-500">30d Avg</p>
+              <p className="text-xs font-medium text-zinc-300">{(avg30 * 100).toFixed(2)}%</p>
+            </div>
+            <div>
+              <p className="text-xs text-zinc-500">30d High</p>
+              <p className="text-xs font-medium text-zinc-300">{(max30 * 100).toFixed(2)}%</p>
+            </div>
           </div>
-          <div>
-            <p className="text-xs text-zinc-500">30d Avg</p>
-            <p className="text-xs font-medium text-zinc-300">{(avg30 * 100).toFixed(2)}%</p>
+        ) : (
+          <div className="rounded-lg border border-zinc-800 bg-zinc-950 px-3 py-2">
+            <p className="text-xs font-medium text-zinc-300">30d baseline unavailable</p>
+            <p className="mt-1 text-xs text-zinc-500">
+              Historical volume-to-market-cap data is not available for this coin right now, so today&apos;s ratio should not be treated as an unusual-activity signal.
+            </p>
           </div>
-          <div>
-            <p className="text-xs text-zinc-500">30d High</p>
-            <p className="text-xs font-medium text-zinc-300">{(max30 * 100).toFixed(2)}%</p>
-          </div>
-        </div>
+        )}
 
         {/* Anomaly flag */}
         {isAnomaly && (
@@ -211,10 +221,20 @@ export default function InsightPanel({
 
         {/* Context blurb */}
         <p className="mt-2 text-xs text-zinc-600">
-          Vol/MCap measures how much {symbol.toUpperCase()} is being traded
-          relative to its size. A higher ratio often signals unusual market
-          activity — a spike above the 30-day average may indicate news, a
-          large order, or a liquidation cascade.
+          {hasHistoryBaseline ? (
+            <>
+              Vol/MCap measures how much {symbol.toUpperCase()} is being traded
+              relative to its size. A higher ratio can signal unusual market
+              activity versus this page&apos;s 30-day baseline, but it is not a
+              forecast or recommendation.
+            </>
+          ) : (
+            <>
+              Vol/MCap measures how much {symbol.toUpperCase()} is being traded
+              relative to its size. Trade Potion labels the missing 30-day
+              baseline instead of manufacturing a 0.00% average.
+            </>
+          )}
         </p>
       </div>
 

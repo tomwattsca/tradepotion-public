@@ -3,6 +3,7 @@ import { describe, expect, it } from 'vitest';
 
 const coinPageSource = readFileSync('src/app/coins/[slug]/page.tsx', 'utf8');
 const alertFormSource = readFileSync('src/components/PriceAlertForm.tsx', 'utf8');
+const insightPanelSource = readFileSync('src/components/InsightPanel.tsx', 'utf8');
 
 describe('coin page alert/tracking source guards', () => {
   it('keeps coin pages connected to the existing price-alert flow', () => {
@@ -45,4 +46,13 @@ describe('coin page alert/tracking source guards', () => {
     expect(coinPageSource).toContain('priceSnapshots');
     expect(coinPageSource).toContain('if (!coin) {\n      notFound();\n    }');
   });
+
+  it('labels unavailable 30-day Vol/MCap baselines instead of showing false zero history', () => {
+    expect(insightPanelSource).toContain('hasHistoryBaseline');
+    expect(insightPanelSource).toContain('30d baseline unavailable');
+    expect(insightPanelSource).toContain('instead of manufacturing a 0.00% average');
+    expect(insightPanelSource).toContain('should not be treated as an unusual-activity signal');
+    expect(insightPanelSource).toContain('hasHistoryBaseline && currentRatio > p90');
+  });
+
 });
