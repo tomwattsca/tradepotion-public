@@ -12,6 +12,8 @@ export interface Coin {
   low_24h: number;
   price_change_24h: number;
   price_change_percentage_1h_in_currency?: number;
+  price_change_percentage_7d_in_currency?: number;
+  price_change_percentage_30d_in_currency?: number;
   price_change_percentage_24h: number;
   market_cap_change_24h: number;
   market_cap_change_percentage_24h: number;
@@ -32,7 +34,8 @@ export interface Coin {
 // Use CoinDetailImage when working with CoinDetail image field
 export type CoinDetailImage = { thumb: string; small: string; large: string };
 
-export interface CoinDetail extends Coin {
+export interface CoinDetail extends Omit<Coin, 'image'> {
+  image: CoinDetailImage;
   description: { en: string };
   categories: string[];
   links: {

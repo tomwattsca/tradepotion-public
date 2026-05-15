@@ -42,7 +42,10 @@ describe('coin page alert/tracking source guards', () => {
   it('keeps GSC-visible coin URLs renderable during CoinGecko rate limits', () => {
     expect(coinPageSource).toContain('getCoinDetailWithCacheFallback');
     expect(coinPageSource).toContain('getCachedCoinDetail');
+    expect(coinPageSource).toContain('getCoinMarketDetailFallback');
+    expect(coinPageSource).toContain('getMultipleCoins([coinId])');
     expect(coinPageSource).toContain('CoinGecko detail unavailable');
+    expect(coinPageSource).toContain('trying market and cached public data');
     expect(coinPageSource).toContain('priceSnapshots');
     expect(coinPageSource).toContain('if (!coin) {\n      notFound();\n    }');
   });

@@ -1,4 +1,4 @@
-import { getCoinDetail, getCoinMarketChart, filterCategories } from '@/lib/coingecko';
+import { getCoinDetail, getCoinMarketChart, getMultipleCoins, filterCategories } from '@/lib/coingecko';
 import type { CoinDetail, CoinDetailImage } from '@/types';
 import { formatPrice, formatMarketCap, formatPct, pctColor } from '@/lib/utils';
 import PriceChart from '@/components/PriceChart';
@@ -42,6 +42,48 @@ function numericValue(value: unknown): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+
+function coinMarketToDetail(coin: import('@/types').Coin): CoinDetail {
+  const image = coin.image || FALLBACK_IMAGE_URL;
+  return {
+    ...coin,
+    image: { thumb: image, small: image, large: image } as CoinDetailImage,
+    description: { en: '' },
+    categories: [],
+    links: {
+      homepage: [],
+      blockchain_site: [],
+      official_forum_url: [],
+      twitter_screen_name: '',
+      telegram_channel_identifier: '',
+      subreddit_url: '',
+    },
+    market_data: {
+      current_price: { usd: numericValue(coin.current_price) },
+      price_change_percentage_24h: numericValue(coin.price_change_percentage_24h),
+      price_change_percentage_7d: numericValue(coin.price_change_percentage_7d_in_currency),
+      price_change_percentage_30d: numericValue((coin as { price_change_percentage_30d_in_currency?: number }).price_change_percentage_30d_in_currency),
+      price_change_percentage_1y: numericValue(coin.price_change_percentage_1h_in_currency),
+      market_cap: { usd: numericValue(coin.market_cap) },
+      total_volume: { usd: numericValue(coin.total_volume) },
+      circulating_supply: numericValue(coin.circulating_supply),
+      total_supply: coin.total_supply ?? null,
+      ath: { usd: numericValue(coin.ath) },
+      atl: { usd: numericValue(coin.atl) },
+    },
+  };
+}
+
+async function getCoinMarketDetailFallback(coinId: string): Promise<CoinDetail | null> {
+  try {
+    const [coin] = await getMultipleCoins([coinId]);
+    return coin ? coinMarketToDetail(coin) : null;
+  } catch (error) {
+    console.warn(`[CoinPage] CoinGecko market fallback failed for ${coinId}`, error);
+    return null;
+  }
+}
+
 async function getCachedCoinDetail(coinId: string): Promise<CoinDetail | null> {
   try {
     const [coinRow] = await db
@@ -69,7 +111,7 @@ async function getCachedCoinDetail(coinId: string): Promise<CoinDetail | null> {
       id: coinRow.id,
       name: coinRow.name,
       symbol: coinRow.symbol,
-      image: { thumb: image, small: image, large: image } as unknown as string,
+      image: { thumb: image, small: image, large: image } as CoinDetailImage,
       current_price: price,
       market_cap: marketCap,
       market_cap_rank: 0,
@@ -125,8 +167,8 @@ async function getCoinDetailWithCacheFallback(coinId: string): Promise<CoinDetai
   try {
     return await getCoinDetail(coinId);
   } catch (error) {
-    console.warn(`[CoinPage] CoinGecko detail unavailable for ${coinId}; trying cached public data`, error);
-    return getCachedCoinDetail(coinId);
+    console.warn(`[CoinPage] CoinGecko detail unavailable for ${coinId}; trying market and cached public data`, error);
+    return (await getCoinMarketDetailFallback(coinId)) ?? getCachedCoinDetail(coinId);
   }
 }
 
