@@ -7,6 +7,10 @@ const configSource = fs.readFileSync(path.join(root, 'next.config.mjs'), 'utf8')
 
 describe('legacy public route redirects', () => {
   it('uses permanent server-side redirects for existing thin legacy route shells', () => {
+    expect(configSource).toContain("source: '/category/defi', destination: '/category/decentralized-finance-defi'");
+    expect(configSource).toContain("source: '/coin/:slug', destination: '/coins/:slug'");
+    expect(configSource).toContain("source: '/compare', destination: '/compare/bitcoin-vs-ethereum'");
+    expect(configSource).toContain("source: '/movers/volume-spikes', destination: '/top/vol-spikes'");
     expect(configSource).toContain("source: '/defi', destination: '/category/decentralized-finance-defi'");
     expect(configSource).toContain("source: '/layer2', destination: '/category/layer-2'");
     expect(configSource).toContain("source: '/meme', destination: '/category/meme-token'");
@@ -22,6 +26,10 @@ describe('legacy public route redirects', () => {
 
   it('keeps legacy sources out of the XML sitemap instead of indexing redirect shells', () => {
     const sitemapSource = fs.readFileSync(path.join(root, 'src/app/sitemap.ts'), 'utf8');
+    expect(sitemapSource).not.toContain('tradepotion.com/category/defi');
+    expect(sitemapSource).not.toContain('tradepotion.com/coin/');
+    expect(sitemapSource).not.toContain('tradepotion.com/compare,');
+    expect(sitemapSource).not.toContain('tradepotion.com/movers/volume-spikes');
     expect(sitemapSource).not.toContain('tradepotion.com/defi');
     expect(sitemapSource).not.toContain('tradepotion.com/layer2');
     expect(sitemapSource).not.toContain('tradepotion.com/meme');
