@@ -36,8 +36,66 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           {`
             window.dataLayer = window.dataLayer || [];
             function gtag(){dataLayer.push(arguments);}
+            window.gtag = window.gtag || gtag;
             gtag('js', new Date());
-            gtag('config', 'G-XHMGHP5MWE');
+            gtag('config', 'G-XHMGHP5MWE', { anonymize_ip: true });
+          `}
+        </Script>
+        <Script id="delegated-event-tracking" strategy="afterInteractive">
+          {`
+            (function () {
+              var allowedEvents = {
+                price_alert_click: true,
+                exchange_outbound_click: true,
+                internal_link_click: true
+              };
+
+              function getSameSiteLinkUrl(element) {
+                var anchor = element.closest && element.closest('a[href]');
+                if (!anchor) return undefined;
+                try {
+                  var url = new URL(anchor.href, window.location.href);
+                  if (url.origin !== window.location.origin) return undefined;
+                  return url.pathname + url.search + url.hash;
+                } catch (error) {
+                  return undefined;
+                }
+              }
+
+              function cleanValue(value) {
+                if (!value) return undefined;
+                if (/@/.test(value)) return undefined;
+                return String(value).slice(0, 120);
+              }
+
+              document.addEventListener('click', function (event) {
+                var target = event.target && event.target.closest
+                  ? event.target.closest('[data-event]')
+                  : null;
+                if (!target) return;
+
+                var eventName = target.getAttribute('data-event');
+                if (!eventName || !allowedEvents[eventName]) return;
+                if (typeof window.gtag !== 'function') return;
+
+                var params = {
+                  cta_location: cleanValue(target.getAttribute('data-cta-location')),
+                  coin_id: cleanValue(target.getAttribute('data-coin-id')),
+                  coin_symbol: cleanValue(target.getAttribute('data-coin-symbol')),
+                  exchange_name: cleanValue(target.getAttribute('data-exchange-name')),
+                  page_type: cleanValue(target.getAttribute('data-page-type')),
+                  sponsored: cleanValue(target.getAttribute('data-sponsored')),
+                  link_url: cleanValue(getSameSiteLinkUrl(target)),
+                  page_location: window.location.pathname
+                };
+
+                Object.keys(params).forEach(function (key) {
+                  if (params[key] === undefined) delete params[key];
+                });
+
+                window.gtag('event', eventName, params);
+              }, { capture: true });
+            })();
           `}
         </Script>
                 <script
