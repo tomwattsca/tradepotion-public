@@ -9,9 +9,15 @@ interface Props {
 export default function ExchangeCTAs({ coinSymbol, coinName }: Props) {
   return (
     <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
-      <h3 className="text-sm font-semibold text-zinc-300 mb-3">
-        Research {coinName} markets
-      </h3>
+      <div className="mb-3">
+        <p className="text-xs font-medium uppercase tracking-[0.18em] text-violet-300">Availability research</p>
+        <h3 className="mt-1 text-sm font-semibold text-zinc-300">
+          Research {coinName} market venues
+        </h3>
+        <p className="mt-1 text-xs leading-relaxed text-zinc-500">
+          Use these neutral links to check whether the exact {coinSymbol.toUpperCase()} market is listed, liquid, and available in your region.
+        </p>
+      </div>
       <div className="flex flex-col gap-2">
         {enabledExchangePartners.map((ex) => (
           <a
@@ -26,7 +32,7 @@ export default function ExchangeCTAs({ coinSymbol, coinName }: Props) {
             data-page-type="coin"
             data-cta-location="coin_sidebar"
             data-sponsored={ex.sponsored ? 'true' : 'false'}
-            aria-label={`Research ${coinName} markets on ${ex.name}`}
+            aria-label={`Research ${coinName} market availability on ${ex.name}`}
           >
             <div>
               <span className="text-sm font-semibold">{ex.name}</span>
@@ -38,8 +44,16 @@ export default function ExchangeCTAs({ coinSymbol, coinName }: Props) {
           </a>
         ))}
       </div>
+      <div className="mt-3 rounded-lg border border-zinc-800 bg-zinc-950/70 p-3">
+        <h4 className="text-xs font-semibold uppercase tracking-wide text-zinc-300">Before acting on a venue result</h4>
+        <ul className="mt-2 space-y-1 text-xs leading-relaxed text-zinc-500">
+          <li>Confirm the listing is the exact {coinSymbol.toUpperCase()} asset and network.</li>
+          <li>Check regional availability, fees, liquidity, spread, custody, and withdrawal rules directly with the venue.</li>
+          <li>Treat every outbound result as independent research, not a Trade Potion recommendation or sponsored ranking.</li>
+        </ul>
+      </div>
       <p className="mt-3 text-xs text-zinc-600">
-        Outbound exchange links are for independent research. Trade Potion does not provide financial advice; verify availability, fees, and regional rules directly with each exchange.
+        Trade Potion does not provide financial advice, execute trades, or verify venue access. Partner links stay clearly marked through non-PII tracking hooks.
       </p>
     </div>
   );

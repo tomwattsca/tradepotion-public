@@ -5,6 +5,7 @@ const coinPageSource = readFileSync('src/app/coins/[slug]/page.tsx', 'utf8');
 const alertFormSource = readFileSync('src/components/PriceAlertForm.tsx', 'utf8');
 const insightPanelSource = readFileSync('src/components/InsightPanel.tsx', 'utf8');
 const priceChartSource = readFileSync('src/components/PriceChart.tsx', 'utf8');
+const exchangeCtasSource = readFileSync('src/components/ExchangeCTAs.tsx', 'utf8');
 
 describe('coin page alert/tracking source guards', () => {
   it('keeps coin pages connected to the existing price-alert flow', () => {
@@ -21,6 +22,20 @@ describe('coin page alert/tracking source guards', () => {
     expect(coinPageSource).toContain('{coinName} coin, token, and crypto price context');
     expect(coinPageSource).toContain('Coin research guide');
     expect(coinPageSource).toContain('non-advisory price alerts for {coin.name}');
+  });
+
+
+  it('keeps exchange research neutral and useful for availability-intent searches', () => {
+    expect(exchangeCtasSource).toContain('Availability research');
+    expect(exchangeCtasSource).toContain('Research {coinName} market venues');
+    expect(exchangeCtasSource).toContain('check whether the exact {coinSymbol.toUpperCase()} market is listed');
+    expect(exchangeCtasSource).toContain('Confirm the listing is the exact {coinSymbol.toUpperCase()} asset and network');
+    expect(exchangeCtasSource).toContain('regional availability, fees, liquidity, spread, custody, and withdrawal rules');
+    expect(exchangeCtasSource).toContain('not a Trade Potion recommendation or sponsored ranking');
+    expect(exchangeCtasSource).toContain('data-event="exchange_outbound_click"');
+    expect(exchangeCtasSource).toContain("data-sponsored={ex.sponsored ? 'true' : 'false'}");
+    expect(exchangeCtasSource).not.toContain('>Buy ');
+    expect(exchangeCtasSource).not.toContain('Trade now');
   });
 
   it('keeps the reusable price alert form measurable without collecting PII in attributes', () => {
