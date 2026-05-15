@@ -28,4 +28,16 @@ describe('homepage market-data fallback posture', () => {
     expect(alertSource).toContain('disabled={topCoins.length === 0}');
     expect(alertSource).toContain('Market data unavailable');
   });
+
+  it('adds privacy-safe internal-link hooks to existing homepage handoffs', () => {
+    expect(homeSource).toContain('data-event="internal_link_click"');
+    expect(homeSource).toContain('data-cta-location="home_hero_search"');
+    expect(homeSource).toContain('data-cta-location="home_top_gainers"');
+    expect(homeSource).toContain('data-cta-location="home_top_losers"');
+    expect(homeSource).toContain('data-cta-location="home_gainer_coin"');
+    expect(homeSource).toContain('data-cta-location="home_loser_coin"');
+    expect(homeSource).toContain('data-coin-id={coin.id}');
+    expect(homeSource).toContain('data-coin-symbol={coin.symbol}');
+  });
+
 });

@@ -62,12 +62,16 @@ export default function TopListContextPanel({ kind }: { kind: TopListKind }) {
           <div className="grid grid-cols-2 gap-2">
             <Link
               href="/watchlist"
+              data-event="internal_link_click"
+              data-cta-location={`${copy.ctaLocation}_watchlist`}
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs font-medium text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
             >
               <Star className="h-3.5 w-3.5" /> Watchlist
             </Link>
             <Link
               href="/search"
+              data-event="internal_link_click"
+              data-cta-location={`${copy.ctaLocation}_search`}
               className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs font-medium text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
             >
               <Search className="h-3.5 w-3.5" /> Search coins

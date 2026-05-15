@@ -212,6 +212,8 @@ function ComparisonDecisionPanel({
           </Link>
           <Link
             href="/search"
+            data-event="internal_link_click"
+            data-cta-location="compare_search_more"
             className="inline-flex items-center justify-center gap-2 rounded-lg border border-zinc-700 px-3 py-2 font-medium text-zinc-300 transition-colors hover:border-violet-500 hover:text-violet-200"
           >
             <Search className="h-4 w-4" />

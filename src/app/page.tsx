@@ -83,6 +83,8 @@ export default async function HomePage() {
               </a>
               <Link
                 href="/search"
+                data-event="internal_link_click"
+                data-cta-location="home_hero_search"
                 className="inline-flex items-center gap-2 rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 transition-colors hover:border-zinc-500 hover:bg-zinc-900"
               >
                 <Search className="h-4 w-4" />
@@ -151,7 +153,12 @@ export default async function HomePage() {
                 <TrendingUp className="h-4 w-4 text-emerald-400" />
                 <h2 className="text-sm font-semibold text-zinc-200">Top Gainers (24h)</h2>
               </div>
-              <Link href="/top/gainers" className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1">
+              <Link
+                href="/top/gainers"
+                data-event="internal_link_click"
+                data-cta-location="home_top_gainers"
+                className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1"
+              >
                 See all <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
@@ -162,7 +169,15 @@ export default async function HomePage() {
                 </p>
               )}
               {gainers.map((coin) => (
-                <Link key={coin.id} href={`/coins/${coin.id}`} className="flex items-center gap-2 text-sm hover:bg-zinc-800 rounded px-1 py-0.5 transition-colors">
+                <Link
+                  key={coin.id}
+                  href={`/coins/${coin.id}`}
+                  data-event="internal_link_click"
+                  data-cta-location="home_gainer_coin"
+                  data-coin-id={coin.id}
+                  data-coin-symbol={coin.symbol}
+                  className="flex items-center gap-2 text-sm hover:bg-zinc-800 rounded px-1 py-0.5 transition-colors"
+                >
                   <Image src={coin.image} alt={coin.name} width={18} height={18} className="rounded-full shrink-0" />
                   <span className="text-zinc-300 flex-1 truncate">{coin.name}</span>
                   <span className={`font-medium shrink-0 ${pctColor(coin.price_change_percentage_24h)}`}>
@@ -179,7 +194,12 @@ export default async function HomePage() {
                 <TrendingDown className="h-4 w-4 text-red-400" />
                 <h2 className="text-sm font-semibold text-zinc-200">Top Losers (24h)</h2>
               </div>
-              <Link href="/top/losers" className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1">
+              <Link
+                href="/top/losers"
+                data-event="internal_link_click"
+                data-cta-location="home_top_losers"
+                className="text-xs text-violet-400 hover:text-violet-300 flex items-center gap-1"
+              >
                 See all <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
@@ -190,7 +210,15 @@ export default async function HomePage() {
                 </p>
               )}
               {losers.map((coin) => (
-                <Link key={coin.id} href={`/coins/${coin.id}`} className="flex items-center gap-2 text-sm hover:bg-zinc-800 rounded px-1 py-0.5 transition-colors">
+                <Link
+                  key={coin.id}
+                  href={`/coins/${coin.id}`}
+                  data-event="internal_link_click"
+                  data-cta-location="home_loser_coin"
+                  data-coin-id={coin.id}
+                  data-coin-symbol={coin.symbol}
+                  className="flex items-center gap-2 text-sm hover:bg-zinc-800 rounded px-1 py-0.5 transition-colors"
+                >
                   <Image src={coin.image} alt={coin.name} width={18} height={18} className="rounded-full shrink-0" />
                   <span className="text-zinc-300 flex-1 truncate">{coin.name}</span>
                   <span className={`font-medium shrink-0 ${pctColor(coin.price_change_percentage_24h)}`}>

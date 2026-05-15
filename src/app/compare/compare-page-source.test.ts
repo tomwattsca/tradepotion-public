@@ -13,6 +13,8 @@ describe('compare page research and tracking posture', () => {
     expect(source).toContain('data-coin-id={coinBId}');
     expect(source).toContain('aria-label={`Set a price alert for ${coinAName}`}');
     expect(source).toContain('aria-label={`Set a price alert for ${coinBName}`}');
+    expect(source).toContain('data-event="internal_link_click"');
+    expect(source).toContain('data-cta-location="compare_search_more"');
   });
 
   it('keeps comparison copy informational and away from buy/referral/product claims', () => {

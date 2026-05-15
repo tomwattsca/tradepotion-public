@@ -35,6 +35,9 @@ describe('top pages SEO/source guards', () => {
       expect(source).not.toContain('>Buy ');
     }
     expect(topListPanelSource).toContain('data-event="price_alert_click"');
+    expect(topListPanelSource).toContain('data-event="internal_link_click"');
+    expect(topListPanelSource).toContain('`${copy.ctaLocation}_watchlist`');
+    expect(topListPanelSource).toContain('`${copy.ctaLocation}_search`');
     expect(topListPanelSource).toContain('not financial advice');
     expect(topListPanelSource).toContain('CoinGecko');
     expect(topListPanelSource).toContain('top_gainers_context');
