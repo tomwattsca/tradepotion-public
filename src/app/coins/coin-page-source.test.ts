@@ -4,6 +4,7 @@ import { describe, expect, it } from 'vitest';
 const coinPageSource = readFileSync('src/app/coins/[slug]/page.tsx', 'utf8');
 const alertFormSource = readFileSync('src/components/PriceAlertForm.tsx', 'utf8');
 const insightPanelSource = readFileSync('src/components/InsightPanel.tsx', 'utf8');
+const priceChartSource = readFileSync('src/components/PriceChart.tsx', 'utf8');
 
 describe('coin page alert/tracking source guards', () => {
   it('keeps coin pages connected to the existing price-alert flow', () => {
@@ -56,6 +57,15 @@ describe('coin page alert/tracking source guards', () => {
     expect(insightPanelSource).toContain('instead of manufacturing a 0.00% average');
     expect(insightPanelSource).toContain('should not be treated as an unusual-activity signal');
     expect(insightPanelSource).toContain('hasHistoryBaseline && currentRatio > p90');
+  });
+
+  it('shows a visible price-chart fallback instead of a blank card during upstream chart limits', () => {
+    expect(priceChartSource).toContain('data-chart-state={error ?? \'empty\'}');
+    expect(priceChartSource).toContain('Price chart temporarily unavailable');
+    expect(priceChartSource).toContain('Historical chart data can be delayed during upstream market-data limits');
+    expect(priceChartSource).toContain('role="status"');
+    expect(priceChartSource).toContain('aria-live="polite"');
+    expect(priceChartSource).toContain('data-chart-state="ready"');
   });
 
 });
