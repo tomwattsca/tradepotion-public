@@ -28,4 +28,14 @@ describe('Search utility SEO and measurement posture', () => {
   it('keeps search out of the XML sitemap', () => {
     expect(sitemapSource).not.toContain('https://tradepotion.com/search');
   });
+
+  it('keeps the search API resilient with a cached DB fallback when CoinGecko search is unavailable', () => {
+    const routeSource = fs.readFileSync(path.join(process.cwd(), 'src/app/api/search/route.ts'), 'utf8');
+
+    expect(routeSource).toContain('searchCachedCoins');
+    expect(routeSource).toContain("'x-tradepotion-search-source': 'cached-db'");
+    expect(routeSource).toContain('LOWER(c.name) LIKE $1');
+    expect(routeSource).toContain('LOWER(c.symbol) LIKE $1');
+  });
+
 });
