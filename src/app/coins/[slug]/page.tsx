@@ -231,6 +231,10 @@ function CoinMarketContext({
                   key={category}
                   href={`/category/${categorySlug(category)}`}
                   className="rounded-full border border-zinc-700 px-2.5 py-1 text-xs text-violet-300 hover:border-violet-500 hover:text-violet-200"
+                  data-event="internal_link_click"
+                  data-cta-location="coin_market_category"
+                  data-coin-id={symbol.toLowerCase()}
+                  data-category-slug={categorySlug(category)}
                 >
                   {category}
                 </Link>
@@ -273,6 +277,9 @@ function CoinSearchIntentPanel({
         <Link
           href={`/search?q=${encodeURIComponent(coinName)}`}
           className="hidden rounded-lg border border-zinc-700 px-3 py-2 text-xs font-medium text-zinc-300 transition-colors hover:border-violet-500 hover:text-violet-200 sm:inline-flex"
+          data-event="internal_link_click"
+          data-cta-location="coin_research_search"
+          data-coin-id={symbol.toLowerCase()}
         >
           Search {uppercaseSymbol}
         </Link>
@@ -299,7 +306,17 @@ function CoinSearchIntentPanel({
       </div>
       {primaryCategory && (
         <p className="mt-3 text-xs text-zinc-500">
-          Related category: <Link href={`/category/${categorySlug(primaryCategory)}`} className="text-violet-300 hover:text-violet-200">{primaryCategory}</Link>.
+          Related category:{' '}
+          <Link
+            href={`/category/${categorySlug(primaryCategory)}`}
+            className="text-violet-300 hover:text-violet-200"
+            data-event="internal_link_click"
+            data-cta-location="coin_research_category"
+            data-coin-id={symbol.toLowerCase()}
+            data-category-slug={categorySlug(primaryCategory)}
+          >
+            {primaryCategory}
+          </Link>.
         </p>
       )}
     </section>
@@ -446,7 +463,13 @@ export default async function CoinPage({ params }: Props) {
       />
 
       {/* Back */}
-      <Link href="/" className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-300 mb-6 transition-colors">
+      <Link
+        href="/"
+        className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-300 mb-6 transition-colors"
+        data-event="internal_link_click"
+        data-cta-location="coin_back_markets"
+        data-coin-id={coin.id}
+      >
         <ArrowLeft className="h-4 w-4" />
         Markets
       </Link>
@@ -486,6 +509,9 @@ export default async function CoinPage({ params }: Props) {
           <Link
             href={`/search?q=${encodeURIComponent(coin.symbol.toUpperCase())}`}
             className="inline-flex items-center gap-2 rounded-lg border border-zinc-700 px-3 py-2 text-sm font-medium text-zinc-300 hover:border-violet-500 hover:text-violet-200 transition-colors"
+            data-event="internal_link_click"
+            data-cta-location="coin_hero_search"
+            data-coin-id={coin.id}
           >
             <Search className="h-4 w-4" />
             Search markets
@@ -629,12 +655,17 @@ export default async function CoinPage({ params }: Props) {
               <h3 className="text-sm font-semibold text-zinc-300 mb-2">Categories</h3>
               <div className="flex flex-wrap gap-1.5">
                 {filteredCategories.slice(0, 8).map((cat) => (
-                  <span
+                  <Link
                     key={cat}
-                    className="px-2 py-0.5 rounded text-xs bg-zinc-800 text-zinc-400"
+                    href={`/category/${categorySlug(cat)}`}
+                    className="px-2 py-0.5 rounded text-xs bg-zinc-800 text-zinc-400 transition-colors hover:bg-zinc-700 hover:text-violet-200"
+                    data-event="internal_link_click"
+                    data-cta-location="coin_sidebar_category"
+                    data-coin-id={coin.id}
+                    data-category-slug={categorySlug(cat)}
                   >
                     {cat}
-                  </span>
+                  </Link>
                 ))}
               </div>
             </div>

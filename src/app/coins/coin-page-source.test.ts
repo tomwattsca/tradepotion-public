@@ -83,4 +83,16 @@ describe('coin page alert/tracking source guards', () => {
     expect(priceChartSource).toContain('data-chart-state="ready"');
   });
 
+
+  it('adds privacy-safe internal handoff hooks from coin pages to search, markets, and categories', () => {
+    expect(coinPageSource).toContain('data-event="internal_link_click"');
+    expect(coinPageSource).toContain('data-cta-location="coin_back_markets"');
+    expect(coinPageSource).toContain('data-cta-location="coin_hero_search"');
+    expect(coinPageSource).toContain('data-cta-location="coin_research_search"');
+    expect(coinPageSource).toContain('data-cta-location="coin_research_category"');
+    expect(coinPageSource).toContain('data-cta-location="coin_market_category"');
+    expect(coinPageSource).toContain('data-cta-location="coin_sidebar_category"');
+    expect(coinPageSource).toContain('data-category-slug={categorySlug');
+  });
+
 });
