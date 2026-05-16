@@ -22,22 +22,22 @@ export default function Navbar() {
     <nav className="sticky top-0 z-50 border-b border-zinc-800 bg-zinc-950/80 backdrop-blur">
       <div className="mx-auto flex max-w-7xl items-center gap-4 px-4 py-3">
         {/* Logo */}
-        <Link href="/" className="flex items-center gap-2 shrink-0">
+        <Link href="/" data-event="internal_link_click" data-cta-location="global_nav_logo" className="flex items-center gap-2 shrink-0">
           <TrendingUp className="h-5 w-5 text-violet-400" />
           <span className="text-sm font-bold tracking-tight text-white">Trade Potion</span>
         </Link>
 
         {/* Nav links */}
         <div className="hidden md:flex items-center gap-6 text-sm text-zinc-400">
-          <Link href="/" className="hover:text-white transition-colors">Markets</Link>
-          <Link href="/category/decentralized-finance-defi" className="hover:text-white transition-colors">DeFi</Link>
-          <Link href="/category/layer-2" className="hover:text-white transition-colors">Layer 2</Link>
-          <Link href="/category/meme-token" className="hover:text-white transition-colors">Meme</Link>
-          <Link href="/top/gainers" className="hover:text-white transition-colors text-emerald-400/80">Gainers</Link>
-          <Link href="/top/losers" className="hover:text-white transition-colors text-red-400/80">Losers</Link>
-          <Link href="/top/trending" className="hover:text-white transition-colors text-orange-400/80">Trending</Link>
-          <Link href="/top/vol-spikes" className="hover:text-white transition-colors text-yellow-400/80">Vol Spikes</Link>
-          <Link href="/watchlist" className="hover:text-white transition-colors text-amber-400/80">Watchlist</Link>
+          <Link href="/" data-event="internal_link_click" data-cta-location="global_nav_markets" className="hover:text-white transition-colors">Markets</Link>
+          <Link href="/category/decentralized-finance-defi" data-event="internal_link_click" data-cta-location="global_nav_defi" className="hover:text-white transition-colors">DeFi</Link>
+          <Link href="/category/layer-2" data-event="internal_link_click" data-cta-location="global_nav_layer_2" className="hover:text-white transition-colors">Layer 2</Link>
+          <Link href="/category/meme-token" data-event="internal_link_click" data-cta-location="global_nav_meme" className="hover:text-white transition-colors">Meme</Link>
+          <Link href="/top/gainers" data-event="internal_link_click" data-cta-location="global_nav_gainers" className="hover:text-white transition-colors text-emerald-400/80">Gainers</Link>
+          <Link href="/top/losers" data-event="internal_link_click" data-cta-location="global_nav_losers" className="hover:text-white transition-colors text-red-400/80">Losers</Link>
+          <Link href="/top/trending" data-event="internal_link_click" data-cta-location="global_nav_trending" className="hover:text-white transition-colors text-orange-400/80">Trending</Link>
+          <Link href="/top/vol-spikes" data-event="internal_link_click" data-cta-location="global_nav_vol_spikes" className="hover:text-white transition-colors text-yellow-400/80">Vol Spikes</Link>
+          <Link href="/watchlist" data-event="internal_link_click" data-cta-location="global_nav_watchlist" className="hover:text-white transition-colors text-amber-400/80">Watchlist</Link>
         </div>
 
         {/* Search */}
@@ -49,9 +49,19 @@ export default function Navbar() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="Search coins…"
+              aria-label="Search coins"
               className="w-full rounded-lg bg-zinc-900 pl-9 pr-4 py-2 text-sm text-white placeholder-zinc-500 border border-zinc-800 focus:outline-none focus:border-violet-500 transition-colors"
             />
           </div>
+          <button
+            type="submit"
+            data-event="internal_link_click"
+            data-cta-location="global_search_submit"
+            className="rounded-lg border border-zinc-800 bg-zinc-900 px-3 py-2 text-sm font-medium text-zinc-300 transition-colors hover:border-violet-500 hover:text-white"
+            aria-label="Search markets"
+          >
+            Search
+          </button>
         </form>
 
         {/* Mobile menu toggle */}
@@ -66,15 +76,15 @@ export default function Navbar() {
       {/* Mobile menu */}
       {menuOpen && (
         <div className="md:hidden border-t border-zinc-800 px-4 py-3 flex flex-col gap-3 text-sm text-zinc-400">
-          <Link href="/" onClick={() => setMenuOpen(false)} className="hover:text-white">Markets</Link>
-          <Link href="/category/decentralized-finance-defi" onClick={() => setMenuOpen(false)} className="hover:text-white">DeFi</Link>
-          <Link href="/category/layer-2" onClick={() => setMenuOpen(false)} className="hover:text-white">Layer 2</Link>
-          <Link href="/category/meme-token" onClick={() => setMenuOpen(false)} className="hover:text-white">Meme</Link>
-          <Link href="/top/gainers" onClick={() => setMenuOpen(false)} className="hover:text-white text-emerald-400/80">Gainers</Link>
-          <Link href="/top/losers" onClick={() => setMenuOpen(false)} className="hover:text-white text-red-400/80">Losers</Link>
-          <Link href="/top/trending" onClick={() => setMenuOpen(false)} className="hover:text-white text-orange-400/80">Trending</Link>
-          <Link href="/top/vol-spikes" onClick={() => setMenuOpen(false)} className="hover:text-white text-yellow-400/80">Vol Spikes</Link>
-          <Link href="/watchlist" onClick={() => setMenuOpen(false)} className="hover:text-white text-amber-400/80">Watchlist</Link>
+          <Link href="/" data-event="internal_link_click" data-cta-location="mobile_nav_markets" onClick={() => setMenuOpen(false)} className="hover:text-white">Markets</Link>
+          <Link href="/category/decentralized-finance-defi" data-event="internal_link_click" data-cta-location="mobile_nav_defi" onClick={() => setMenuOpen(false)} className="hover:text-white">DeFi</Link>
+          <Link href="/category/layer-2" data-event="internal_link_click" data-cta-location="mobile_nav_layer_2" onClick={() => setMenuOpen(false)} className="hover:text-white">Layer 2</Link>
+          <Link href="/category/meme-token" data-event="internal_link_click" data-cta-location="mobile_nav_meme" onClick={() => setMenuOpen(false)} className="hover:text-white">Meme</Link>
+          <Link href="/top/gainers" data-event="internal_link_click" data-cta-location="mobile_nav_gainers" onClick={() => setMenuOpen(false)} className="hover:text-white text-emerald-400/80">Gainers</Link>
+          <Link href="/top/losers" data-event="internal_link_click" data-cta-location="mobile_nav_losers" onClick={() => setMenuOpen(false)} className="hover:text-white text-red-400/80">Losers</Link>
+          <Link href="/top/trending" data-event="internal_link_click" data-cta-location="mobile_nav_trending" onClick={() => setMenuOpen(false)} className="hover:text-white text-orange-400/80">Trending</Link>
+          <Link href="/top/vol-spikes" data-event="internal_link_click" data-cta-location="mobile_nav_vol_spikes" onClick={() => setMenuOpen(false)} className="hover:text-white text-yellow-400/80">Vol Spikes</Link>
+          <Link href="/watchlist" data-event="internal_link_click" data-cta-location="mobile_nav_watchlist" onClick={() => setMenuOpen(false)} className="hover:text-white text-amber-400/80">Watchlist</Link>
         </div>
       )}
     </nav>

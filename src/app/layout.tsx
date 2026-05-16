@@ -107,12 +107,26 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               '@context': 'https://schema.org',
-              '@type': 'WebApplication',
-              name: 'Trade Potion',
-              description: 'Crypto price tracker with real-time alerts for 10,000+ coins',
-              url: 'https://tradepotion.com',
-              applicationCategory: 'FinanceApplication',
-              offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+              '@graph': [
+                {
+                  '@type': 'Organization',
+                  '@id': 'https://tradepotion.com/#organization',
+                  name: 'Trade Potion',
+                  url: 'https://tradepotion.com',
+                },
+                {
+                  '@type': 'WebSite',
+                  '@id': 'https://tradepotion.com/#website',
+                  name: 'Trade Potion',
+                  url: 'https://tradepotion.com',
+                  publisher: { '@id': 'https://tradepotion.com/#organization' },
+                  potentialAction: {
+                    '@type': 'SearchAction',
+                    target: 'https://tradepotion.com/search?q={search_term_string}',
+                    'query-input': 'required name=search_term_string',
+                  },
+                },
+              ],
             }),
           }}
         />
