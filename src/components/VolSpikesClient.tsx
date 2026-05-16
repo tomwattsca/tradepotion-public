@@ -87,6 +87,12 @@ export default function VolSpikesClient() {
             <button
               key={v.value}
               onClick={() => setMinVol(v.value)}
+              data-event="filter_change"
+              data-filter-name="min_volume"
+              data-filter-action="select"
+              data-filter-value={String(v.value)}
+              data-cta-location="top_vol_spikes_filter"
+              data-page-type="top_vol_spikes"
               className={`px-3 py-1 text-xs rounded-md font-medium transition-colors ${
                 minVol === v.value ? 'bg-violet-600 text-white' : 'text-zinc-400 hover:text-white'
               }`}
@@ -102,6 +108,12 @@ export default function VolSpikesClient() {
             <button
               key={t.label}
               onClick={() => setCapTier(i)}
+              data-event="filter_change"
+              data-filter-name="market_cap_tier"
+              data-filter-action="select"
+              data-filter-value={t.label.toLowerCase()}
+              data-cta-location="top_vol_spikes_filter"
+              data-page-type="top_vol_spikes"
               className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-colors ${
                 capTier === i ? 'bg-zinc-600 text-white' : 'bg-zinc-800 text-zinc-400 hover:text-white'
               }`}
@@ -152,6 +164,11 @@ export default function VolSpikesClient() {
             <Link
               key={coin.id}
               href={`/coins/${coin.id}`}
+              data-event="internal_link_click"
+              data-cta-location="top_vol_spikes_coin"
+              data-coin-id={coin.id}
+              data-coin-symbol={coin.symbol}
+              data-page-type="top_vol_spikes"
               className="grid grid-cols-[2rem_1fr_7rem_8rem_9rem_9rem] items-center px-4 py-3 hover:bg-zinc-900 transition-colors group"
             >
               <span className="text-xs text-zinc-500 text-right">{page * PAGE_SIZE + i + 1}</span>
@@ -205,7 +222,7 @@ export default function VolSpikesClient() {
 
       {/* Explainer */}
       <p className="mt-3 text-xs text-zinc-600 text-center">
-        Vol/MCap ratio — higher % means unusual trading volume relative to the coin&apos;s size. A signal of potential momentum or news-driven activity.
+        Vol/MCap ratio — higher % means unusual trading volume relative to the coin&apos;s size. Use it as a neutral research queue for news, liquidity, or listing checks.
       </p>
     </div>
   );

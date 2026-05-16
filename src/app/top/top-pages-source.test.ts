@@ -26,6 +26,19 @@ describe('top pages SEO/source guards', () => {
     expect(volSpikesSource).not.toContain('InStock');
   });
 
+  it('adds privacy-safe measurement hooks to the existing volume-spikes research flow', () => {
+    const volSpikesClientSource = readFileSync('src/components/VolSpikesClient.tsx', 'utf8');
+    expect(volSpikesSource).toContain('top_vol_spikes_context');
+    expect(volSpikesSource).toContain('data-event="price_alert_click"');
+    expect(volSpikesSource).toContain('top_vol_spikes_context_watchlist');
+    expect(volSpikesSource).toContain('top_vol_spikes_context_search');
+    expect(volSpikesClientSource).toContain('data-event="filter_change"');
+    expect(volSpikesClientSource).toContain('data-filter-name="min_volume"');
+    expect(volSpikesClientSource).toContain('data-filter-name="market_cap_tier"');
+    expect(volSpikesClientSource).toContain('data-cta-location="top_vol_spikes_coin"');
+    expect(volSpikesClientSource).not.toContain("searchParams.get('q')");
+  });
+
   it('adds informational schema and alert handoff context to existing top-list pages', () => {
     for (const source of [gainersSource, losersSource, trendingSource, newListingsSource]) {
       expect(source).toContain("'@type': 'WebPage'");

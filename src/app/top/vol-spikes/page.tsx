@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { ArrowLeft, Zap } from 'lucide-react';
+import { ArrowLeft, Bell, Search, Star, Zap } from 'lucide-react';
 import { Metadata } from 'next';
 import VolSpikesClient from '@/components/VolSpikesClient';
 
@@ -64,13 +64,43 @@ export default function VolSpikesPage() {
       </div>
 
       <section className="mb-6 rounded-2xl border border-violet-500/20 bg-violet-500/10 p-4 text-sm text-zinc-300">
-        <h2 className="text-base font-semibold text-white">How to use the volume spike scanner</h2>
-        <p className="mt-2">
-          High volume relative to market cap can point to news, listings, liquidity changes, or short-term speculation.
-          Treat this as a research queue: open the coin page, compare live price, market cap, and volume context,
-          and set a price alert before making any decision elsewhere.
-        </p>
-        <p className="mt-2 text-xs text-zinc-500">Trade Potion provides market data and alert tools only; this is not financial advice.</p>
+        <div className="grid gap-4 lg:grid-cols-[1.4fr_1fr] lg:items-center">
+          <div>
+            <h2 className="text-base font-semibold text-white">How to use the volume spike scanner</h2>
+            <p className="mt-2">
+              High volume relative to market cap can point to news, listings, liquidity changes, or short-term speculation.
+              Treat this as a research queue: open the coin page, compare live price, market cap, and volume context,
+              and set a price alert before making any decision elsewhere.
+            </p>
+            <p className="mt-2 text-xs text-zinc-500">Trade Potion provides market data and alert tools only; this is not financial advice.</p>
+          </div>
+          <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-1">
+            <Link
+              href="/search"
+              data-event="price_alert_click"
+              data-cta-location="top_vol_spikes_context"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-3 text-sm font-semibold text-white transition-colors hover:bg-violet-500"
+            >
+              <Bell className="h-4 w-4" /> Find a coin to set an alert
+            </Link>
+            <Link
+              href="/watchlist"
+              data-event="internal_link_click"
+              data-cta-location="top_vol_spikes_context_watchlist"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs font-medium text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
+            >
+              <Star className="h-3.5 w-3.5" /> Watchlist
+            </Link>
+            <Link
+              href="/search"
+              data-event="internal_link_click"
+              data-cta-location="top_vol_spikes_context_search"
+              className="inline-flex items-center justify-center gap-2 rounded-xl border border-zinc-800 bg-zinc-900 px-3 py-2 text-xs font-medium text-zinc-300 transition-colors hover:border-zinc-700 hover:text-white"
+            >
+              <Search className="h-3.5 w-3.5" /> Search coins
+            </Link>
+          </div>
+        </div>
       </section>
 
       <VolSpikesClient />

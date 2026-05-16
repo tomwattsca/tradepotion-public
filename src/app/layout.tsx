@@ -47,7 +47,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               var allowedEvents = {
                 price_alert_click: true,
                 exchange_outbound_click: true,
-                internal_link_click: true
+                internal_link_click: true,
+                filter_change: true
               };
 
               function getSameSiteLinkUrl(element) {
@@ -85,6 +86,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   exchange_name: cleanValue(target.getAttribute('data-exchange-name')),
                   page_type: cleanValue(target.getAttribute('data-page-type')),
                   sponsored: cleanValue(target.getAttribute('data-sponsored')),
+                  filter_name: cleanValue(target.getAttribute('data-filter-name')),
+                  filter_action: cleanValue(target.getAttribute('data-filter-action')),
+                  filter_value: cleanValue(target.getAttribute('data-filter-value')),
                   link_url: cleanValue(getSameSiteLinkUrl(target)),
                   page_location: window.location.pathname
                 };

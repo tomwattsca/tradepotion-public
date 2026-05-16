@@ -11,9 +11,13 @@ describe('Tradepotion delegated analytics tracking', () => {
     expect(layoutSource).toContain('price_alert_click: true');
     expect(layoutSource).toContain('exchange_outbound_click: true');
     expect(layoutSource).toContain('internal_link_click: true');
+    expect(layoutSource).toContain('filter_change: true');
     expect(layoutSource).toContain('data-cta-location');
     expect(layoutSource).toContain('data-coin-id');
     expect(layoutSource).toContain('data-exchange-name');
+    expect(layoutSource).toContain('filter_name: cleanValue');
+    expect(layoutSource).toContain('filter_action: cleanValue');
+    expect(layoutSource).toContain('filter_value: cleanValue');
     expect(layoutSource).toContain('page_location: window.location.pathname');
     expect(layoutSource).toContain("window.gtag('event', eventName, params)");
   });
