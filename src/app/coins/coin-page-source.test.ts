@@ -18,8 +18,11 @@ describe('coin page alert/tracking source guards', () => {
   it('aligns GSC-visible coin pages with price and market-cap search intent', () => {
     expect(coinPageSource).toContain('`${name} (${symbol}) Coin Price, Market Cap & Alerts`');
     expect(coinPageSource).toContain('{coin.name} coin price');
-    expect(coinPageSource).toContain('Live USD coin/token price, market cap, 24h volume, chart history');
-    expect(coinPageSource).toContain('{coinName} coin, token, and crypto price context');
+    expect(coinPageSource).toContain('Live USD coin/token price, ticker context, market cap, 24h volume, chart history');
+    expect(coinPageSource).toContain('{coinName} coin, token, ticker, and pricing context');
+    expect(coinPageSource).toContain('Ticker and pricing context');
+    expect(coinPageSource).toContain('{coinName} pricing, {uppercaseSymbol} ticker data');
+    expect(coinPageSource).toContain('For protocol, cloud, app, or official service pricing');
     expect(coinPageSource).toContain('Coin research guide');
     expect(coinPageSource).toContain('non-advisory price alerts for {coin.name}');
   });
@@ -93,6 +96,7 @@ describe('coin page alert/tracking source guards', () => {
     expect(coinPageSource).toContain('data-cta-location="coin_market_category"');
     expect(coinPageSource).toContain('data-cta-location="coin_sidebar_category"');
     expect(coinPageSource).toContain('data-category-slug={categorySlug');
+    expect(coinPageSource).toContain('data-coin-id={coinId}');
   });
 
 });

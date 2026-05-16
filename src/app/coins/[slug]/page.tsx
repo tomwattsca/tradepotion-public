@@ -259,10 +259,12 @@ function CoinSearchIntentPanel({
   coinName,
   symbol,
   categories,
+  coinId,
 }: {
   coinName: string;
   symbol: string;
   categories: string[];
+  coinId: string;
 }) {
   const uppercaseSymbol = symbol.toUpperCase();
   const primaryCategory = categories[0];
@@ -272,7 +274,7 @@ function CoinSearchIntentPanel({
       <div className="mb-3 flex items-center justify-between gap-3">
         <div>
           <p className="text-xs font-medium uppercase tracking-[0.18em] text-violet-300">Coin research guide</p>
-          <h2 className="mt-1 text-sm font-semibold text-zinc-200">{coinName} coin, token, and crypto price context</h2>
+          <h2 className="mt-1 text-sm font-semibold text-zinc-200">{coinName} coin, token, ticker, and pricing context</h2>
         </div>
         <Link
           href={`/search?q=${encodeURIComponent(coinName)}`}
@@ -292,9 +294,10 @@ function CoinSearchIntentPanel({
           </p>
         </div>
         <div className="rounded-lg bg-zinc-950/70 p-3">
-          <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-300">Coin and token context</h3>
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-300">Ticker and pricing context</h3>
           <p className="mt-1 leading-relaxed">
-            Searchers comparing {coinName} coin, {coinName} token, or {uppercaseSymbol} crypto can use category links and source data here as a starting point.
+            Searchers comparing {coinName} pricing, {uppercaseSymbol} ticker data, {coinName} coin, or {coinName} token can use this as a crypto market-data snapshot.
+            For protocol, cloud, app, or official service pricing, verify details directly with the project source.
           </p>
         </div>
         <div className="rounded-lg bg-zinc-950/70 p-3">
@@ -312,7 +315,7 @@ function CoinSearchIntentPanel({
             className="text-violet-300 hover:text-violet-200"
             data-event="internal_link_click"
             data-cta-location="coin_research_category"
-            data-coin-id={symbol.toLowerCase()}
+            data-coin-id={coinId}
             data-category-slug={categorySlug(primaryCategory)}
           >
             {primaryCategory}
@@ -355,18 +358,18 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     return {
       title: `${name} (${symbol}) Coin Price, Market Cap & Alerts`,
-      description: `Live ${name} (${symbol}) coin and token price: $${priceStr}. Track ${name} price history, market cap, volume, and non-advisory price alerts on Trade Potion.`,
+      description: `Live ${name} (${symbol}) coin, token, ticker, and pricing data: $${priceStr}. Track ${name} price history, market cap, volume, and non-advisory price alerts on Trade Potion.`,
       alternates: { canonical: `https://tradepotion.com/coins/${params.slug}` },
       openGraph: {
         title: `${name} Coin Price, Market Cap & Alerts`,
-        description: `View live ${name} (${symbol}) coin price, market cap, charts, and non-advisory alerts on Trade Potion.`,
+        description: `View live ${name} (${symbol}) coin price, ticker context, market cap, charts, and non-advisory alerts on Trade Potion.`,
         url: `https://tradepotion.com/coins/${params.slug}`,
         type: 'website',
       },
       twitter: {
         card: 'summary',
         title: `${name} (${symbol}) Price & Market Cap`,
-        description: `${name} coin price: $${priceStr}. Live market cap, charts, and non-advisory alerts.`,
+        description: `${name} coin price: $${priceStr}. Live ticker, market cap, charts, and non-advisory alerts.`,
       },
     };
   } catch {
@@ -488,7 +491,7 @@ export default async function CoinPage({ params }: Props) {
             {coin.name} coin price ({coin.symbol.toUpperCase()})
           </h1>
           <p className="mt-1 text-sm text-zinc-400">
-            Live USD coin/token price, market cap, 24h volume, chart history, and non-advisory price alerts for {coin.name}.
+            Live USD coin/token price, ticker context, market cap, 24h volume, chart history, and non-advisory price alerts for {coin.name}.
           </p>
           {coin.market_cap_rank && (
             <span className="mt-1 inline-block text-xs text-zinc-500">Rank #{coin.market_cap_rank}</span>
@@ -547,6 +550,7 @@ export default async function CoinPage({ params }: Props) {
           coinName={coin.name}
           symbol={coin.symbol}
           categories={filteredCategories}
+          coinId={coin.id}
         />
       </div>
 
