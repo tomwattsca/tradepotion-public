@@ -89,6 +89,7 @@ describe('top pages SEO/source guards', () => {
     expect(gainersApiSource).toContain('getCachedTopCoins');
     expect(gainersApiSource).toContain('Serving cached public market snapshot fallback');
     expect(gainersApiSource).toContain('price_change_percentage_24h_in_currency');
+    expect(gainersApiSource).not.toContain('price_change_percentage_24h_in_currency: coin.price_change_24h');
   });
 
   it('keeps top-list copy away from buy-action and unsupported superlative framing', () => {

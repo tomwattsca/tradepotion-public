@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { filterCategories } from './coingecko';
+import { calculatePctChangeFromAbsolute, filterCategories } from './coingecko';
 
 describe('filterCategories', () => {
   it('removes FTX Holdings from any coin', () => {
@@ -49,5 +49,19 @@ describe('filterCategories', () => {
       'Store of Value',
     ]);
     expect(result).toEqual(['Cryptocurrency', 'Store of Value']);
+  });
+});
+
+
+describe('calculatePctChangeFromAbsolute', () => {
+  it('converts cached absolute 24h dollar moves into percentages', () => {
+    expect(calculatePctChangeFromAbsolute(66418, -2430.8974558871705)).toBeCloseTo(-3.53, 2);
+    expect(calculatePctChangeFromAbsolute(4503.12, 1451.86)).toBeCloseTo(47.58, 2);
+  });
+
+  it('returns 0 for invalid or impossible previous prices', () => {
+    expect(calculatePctChangeFromAbsolute(0, 0)).toBe(0);
+    expect(calculatePctChangeFromAbsolute(10, 10)).toBe(0);
+    expect(calculatePctChangeFromAbsolute(Number.NaN, 1)).toBe(0);
   });
 });

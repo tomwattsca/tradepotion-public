@@ -215,6 +215,13 @@ function toNumber(value: string | number | null | undefined): number {
   return Number.isFinite(parsed) ? parsed : 0;
 }
 
+export function calculatePctChangeFromAbsolute(currentPrice: number, absoluteChange: number): number {
+  const previousPrice = currentPrice - absoluteChange;
+  if (!Number.isFinite(currentPrice) || !Number.isFinite(absoluteChange) || previousPrice <= 0) return 0;
+  const pct = (absoluteChange / previousPrice) * 100;
+  return Number.isFinite(pct) ? pct : 0;
+}
+
 export async function getCachedTopCoins(limit = 100): Promise<Coin[]> {
   const rows = await query<CachedMarketCoinRow>(`
     SELECT DISTINCT ON (c.id)
@@ -247,8 +254,11 @@ export async function getCachedTopCoins(limit = 100): Promise<Coin[]> {
       total_volume: toNumber(row.volume_24h),
       high_24h: 0,
       low_24h: 0,
-      price_change_24h: 0,
-      price_change_percentage_24h: toNumber(row.price_change_24h),
+      price_change_24h: toNumber(row.price_change_24h),
+      price_change_percentage_24h: calculatePctChangeFromAbsolute(
+        toNumber(row.price_usd),
+        toNumber(row.price_change_24h),
+      ),
       market_cap_change_24h: 0,
       market_cap_change_percentage_24h: 0,
       circulating_supply: 0,
