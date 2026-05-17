@@ -10,6 +10,7 @@ const topListPanelSource = readFileSync('src/components/TopListContextPanel.tsx'
 const gainersClientSource = readFileSync('src/components/GainersClient.tsx', 'utf8');
 const trendingClientSource = readFileSync('src/components/TrendingClient.tsx', 'utf8');
 const newListingsClientSource = readFileSync('src/components/NewListingsClient.tsx', 'utf8');
+const gainersApiSource = readFileSync('src/app/api/gainers/route.ts', 'utf8');
 const sitemapSource = readFileSync('src/app/sitemap.ts', 'utf8');
 
 describe('top pages SEO/source guards', () => {
@@ -77,6 +78,12 @@ describe('top pages SEO/source guards', () => {
       expect(source).toContain('data-coin-symbol={coin.symbol}');
       expect(source).not.toContain("searchParams.get('q')");
     }
+  });
+
+  it('keeps gainers and losers data resilient when live CoinGecko markets fail', () => {
+    expect(gainersApiSource).toContain('getCachedTopCoins');
+    expect(gainersApiSource).toContain('Serving cached public market snapshot fallback');
+    expect(gainersApiSource).toContain('price_change_percentage_24h_in_currency');
   });
 
   it('keeps top-list copy away from buy-action and unsupported superlative framing', () => {

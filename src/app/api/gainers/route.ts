@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { getCachedTopCoins } from '@/lib/coingecko';
 
 export const runtime = 'nodejs';
 
@@ -64,6 +65,29 @@ async function fetchMarkets(): Promise<{ coins: CoinGeckoMarket[]; fetchedAt: nu
   if (cached && now - cached.ts < STALE_MS) {
     console.warn(`[gainers] Serving stale cache (${Math.round((now - cached.ts) / 60000)}min old)`);
     return { coins: cached.data as CoinGeckoMarket[], fetchedAt: cached.ts };
+  }
+
+  try {
+    const fallbackCoins = await getCachedTopCoins(250);
+    if (fallbackCoins.length > 0) {
+      const fallbackMarkets = fallbackCoins.map((coin): CoinGeckoMarket => ({
+        id: coin.id,
+        symbol: coin.symbol,
+        name: coin.name,
+        image: coin.image,
+        current_price: coin.current_price,
+        market_cap: coin.market_cap,
+        total_volume: coin.total_volume,
+        price_change_percentage_24h_in_currency: coin.price_change_percentage_24h,
+        price_change_percentage_7d_in_currency: coin.price_change_percentage_7d_in_currency,
+        sparkline_in_7d: coin.sparkline_in_7d,
+      }));
+      _cache.set(CACHE_KEY, { data: fallbackMarkets, ts: now });
+      console.warn('[gainers] Serving cached public market snapshot fallback after live market fetch failed');
+      return { coins: fallbackMarkets, fetchedAt: now };
+    }
+  } catch (fallbackErr) {
+    console.warn('[gainers] Cached public market fallback unavailable', fallbackErr);
   }
 
   throw lastErr;
