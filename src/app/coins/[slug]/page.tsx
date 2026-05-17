@@ -178,6 +178,7 @@ function categorySlug(category: string): string {
 
 function CoinMarketContext({
   coinName,
+  coinId,
   symbol,
   price,
   marketCap,
@@ -188,6 +189,7 @@ function CoinMarketContext({
   categories,
 }: {
   coinName: string;
+  coinId: string;
   symbol: string;
   price: number;
   marketCap: number;
@@ -233,7 +235,7 @@ function CoinMarketContext({
                   className="rounded-full border border-zinc-700 px-2.5 py-1 text-xs text-violet-300 hover:border-violet-500 hover:text-violet-200"
                   data-event="internal_link_click"
                   data-cta-location="coin_market_category"
-                  data-coin-id={symbol.toLowerCase()}
+                  data-coin-id={coinId}
                   data-category-slug={categorySlug(category)}
                 >
                   {category}
@@ -281,12 +283,18 @@ function CoinSearchIntentPanel({
           className="hidden rounded-lg border border-zinc-700 px-3 py-2 text-xs font-medium text-zinc-300 transition-colors hover:border-violet-500 hover:text-violet-200 sm:inline-flex"
           data-event="internal_link_click"
           data-cta-location="coin_research_search"
-          data-coin-id={symbol.toLowerCase()}
+          data-coin-id={coinId}
         >
           Search {uppercaseSymbol}
         </Link>
       </div>
-      <div className="grid gap-3 text-sm text-zinc-400 md:grid-cols-3">
+      <div className="grid gap-3 text-sm text-zinc-400 md:grid-cols-2 xl:grid-cols-4">
+        <div className="rounded-lg bg-zinc-950/70 p-3">
+          <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-300">What is {coinName}?</h3>
+          <p className="mt-1 leading-relaxed">
+            Treat this page as a quick {coinName} crypto research snapshot: live {uppercaseSymbol} market data, category context, and links for checking official project sources.
+          </p>
+        </div>
         <div className="rounded-lg bg-zinc-950/70 p-3">
           <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-300">{coinName} price</h3>
           <p className="mt-1 leading-relaxed">
@@ -575,6 +583,7 @@ export default async function CoinPage({ params }: Props) {
 
           <CoinMarketContext
             coinName={coin.name}
+            coinId={coin.id}
             symbol={coin.symbol}
             price={price}
             marketCap={md.market_cap.usd}

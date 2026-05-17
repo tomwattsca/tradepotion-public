@@ -20,6 +20,9 @@ describe('coin page alert/tracking source guards', () => {
     expect(coinPageSource).toContain('{coin.name} coin price');
     expect(coinPageSource).toContain('Live USD coin/token price, ticker context, market cap, 24h volume, chart history');
     expect(coinPageSource).toContain('{coinName} coin, token, ticker, and pricing context');
+    expect(coinPageSource).toContain('What is {coinName}?');
+    expect(coinPageSource).toContain('quick {coinName} crypto research snapshot');
+    expect(coinPageSource).toContain('links for checking official project sources');
     expect(coinPageSource).toContain('Ticker and pricing context');
     expect(coinPageSource).toContain('{coinName} pricing, {uppercaseSymbol} ticker data');
     expect(coinPageSource).toContain('For protocol, cloud, app, or official service pricing');
@@ -97,6 +100,8 @@ describe('coin page alert/tracking source guards', () => {
     expect(coinPageSource).toContain('data-cta-location="coin_sidebar_category"');
     expect(coinPageSource).toContain('data-category-slug={categorySlug');
     expect(coinPageSource).toContain('data-coin-id={coinId}');
+    expect(coinPageSource).toContain('coinId={coin.id}');
+    expect(coinPageSource).not.toContain('data-coin-id={symbol.toLowerCase()}');
   });
 
 });
