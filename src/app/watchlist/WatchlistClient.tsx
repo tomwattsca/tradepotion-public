@@ -41,7 +41,12 @@ export default function WatchlistClient() {
 
   return (
     <main className="mx-auto max-w-7xl px-4 py-8">
-      <Link href="/" className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-300 mb-6 transition-colors">
+      <Link
+        href="/"
+        data-event="internal_link_click"
+        data-cta-location="watchlist_back_markets"
+        className="inline-flex items-center gap-1 text-sm text-zinc-500 hover:text-zinc-300 mb-6 transition-colors"
+      >
         <ArrowLeft className="h-4 w-4" /> Markets
       </Link>
 
@@ -92,7 +97,12 @@ export default function WatchlistClient() {
             browser storage, so this utility is intentionally noindexed and not part of the public sitemap.
           </p>
           <div className="flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Link href="/search" className="inline-flex items-center gap-2 rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-500">
+            <Link
+              href="/search"
+              data-event="internal_link_click"
+              data-cta-location="watchlist_empty_search"
+              className="inline-flex items-center gap-2 rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-500"
+            >
               <Search className="h-4 w-4" /> Search coins
             </Link>
             <Link
@@ -138,6 +148,11 @@ export default function WatchlistClient() {
                 <Link
                   key={coin.id}
                   href={`/coins/${coin.id}`}
+                  data-event="internal_link_click"
+                  data-cta-location="watchlist_coin_row"
+                  data-coin-id={coin.id}
+                  data-coin-symbol={coin.symbol}
+                  data-page-type="watchlist"
                   className="grid grid-cols-[1.5rem_1fr_7rem_5rem_6rem_6rem_8rem_1.5rem] items-center px-4 py-3 hover:bg-zinc-900 transition-colors group"
                 >
                   <span className="text-xs text-zinc-600 text-right">{coin.market_cap_rank}</span>

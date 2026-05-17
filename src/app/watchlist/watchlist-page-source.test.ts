@@ -17,9 +17,22 @@ describe('watchlist utility SEO and tracking source guards', () => {
   it('connects the empty watchlist state to existing search and alert flows with non-PII hooks', () => {
     expect(clientSource).toContain('Crypto Watchlist');
     expect(clientSource).toContain('href="/search"');
+    expect(clientSource).toContain('data-event="internal_link_click"');
+    expect(clientSource).toContain('data-cta-location="watchlist_back_markets"');
+    expect(clientSource).toContain('data-cta-location="watchlist_empty_search"');
     expect(clientSource).toContain('data-event="price_alert_click"');
     expect(clientSource).toContain('data-cta-location="watchlist_empty"');
     expect(clientSource).not.toContain('data-email');
+  });
+
+  it('measures saved watchlist coin rows without sending PII or external URLs', () => {
+    expect(clientSource).toContain('data-cta-location="watchlist_coin_row"');
+    expect(clientSource).toContain('data-coin-id={coin.id}');
+    expect(clientSource).toContain('data-coin-symbol={coin.symbol}');
+    expect(clientSource).toContain('data-page-type="watchlist"');
+    expect(clientSource).not.toContain('data-email');
+    expect(clientSource).not.toContain('data-wallet');
+    expect(clientSource).not.toContain('data-referral');
   });
 
   it('does not add watchlist/search utility URLs to the XML sitemap or unsafe crypto schema/copy', () => {
