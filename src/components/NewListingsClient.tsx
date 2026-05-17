@@ -95,6 +95,10 @@ export default function NewListingsClient() {
             <Link
               key={coin.id}
               href={`/coins/${coin.id}`}
+              data-event="internal_link_click"
+              data-cta-location="top_new_listings_coin"
+              data-coin-id={coin.id}
+              data-coin-symbol={coin.symbol}
               className="grid grid-cols-[2rem_1fr_7rem_7rem_9rem_9rem] items-center px-4 py-3 hover:bg-zinc-900 transition-colors group"
             >
               <span className="text-xs text-zinc-500 text-right">{coin.listing_rank}</span>

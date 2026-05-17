@@ -125,6 +125,11 @@ export default function GainersClient({ mode }: Props) {
               <button
                 key={r.value}
                 onClick={() => setRange(r.value)}
+                data-event="filter_change"
+                data-cta-location={`top_${mode}_range`}
+                data-filter-name="range"
+                data-filter-action="set"
+                data-filter-value={r.value}
                 className={`px-3 py-1 text-xs rounded-md font-medium transition-colors ${
                   range === r.value ? 'bg-violet-600 text-white' : 'text-zinc-400 hover:text-white'
                 }`}
@@ -143,6 +148,11 @@ export default function GainersClient({ mode }: Props) {
               <button
                 key={v.value}
                 onClick={() => setMinVol(v.value)}
+                data-event="filter_change"
+                data-cta-location={`top_${mode}_volume`}
+                data-filter-name="min_volume"
+                data-filter-action="set"
+                data-filter-value={v.value}
                 className={`px-3 py-1 text-xs rounded-md font-medium transition-colors ${
                   minVol === v.value ? 'bg-violet-600 text-white' : 'text-zinc-400 hover:text-white'
                 }`}
@@ -161,6 +171,11 @@ export default function GainersClient({ mode }: Props) {
               <button
                 key={t.label}
                 onClick={() => setCapTier(i)}
+                data-event="filter_change"
+                data-cta-location={`top_${mode}_market_cap`}
+                data-filter-name="market_cap_tier"
+                data-filter-action="set"
+                data-filter-value={t.label.toLowerCase()}
                 className={`px-2.5 py-1 text-xs rounded-lg font-medium transition-colors ${
                   capTier === i ? 'bg-violet-600 text-white' : 'bg-zinc-900 border border-zinc-800 text-zinc-400 hover:text-white'
                 }`}
@@ -221,6 +236,10 @@ export default function GainersClient({ mode }: Props) {
             <Link
               key={coin.id}
               href={`/coins/${coin.id}`}
+              data-event="internal_link_click"
+              data-cta-location={`top_${mode}_coin`}
+              data-coin-id={coin.id}
+              data-coin-symbol={coin.symbol}
               className="grid grid-cols-[2rem_1fr_7rem_5rem_7rem_9rem_9rem_1.5rem] items-center px-4 py-3 hover:bg-zinc-900 transition-colors group"
             >
               <span className="text-xs text-zinc-500 text-right">{page * PAGE_SIZE + i + 1}</span>

@@ -140,6 +140,10 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
               <Link
                 key={coin.id}
                 href={`/coins/${coin.id}`}
+                data-event="internal_link_click"
+                data-cta-location="home_market_coin"
+                data-coin-id={coin.id}
+                data-coin-symbol={coin.symbol}
                 className={`grid ${gridCols} items-center px-4 py-3 hover:bg-zinc-900 transition-colors group`}
               >
                 <span className="text-xs text-zinc-500 text-right">{coin.market_cap_rank ?? (page * pageSize + rowIdx + 1)}</span>

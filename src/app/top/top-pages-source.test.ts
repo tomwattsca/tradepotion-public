@@ -7,6 +7,9 @@ const losersSource = readFileSync('src/app/top/losers/page.tsx', 'utf8');
 const trendingSource = readFileSync('src/app/top/trending/page.tsx', 'utf8');
 const newListingsSource = readFileSync('src/app/top/new-listings/page.tsx', 'utf8');
 const topListPanelSource = readFileSync('src/components/TopListContextPanel.tsx', 'utf8');
+const gainersClientSource = readFileSync('src/components/GainersClient.tsx', 'utf8');
+const trendingClientSource = readFileSync('src/components/TrendingClient.tsx', 'utf8');
+const newListingsClientSource = readFileSync('src/components/NewListingsClient.tsx', 'utf8');
 const sitemapSource = readFileSync('src/app/sitemap.ts', 'utf8');
 
 describe('top pages SEO/source guards', () => {
@@ -57,6 +60,23 @@ describe('top pages SEO/source guards', () => {
     expect(topListPanelSource).toContain('top_losers_context');
     expect(topListPanelSource).toContain('top_trending_context');
     expect(topListPanelSource).toContain('top_new_listings_context');
+  });
+
+  it('adds privacy-safe measurement to top-list filters and coin-row handoffs', () => {
+    expect(gainersClientSource).toContain('data-event="filter_change"');
+    expect(gainersClientSource).toContain('data-filter-name="range"');
+    expect(gainersClientSource).toContain('data-filter-name="min_volume"');
+    expect(gainersClientSource).toContain('data-filter-name="market_cap_tier"');
+    expect(gainersClientSource).toContain('data-cta-location={`top_${mode}_coin`}');
+    expect(gainersClientSource).toContain('data-coin-id={coin.id}');
+    expect(trendingClientSource).toContain('data-cta-location="top_trending_coin"');
+    expect(newListingsClientSource).toContain('data-cta-location="top_new_listings_coin"');
+    for (const source of [gainersClientSource, trendingClientSource, newListingsClientSource]) {
+      expect(source).toContain('data-event="internal_link_click"');
+      expect(source).toContain('data-coin-id={coin.id}');
+      expect(source).toContain('data-coin-symbol={coin.symbol}');
+      expect(source).not.toContain("searchParams.get('q')");
+    }
   });
 
   it('keeps top-list copy away from buy-action and unsupported superlative framing', () => {

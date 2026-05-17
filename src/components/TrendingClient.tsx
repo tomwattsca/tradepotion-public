@@ -80,6 +80,10 @@ export default function TrendingClient() {
             <Link
               key={coin.id}
               href={`/coins/${coin.id}`}
+              data-event="internal_link_click"
+              data-cta-location="top_trending_coin"
+              data-coin-id={coin.id}
+              data-coin-symbol={coin.symbol}
               className="grid grid-cols-[2rem_1fr_7rem_7rem_9rem_9rem] items-center px-4 py-3 hover:bg-zinc-900 transition-colors group"
             >
               <span className="text-xs font-bold text-amber-400 text-right">{coin.trending_rank}</span>

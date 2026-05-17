@@ -36,8 +36,11 @@ describe('homepage market-data fallback posture', () => {
     expect(homeSource).toContain('data-cta-location="home_top_losers"');
     expect(homeSource).toContain('data-cta-location="home_gainer_coin"');
     expect(homeSource).toContain('data-cta-location="home_loser_coin"');
+    expect(tableSource).toContain('data-cta-location="home_market_coin"');
     expect(homeSource).toContain('data-coin-id={coin.id}');
+    expect(tableSource).toContain('data-coin-id={coin.id}');
     expect(homeSource).toContain('data-coin-symbol={coin.symbol}');
+    expect(tableSource).toContain('data-coin-symbol={coin.symbol}');
   });
 
 });
