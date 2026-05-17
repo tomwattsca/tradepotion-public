@@ -87,9 +87,43 @@ export default function NewListingsClient() {
             </p>
           )}
           {!loading && !error && coins.length === 0 && (
-            <p className="px-4 py-8 text-sm text-zinc-500 text-center">
-              No new coins tracked in the last 30 days yet. Check back soon.
-            </p>
+            <div className="px-4 py-8 text-center" role="status" aria-live="polite" data-new-listings-state="empty">
+              <p className="text-sm font-medium text-zinc-300">
+                No newly tracked coins are available from the last 30 days right now.
+              </p>
+              <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-zinc-500">
+                Trade Potion keeps this page intentionally data-backed. When the new-listing feed is quiet, use the existing market movers, gainers, and search flows to research coins with current market data.
+              </p>
+              <div className="mt-5 flex flex-col items-center justify-center gap-2 sm:flex-row">
+                <Link
+                  href="/top/trending"
+                  data-event="internal_link_click"
+                  data-cta-location="top_new_listings_empty_trending"
+                  data-page-type="top_new_listings"
+                  className="inline-flex w-full items-center justify-center rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 transition-colors hover:border-violet-500 hover:text-white sm:w-auto"
+                >
+                  View trending coins
+                </Link>
+                <Link
+                  href="/top/gainers"
+                  data-event="internal_link_click"
+                  data-cta-location="top_new_listings_empty_gainers"
+                  data-page-type="top_new_listings"
+                  className="inline-flex w-full items-center justify-center rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 transition-colors hover:border-violet-500 hover:text-white sm:w-auto"
+                >
+                  Check top gainers
+                </Link>
+                <Link
+                  href="/search"
+                  data-event="internal_link_click"
+                  data-cta-location="top_new_listings_empty_search"
+                  data-page-type="top_new_listings"
+                  className="inline-flex w-full items-center justify-center rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 transition-colors hover:border-violet-500 hover:text-white sm:w-auto"
+                >
+                  Search tracked markets
+                </Link>
+              </div>
+            </div>
           )}
           {!loading && !error && coins.map((coin) => (
             <Link

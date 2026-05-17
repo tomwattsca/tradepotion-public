@@ -72,6 +72,11 @@ describe('top pages SEO/source guards', () => {
     expect(gainersClientSource).toContain('data-coin-id={coin.id}');
     expect(trendingClientSource).toContain('data-cta-location="top_trending_coin"');
     expect(newListingsClientSource).toContain('data-cta-location="top_new_listings_coin"');
+    expect(newListingsClientSource).toContain('data-new-listings-state="empty"');
+    expect(newListingsClientSource).toContain('top_new_listings_empty_trending');
+    expect(newListingsClientSource).toContain('top_new_listings_empty_gainers');
+    expect(newListingsClientSource).toContain('top_new_listings_empty_search');
+    expect(newListingsClientSource).toContain('Trade Potion keeps this page intentionally data-backed');
     for (const source of [gainersClientSource, trendingClientSource, newListingsClientSource]) {
       expect(source).toContain('data-event="internal_link_click"');
       expect(source).toContain('data-coin-id={coin.id}');
