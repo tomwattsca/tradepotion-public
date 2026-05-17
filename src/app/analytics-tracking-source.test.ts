@@ -19,6 +19,7 @@ describe('Tradepotion delegated analytics tracking', () => {
     expect(layoutSource).toContain('filter_action: cleanValue');
     expect(layoutSource).toContain('filter_value: cleanValue');
     expect(layoutSource).toContain('page_location: window.location.pathname');
+    expect(layoutSource).toContain("transport_type: 'beacon'");
     expect(layoutSource).toContain("window.gtag('event', eventName, params)");
   });
 

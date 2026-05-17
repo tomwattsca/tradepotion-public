@@ -90,7 +90,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                   filter_action: cleanValue(target.getAttribute('data-filter-action')),
                   filter_value: cleanValue(target.getAttribute('data-filter-value')),
                   link_url: cleanValue(getSameSiteLinkUrl(target)),
-                  page_location: window.location.pathname
+                  page_location: window.location.pathname,
+                  transport_type: 'beacon'
                 };
 
                 Object.keys(params).forEach(function (key) {
