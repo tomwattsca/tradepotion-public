@@ -1,33 +1,27 @@
 import { NextResponse } from 'next/server';
+import { getCachedTopCoins, getTopCoins } from '@/lib/coingecko';
+import type { Coin } from '@/types';
 
 export const runtime = 'nodejs';
 
-interface CoinGeckoMarket {
-  id: string;
-  symbol: string;
-  name: string;
-  image: string;
-  current_price: number;
-  market_cap: number;
-  total_volume: number;
-  price_change_percentage_24h_in_currency?: number;
+type MarketCoin = Coin & { price_change_percentage_24h_in_currency?: number };
+
+function toVolSpikeCoin(c: Coin) {
+  const coin = c as MarketCoin;
+  return {
+    ...coin,
+    vol_mcap_ratio: coin.market_cap > 0 ? coin.total_volume / coin.market_cap : 0,
+    pct: coin.price_change_percentage_24h_in_currency ?? coin.price_change_percentage_24h ?? 0,
+  };
 }
 
-async function fetchMarkets(): Promise<CoinGeckoMarket[]> {
-  const url = new URL('https://api.coingecko.com/api/v3/coins/markets');
-  url.searchParams.set('vs_currency', 'usd');
-  url.searchParams.set('order', 'market_cap_desc');
-  url.searchParams.set('per_page', '250');
-  url.searchParams.set('page', '1');
-  url.searchParams.set('sparkline', 'false');
-  url.searchParams.set('price_change_percentage', '24h');
-
-  const res = await fetch(url.toString(), {
-    headers: { Accept: 'application/json' },
-    next: { revalidate: 300 },
-  });
-  if (!res.ok) throw new Error(`CoinGecko ${res.status}`);
-  return res.json();
+async function getVolumeSpikeMarkets(): Promise<{ coins: Coin[]; source: 'coingecko' | 'cached-db' }> {
+  try {
+    return { coins: await getTopCoins(250), source: 'coingecko' };
+  } catch (err) {
+    console.warn('[vol-spikes] Serving cached public market snapshot fallback', err);
+    return { coins: await getCachedTopCoins(250), source: 'cached-db' };
+  }
 }
 
 export async function GET(req: Request) {
@@ -37,21 +31,18 @@ export async function GET(req: Request) {
   const minMcap = parseInt(searchParams.get('minMcap') || '0');
 
   try {
-    const coins = await fetchMarkets();
+    const market = await getVolumeSpikeMarkets();
 
-    const filtered = coins
+    const filtered = market.coins
       .filter(c => c.total_volume >= minVolume && c.market_cap > 0 && c.market_cap >= minMcap)
-      .map(c => ({
-        ...c,
-        vol_mcap_ratio: c.total_volume / c.market_cap,
-        pct: c.price_change_percentage_24h_in_currency ?? 0,
-      }))
+      .map(toVolSpikeCoin)
       .sort((a, b) => b.vol_mcap_ratio - a.vol_mcap_ratio)
       .slice(0, limit);
 
     return NextResponse.json({
       coins: filtered,
       note: 'Sorted by volume/market-cap ratio — higher ratio = unusual volume spike relative to coin size',
+      source: market.source,
       generated_at: new Date().toISOString(),
     });
   } catch (err) {

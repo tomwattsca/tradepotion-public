@@ -12,6 +12,8 @@ const sparklineSource = readFileSync('src/components/Sparkline.tsx', 'utf8');
 const trendingClientSource = readFileSync('src/components/TrendingClient.tsx', 'utf8');
 const newListingsClientSource = readFileSync('src/components/NewListingsClient.tsx', 'utf8');
 const gainersApiSource = readFileSync('src/app/api/gainers/route.ts', 'utf8');
+const volSpikesApiSource = readFileSync('src/app/api/vol-spikes/route.ts', 'utf8');
+const volumeSpikesApiSource = readFileSync('src/app/api/volume-spikes/route.ts', 'utf8');
 const sitemapSource = readFileSync('src/app/sitemap.ts', 'utf8');
 
 describe('top pages SEO/source guards', () => {
@@ -41,6 +43,10 @@ describe('top pages SEO/source guards', () => {
     expect(volSpikesClientSource).toContain('data-filter-name="min_volume"');
     expect(volSpikesClientSource).toContain('data-filter-name="market_cap_tier"');
     expect(volSpikesClientSource).toContain('data-cta-location="top_vol_spikes_coin"');
+    expect(volSpikesClientSource).toContain('data-vol-spikes-error-state');
+    expect(volSpikesClientSource).toContain('Volume spike snapshot could not load.');
+    expect(volSpikesClientSource).toContain('data-vol-spikes-empty-state');
+    expect(volSpikesClientSource).toContain('data-event="filter_clear"');
     expect(volSpikesClientSource).not.toContain("searchParams.get('q')");
   });
 
@@ -95,6 +101,17 @@ describe('top pages SEO/source guards', () => {
       expect(source).toContain('data-coin-symbol={coin.symbol}');
       expect(source).not.toContain("searchParams.get('q')");
     }
+  });
+
+
+  it('keeps the volume-spikes API resilient and avoids localhost redirects', () => {
+    expect(volSpikesApiSource).toContain('getCachedTopCoins');
+    expect(volSpikesApiSource).toContain('Serving cached public market snapshot fallback');
+    expect(volSpikesApiSource).toContain('source: market.source');
+    expect(volumeSpikesApiSource).toContain("export { GET } from '../vol-spikes/route';");
+    expect(volumeSpikesApiSource).toContain("export const runtime = 'nodejs';");
+    expect(volumeSpikesApiSource).not.toContain('localhost');
+    expect(volumeSpikesApiSource).not.toContain('NextResponse.redirect');
   });
 
 
