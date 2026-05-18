@@ -6,7 +6,19 @@ interface SparklineProps {
 }
 
 export default function Sparkline({ prices, width = 80, height = 32, className = '' }: SparklineProps) {
-  if (!prices || prices.length < 2) return <div style={{ width, height }} />;
+  if (!prices || prices.length < 2) {
+    return (
+      <div
+        style={{ width, height }}
+        className={`flex items-center justify-end text-xs text-zinc-600 ${className}`}
+        title="7D chart unavailable from this market-data snapshot"
+        aria-label="7D chart unavailable"
+        data-sparkline-state="unavailable"
+      >
+        —
+      </div>
+    );
+  }
 
   const pts = prices.slice(-48); // cap at 48 points — enough resolution, avoids noise from sparse data
   const min = Math.min(...pts);

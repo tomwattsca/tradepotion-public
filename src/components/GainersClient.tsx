@@ -41,6 +41,20 @@ const VOL_FILTERS: { label: string; value: number }[] = [
   { label: '>$100M', value: 100_000_000 },
 ];
 
+
+function formatUpdatedAt(value: string | null): string | null {
+  if (!value) return null;
+  const timestamp = Number(value);
+  const date = Number.isFinite(timestamp) ? new Date(timestamp) : new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toLocaleTimeString('en-GB', {
+    hour: '2-digit',
+    minute: '2-digit',
+    timeZone: 'UTC',
+    timeZoneName: 'short',
+  });
+}
+
 const CAP_TIERS = [
   { label: 'All', min: 0, max: Infinity },
   { label: 'Large', sublabel: '>$10B', min: 10_000_000_000, max: Infinity },
@@ -112,6 +126,7 @@ export default function GainersClient({ mode }: Props) {
   const pageCoins = filtered.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE);
 
   const accentColor = mode === 'gainers' ? 'text-emerald-400' : 'text-red-400';
+  const updatedAtLabel = formatUpdatedAt(lastUpdated);
 
   return (
     <div>
@@ -195,18 +210,26 @@ export default function GainersClient({ mode }: Props) {
         </span>
       </div>
 
+      {!loading && !error && (
+        <div className="mb-3 rounded-xl border border-zinc-800 bg-zinc-950/70 px-4 py-3 text-xs leading-5 text-zinc-400" data-market-snapshot-note>
+          <span className="font-medium text-zinc-300">CoinGecko market snapshot{updatedAtLabel ? ` as of ${updatedAtLabel}` : ''}.</span>{' '}
+          The 7D mini-chart is a sparkline, not a separate ranking column; the highlighted percent column follows the selected timeframe. Dash values mean the feed did not provide that metric. Extreme moves may be outliers or low-liquidity prints.
+        </div>
+      )}
+
       {/* Table */}
       <div className="rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden">
-        <div className="grid grid-cols-[2rem_1fr_7rem_7rem_9rem_9rem] px-4 py-2 border-b border-zinc-800 text-xs text-zinc-500">
+        <div className="grid grid-cols-[2rem_1fr_7rem_5rem_7rem_9rem_9rem_1.5rem] items-center px-4 py-2 border-b border-zinc-800 text-xs text-zinc-500">
           <span className="text-right">#</span>
           <span className="pl-3">Coin</span>
           <span className="text-right">Price</span>
-          <span className="text-right text-zinc-600 text-xs">7D</span>
+          <span className="text-right text-zinc-600 text-xs">7D chart</span>
           <span className={`text-right ${accentColor}`}>
             {range === '1h' ? '1H %' : range === '7d' ? '7D %' : '24H %'}
           </span>
           <span className="text-right hidden sm:block">Market Cap</span>
           <span className="text-right hidden md:block">Volume (24h)</span>
+          <span className="sr-only">Watchlist</span>
         </div>
         <div className="divide-y divide-zinc-800/40">
           {loading && <TableSkeleton rows={10} cols={6} />}

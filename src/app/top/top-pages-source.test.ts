@@ -8,6 +8,7 @@ const trendingSource = readFileSync('src/app/top/trending/page.tsx', 'utf8');
 const newListingsSource = readFileSync('src/app/top/new-listings/page.tsx', 'utf8');
 const topListPanelSource = readFileSync('src/components/TopListContextPanel.tsx', 'utf8');
 const gainersClientSource = readFileSync('src/components/GainersClient.tsx', 'utf8');
+const sparklineSource = readFileSync('src/components/Sparkline.tsx', 'utf8');
 const trendingClientSource = readFileSync('src/components/TrendingClient.tsx', 'utf8');
 const newListingsClientSource = readFileSync('src/components/NewListingsClient.tsx', 'utf8');
 const gainersApiSource = readFileSync('src/app/api/gainers/route.ts', 'utf8');
@@ -57,6 +58,8 @@ describe('top pages SEO/source guards', () => {
     expect(topListPanelSource).toContain('`${copy.ctaLocation}_search`');
     expect(topListPanelSource).toContain('not financial advice');
     expect(topListPanelSource).toContain('CoinGecko');
+    expect(topListPanelSource).toContain('data-top-list-risk-note');
+    expect(topListPanelSource).toContain('Large green moves can reflect low liquidity');
     expect(topListPanelSource).toContain('top_gainers_context');
     expect(topListPanelSource).toContain('top_losers_context');
     expect(topListPanelSource).toContain('top_trending_context');
@@ -70,6 +73,9 @@ describe('top pages SEO/source guards', () => {
     expect(gainersClientSource).toContain('data-filter-name="market_cap_tier"');
     expect(gainersClientSource).toContain('data-cta-location={`top_${mode}_coin`}');
     expect(gainersClientSource).toContain('data-coin-id={coin.id}');
+    expect(gainersClientSource).toContain('data-market-snapshot-note');
+    expect(gainersClientSource).toContain('7D mini-chart is a sparkline');
+    expect(gainersClientSource).toContain('grid-cols-[2rem_1fr_7rem_5rem_7rem_9rem_9rem_1.5rem]');
     expect(trendingClientSource).toContain('data-cta-location="top_trending_coin"');
     expect(newListingsClientSource).toContain('data-cta-location="top_new_listings_coin"');
     expect(newListingsClientSource).toContain('data-new-listings-state="empty"');
@@ -83,6 +89,13 @@ describe('top pages SEO/source guards', () => {
       expect(source).toContain('data-coin-symbol={coin.symbol}');
       expect(source).not.toContain("searchParams.get('q')");
     }
+  });
+
+
+  it('renders a visible unavailable state when top-list sparklines are missing', () => {
+    expect(sparklineSource).toContain('data-sparkline-state="unavailable"');
+    expect(sparklineSource).toContain('7D chart unavailable from this market-data snapshot');
+    expect(sparklineSource).not.toContain('return <div style={{ width, height }} />');
   });
 
   it('keeps gainers and losers data resilient when live CoinGecko markets fail', () => {

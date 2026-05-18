@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { Bell, Search, ShieldCheck, Star } from 'lucide-react';
+import { Bell, Search, ShieldAlert, ShieldCheck, Star } from 'lucide-react';
 
 type TopListKind = 'gainers' | 'losers' | 'trending' | 'new-listings';
 
@@ -8,30 +8,35 @@ const COPY: Record<TopListKind, {
   description: string;
   ctaLocation: string;
   accent: string;
+  riskNote: string;
 }> = {
   gainers: {
     label: 'How to use the gainers list',
     description: 'Filter large moves by timeframe, volume and market-cap tier, then open a coin page to review market context before setting any alert.',
     ctaLocation: 'top_gainers_context',
     accent: 'text-emerald-300 bg-emerald-500/10 border-emerald-500/20',
+    riskNote: 'Large green moves can reflect low liquidity, new-listing effects, stale snapshots or outlier data — verify volume, market cap and coin-page history before acting.',
   },
   losers: {
     label: 'How to use the losers list',
     description: 'Use downside moves as a research queue, not a signal. Check liquidity, recent context and longer-term price history on the coin page before setting alerts.',
     ctaLocation: 'top_losers_context',
     accent: 'text-red-300 bg-red-500/10 border-red-500/20',
+    riskNote: 'Sharp downside moves can reflect thin liquidity, exchange-specific prints or stale snapshots — verify volume, market cap and coin-page history before acting.',
   },
   trending: {
     label: 'How to use trending coins',
     description: 'Trending rank reflects attention and search interest. Pair it with price, volume and market-cap context before adding anything to a watchlist.',
     ctaLocation: 'top_trending_context',
     accent: 'text-orange-300 bg-orange-500/10 border-orange-500/20',
+    riskNote: 'Trending rank reflects attention, not quality or safety. Pair it with liquidity, market cap and source checks before setting alerts.',
   },
   'new-listings': {
     label: 'How to use new listings',
     description: 'Newly tracked coins can be volatile and thinly traded. Treat this as a discovery list, then verify liquidity and source data on the coin page.',
     ctaLocation: 'top_new_listings_context',
     accent: 'text-violet-300 bg-violet-500/10 border-violet-500/20',
+    riskNote: 'Newly tracked coins are often volatile or thinly traded. Treat them as discovery candidates and verify source data before acting.',
   },
 };
 
@@ -49,6 +54,10 @@ export default function TopListContextPanel({ kind }: { kind: TopListKind }) {
           <p className="mt-2 text-sm leading-6 text-zinc-400">
             {copy.description} Crypto data is via CoinGecko and can move quickly; Trade Potion is not financial advice.
           </p>
+          <div className="mt-3 flex gap-2 rounded-xl border border-amber-500/20 bg-amber-500/10 p-3 text-xs leading-5 text-amber-100" data-top-list-risk-note>
+            <ShieldAlert className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" aria-hidden="true" />
+            <p>{copy.riskNote}</p>
+          </div>
         </div>
         <div className="grid gap-2 sm:grid-cols-2 md:grid-cols-1">
           <Link
