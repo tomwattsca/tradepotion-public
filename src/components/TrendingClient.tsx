@@ -46,7 +46,7 @@ export default function TrendingClient() {
       {/* Header row */}
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm text-zinc-500">
-          Top coins trending on CoinGecko right now — based on search volume and community interest.
+          Top coins trending on CoinGecko right now — left rank is trending attention; coin badges show market-cap rank when available.
         </p>
         {lastUpdated && !loading && (
           <span className="text-xs text-zinc-600">
@@ -57,8 +57,8 @@ export default function TrendingClient() {
 
       <div className="rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden">
         <div className="grid grid-cols-[2rem_1fr_7rem_7rem_9rem_9rem] px-4 py-2 border-b border-zinc-800 text-xs text-zinc-500">
-          <span className="text-right">#</span>
-          <span className="pl-3">Coin</span>
+          <span className="text-right">Trend</span>
+          <span className="pl-3">Coin / MCap rank</span>
           <span className="text-right">Price</span>
           <span className="text-right">24h %</span>
           <span className="text-right hidden sm:block">Market Cap</span>
@@ -94,7 +94,7 @@ export default function TrendingClient() {
                   <p className="text-xs text-zinc-500 uppercase">{coin.symbol}</p>
                 </div>
                 {coin.rank && (
-                  <span className="hidden lg:inline text-xs text-zinc-600 ml-1">#{coin.rank}</span>
+                  <span className="hidden lg:inline rounded-full border border-zinc-800 px-1.5 py-0.5 text-[11px] font-medium text-zinc-500 ml-1" title="CoinGecko market-cap rank">MCap #{coin.rank}</span>
                 )}
               </div>
               <span className="text-sm text-right text-white">

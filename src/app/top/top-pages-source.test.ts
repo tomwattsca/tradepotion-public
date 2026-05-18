@@ -77,12 +77,18 @@ describe('top pages SEO/source guards', () => {
     expect(gainersClientSource).toContain('7D mini-chart is a sparkline');
     expect(gainersClientSource).toContain('grid-cols-[2rem_1fr_7rem_5rem_7rem_9rem_9rem_1.5rem]');
     expect(trendingClientSource).toContain('data-cta-location="top_trending_coin"');
+    expect(trendingClientSource).toContain('left rank is trending attention');
+    expect(trendingClientSource).toContain('Coin / MCap rank');
+    expect(trendingClientSource).toContain('MCap #{coin.rank}');
     expect(newListingsClientSource).toContain('data-cta-location="top_new_listings_coin"');
-    expect(newListingsClientSource).toContain('data-new-listings-state="empty"');
+    expect(newListingsClientSource).toContain('data-new-listings-state="standalone-empty"');
+    expect(newListingsClientSource).toContain("data-new-listings-table-state={!loading && !error && coins.length === 0 ? 'empty-card' : 'table'}");
+    expect(newListingsClientSource).toContain('coins.length > 0');
     expect(newListingsClientSource).toContain('top_new_listings_empty_trending');
     expect(newListingsClientSource).toContain('top_new_listings_empty_gainers');
     expect(newListingsClientSource).toContain('top_new_listings_empty_search');
     expect(newListingsClientSource).toContain('Trade Potion keeps this page intentionally data-backed');
+    expect(newListingsClientSource).toContain('hides the table columns when there are no recent rows');
     for (const source of [gainersClientSource, trendingClientSource, newListingsClientSource]) {
       expect(source).toContain('data-event="internal_link_click"');
       expect(source).toContain('data-coin-id={coin.id}');

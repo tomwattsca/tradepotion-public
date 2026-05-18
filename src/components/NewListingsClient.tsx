@@ -56,7 +56,7 @@ export default function NewListingsClient() {
     <div>
       <div className="flex items-center justify-between mb-4">
         <p className="text-sm text-zinc-500">
-          Coins first tracked by Trade Potion in the last 30 days — newest first.
+          Coins first tracked by Trade Potion in the last 30 days — table columns appear only when the data-backed feed has rows.
         </p>
         {lastUpdated && !loading && (
           <span className="text-xs text-zinc-600">
@@ -65,17 +65,19 @@ export default function NewListingsClient() {
         )}
       </div>
 
-      <div className="rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden">
-        <div className="grid grid-cols-[2rem_1fr_7rem_7rem_9rem_9rem] px-4 py-2 border-b border-zinc-800 text-xs text-zinc-500">
-          <span className="text-right">#</span>
-          <span className="pl-3">Coin</span>
-          <span className="text-right">Price</span>
-          <span className="text-right">24h %</span>
-          <span className="text-right hidden sm:block">Market Cap</span>
-          <span className="text-right hidden md:block">First Tracked</span>
-        </div>
+      <div className={`rounded-xl bg-zinc-950 border border-zinc-800 ${!loading && !error && coins.length === 0 ? 'p-5 sm:p-6' : 'overflow-hidden'}`} data-new-listings-table-state={!loading && !error && coins.length === 0 ? 'empty-card' : 'table'}>
+        {!loading && !error && coins.length > 0 && (
+          <div className="grid grid-cols-[2rem_1fr_7rem_7rem_9rem_9rem] px-4 py-2 border-b border-zinc-800 text-xs text-zinc-500">
+            <span className="text-right">#</span>
+            <span className="pl-3">Coin</span>
+            <span className="text-right">Price</span>
+            <span className="text-right">24h %</span>
+            <span className="text-right hidden sm:block">Market Cap</span>
+            <span className="text-right hidden md:block">First Tracked</span>
+          </div>
+        )}
 
-        <div className="divide-y divide-zinc-800/40">
+        <div className={!loading && !error && coins.length === 0 ? '' : 'divide-y divide-zinc-800/40'}>
           {loading && (
             <div className="flex items-center justify-center py-12">
               <div className="w-5 h-5 border-2 border-violet-500 border-t-transparent rounded-full animate-spin" />
@@ -87,12 +89,12 @@ export default function NewListingsClient() {
             </p>
           )}
           {!loading && !error && coins.length === 0 && (
-            <div className="px-4 py-8 text-center" role="status" aria-live="polite" data-new-listings-state="empty">
+            <div className="text-center" role="status" aria-live="polite" data-new-listings-state="standalone-empty">
               <p className="text-sm font-medium text-zinc-300">
                 No newly tracked coins are available from the last 30 days right now.
               </p>
               <p className="mx-auto mt-2 max-w-2xl text-sm leading-relaxed text-zinc-500">
-                Trade Potion keeps this page intentionally data-backed. When the new-listing feed is quiet, use the existing market movers, gainers, and search flows to research coins with current market data.
+                Trade Potion keeps this page intentionally data-backed, so it hides the table columns when there are no recent rows instead of showing an empty market table. Use the existing market movers, gainers, and search flows to research coins with current market data.
               </p>
               <div className="mt-5 flex flex-col items-center justify-center gap-2 sm:flex-row">
                 <Link
