@@ -8,6 +8,8 @@ const categoryFallbackSource = readFileSync('src/lib/category-sitemap-fallback.t
 
 describe('watchlist utility SEO and tracking source guards', () => {
   it('keeps the nav-linked watchlist as a noindexed utility with self-canonical metadata', () => {
+    expect(pageSource).toContain("title: 'Crypto Watchlist Utility'");
+    expect(pageSource).not.toContain("title: 'Crypto Watchlist Utility | Trade Potion'");
     expect(pageSource).toContain("canonical: 'https://tradepotion.com/watchlist'");
     expect(pageSource).toContain('index: false');
     expect(pageSource).toContain('follow: true');

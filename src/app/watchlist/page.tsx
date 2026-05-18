@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import WatchlistClient from './WatchlistClient';
 
 export const metadata: Metadata = {
-  title: 'Crypto Watchlist Utility | Trade Potion',
+  title: 'Crypto Watchlist Utility',
   description: 'Save cryptocurrencies in a browser-based watchlist for repeat checks, then return to live prices, market cap rankings, and price-alert workflows on Trade Potion.',
   alternates: { canonical: 'https://tradepotion.com/watchlist' },
   robots: {
@@ -10,7 +10,7 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: 'Crypto Watchlist Utility | Trade Potion',
+    title: 'Crypto Watchlist Utility',
     description: 'A local browser watchlist for tracking crypto markets on Trade Potion. Use it for research, not financial advice.',
     url: 'https://tradepotion.com/watchlist',
     type: 'website',
