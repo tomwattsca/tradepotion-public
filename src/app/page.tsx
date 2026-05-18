@@ -11,6 +11,9 @@ import { TrendingUp, TrendingDown, ArrowRight, Bell, Search, Star, Database, Ale
 export const revalidate = 300;
 
 export const metadata: Metadata = {
+  title: 'Crypto Price Tracker | Market Cap Rankings & Price Alerts',
+  description:
+    'Track Bitcoin, Ethereum, altcoins, market cap rankings, and price alerts. Trade Potion shows live CoinGecko data when available and clearly labels cached public snapshots during provider outages.',
   alternates: {
     canonical: '/',
   },
@@ -52,6 +55,32 @@ export default async function HomePage() {
       .sort((a, b) => a.price_change_percentage_24h - b.price_change_percentage_24h)
       .slice(0, 10);
 
+  const heroEyebrow = marketDataStatus === 'live'
+    ? 'Live crypto price tracker'
+    : marketDataStatus === 'cached'
+      ? 'Cached crypto market snapshot'
+      : 'Crypto market research tools';
+  const heroTitle = marketDataStatus === 'live'
+    ? 'Live Crypto Prices, Market Cap Rankings & Price Alerts'
+    : marketDataStatus === 'cached'
+      ? 'Latest Cached Crypto Prices, Market Cap Rankings & Price Alerts'
+      : 'Crypto Price Search, Watchlists & Price Alerts';
+  const heroDescription = marketDataStatus === 'live'
+    ? 'Track Bitcoin, Ethereum, altcoins, market cap rankings, top gainers, losers, and volume spikes in one fast public dashboard. Use the table to sort by price, market cap, 24h volume, or Vol/MCap ratio, then save coins to your watchlist or create a price alert when a target matters.'
+    : marketDataStatus === 'cached'
+      ? 'Live CoinGecko data is temporarily unavailable, so Trade Potion is showing the latest stored public price snapshots with clear stale-data labeling. Search coins, compare rankings, save watchlist entries, and create informational price alerts while live market rows recover.'
+      : 'Search coins, use existing watchlists, and create informational price alerts while market data recovers. Trade Potion labels unavailable data clearly and avoids promotional rankings or investment advice.';
+  const heroStatusLabel = marketDataStatus === 'live'
+    ? 'Live CoinGecko market rows available'
+    : marketDataStatus === 'cached'
+      ? 'Currently showing cached public snapshots'
+      : 'Market tables may be temporarily empty';
+  const marketTableTitle = marketDataStatus === 'live'
+    ? 'Top 250 Cryptocurrencies'
+    : marketDataStatus === 'cached'
+      ? 'Top Cryptocurrencies from Cached Snapshots'
+      : 'Crypto Market Table';
+
   return (
     <>
       <MarketStatsBar />
@@ -60,17 +89,33 @@ export default async function HomePage() {
         <section className="mb-8 grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px] lg:items-stretch">
           <div className="rounded-2xl border border-zinc-800 bg-gradient-to-br from-zinc-900 via-zinc-900 to-violet-950/30 p-5 sm:p-6">
             <p className="mb-2 text-xs font-medium uppercase tracking-[0.22em] text-violet-300">
-              Live crypto price tracker
+              {heroEyebrow}
             </p>
             <h1 className="mb-3 max-w-3xl text-3xl font-bold tracking-tight text-white sm:text-4xl">
-              Live Crypto Prices, Market Cap Rankings & Price Alerts
+              {heroTitle}
             </h1>
             <p className="max-w-3xl text-sm leading-6 text-zinc-300 sm:text-base">
-              Track Bitcoin, Ethereum, altcoins, market cap rankings, top gainers, losers,
-              and volume spikes in one fast public dashboard. Use the table to sort by price,
-              market cap, 24h volume, or Vol/MCap ratio, then save coins to your watchlist or
-              create a price alert when a target matters.
+              {heroDescription}
             </p>
+            <div
+              data-market-data-status={marketDataStatus}
+              className={`mt-4 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium ${
+                marketDataStatus === 'live'
+                  ? 'border-emerald-500/30 bg-emerald-950/20 text-emerald-200'
+                  : marketDataStatus === 'cached'
+                    ? 'border-amber-500/30 bg-amber-950/20 text-amber-100'
+                    : 'border-zinc-700 bg-zinc-950/70 text-zinc-300'
+              }`}
+            >
+              {marketDataStatus === 'live' ? (
+                <TrendingUp className="h-3.5 w-3.5" />
+              ) : marketDataStatus === 'cached' ? (
+                <Database className="h-3.5 w-3.5" />
+              ) : (
+                <AlertTriangle className="h-3.5 w-3.5" />
+              )}
+              <span>{heroStatusLabel}</span>
+            </div>
             <div className="mt-5 flex flex-wrap gap-3">
               <a
                 href="#price-alerts"
@@ -234,10 +279,10 @@ export default async function HomePage() {
           <HomePriceAlertBanner topCoins={coins.slice(0, 25)} />
         </section>
 
-        {/* Market table — 100 coins, sortable, paginated */}
-        <div className="mb-2 flex items-center justify-between">
-          <h2 className="text-sm font-semibold text-zinc-200">Top 100 Cryptocurrencies</h2>
-          <span className="text-xs text-zinc-500">Click column headers to sort</span>
+        {/* Market table — up to 250 coins, sortable, paginated */}
+        <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
+          <h2 className="text-sm font-semibold text-zinc-200">{marketTableTitle}</h2>
+          <span className="text-xs text-zinc-500">Click column headers to sort; dashes mean that window is unavailable in the current data source.</span>
         </div>
         <SortableMarketTable coins={coins} fetchedAt={Date.now()} />
       </main>

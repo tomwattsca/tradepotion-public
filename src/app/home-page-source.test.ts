@@ -11,6 +11,10 @@ describe('homepage market-data fallback posture', () => {
     expect(homeSource).toContain('getCachedTopCoins');
     expect(homeSource).toContain('Showing cached market data');
     expect(homeSource).toContain('Market data temporarily unavailable');
+    expect(homeSource).toContain('Cached crypto market snapshot');
+    expect(homeSource).toContain('Latest Cached Crypto Prices, Market Cap Rankings & Price Alerts');
+    expect(homeSource).toContain('Currently showing cached public snapshots');
+    expect(homeSource).toContain('data-market-data-status={marketDataStatus}');
     expect(coingeckoSource).toContain('price_snapshots');
     expect(coingeckoSource).toContain('getCachedTopCoins');
   });
@@ -27,6 +31,15 @@ describe('homepage market-data fallback posture', () => {
     expect(alertSource).toContain('no investment advice');
     expect(alertSource).toContain('disabled={topCoins.length === 0}');
     expect(alertSource).toContain('Market data unavailable');
+  });
+
+  it('keeps homepage metadata and table labels honest during cached-data states', () => {
+    expect(homeSource).toContain("title: 'Crypto Price Tracker | Market Cap Rankings & Price Alerts'");
+    expect(homeSource).toContain('clearly labels cached public snapshots');
+    expect(homeSource).toContain('Top 250 Cryptocurrencies');
+    expect(homeSource).toContain('Top Cryptocurrencies from Cached Snapshots');
+    expect(homeSource).toContain('dashes mean that window is unavailable');
+    expect(homeSource).not.toContain('Top 100 Cryptocurrencies');
   });
 
   it('adds privacy-safe internal-link hooks to existing homepage handoffs', () => {
