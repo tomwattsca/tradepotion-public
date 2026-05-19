@@ -58,27 +58,32 @@ export default async function HomePage() {
   const heroEyebrow = marketDataStatus === 'live'
     ? 'CoinGecko market snapshot'
     : marketDataStatus === 'cached'
-      ? 'Cached crypto market snapshot'
+      ? 'Crypto market snapshot'
       : 'Crypto market research tools';
   const heroTitle = marketDataStatus === 'live'
     ? 'Crypto Market Prices, Market Cap Rankings & Price Alerts'
     : marketDataStatus === 'cached'
-      ? 'Latest Cached Crypto Prices, Market Cap Rankings & Price Alerts'
+      ? 'Crypto Market Prices, Market Cap Rankings & Price Alerts'
       : 'Crypto Price Search, Watchlists & Price Alerts';
   const heroDescription = marketDataStatus === 'live'
     ? 'Track Bitcoin, Ethereum, altcoins, market cap rankings, top gainers, losers, and volume spikes from the latest CoinGecko snapshot in one public dashboard. Use the table to sort by price, market cap, 24h volume, or Vol/MCap ratio, then save coins to your watchlist or create an informational price alert when a target matters.'
     : marketDataStatus === 'cached'
-      ? 'CoinGecko market rows are temporarily unavailable, so Trade Potion is showing the latest stored public price snapshots with clear stale-data labeling. Search coins, compare rankings, save watchlist entries, and create informational price alerts while fresh market rows recover.'
+      ? 'Search and compare crypto prices, market cap rankings, top gainers, losers, and watchlist entries in one public dashboard. Trade Potion is currently using stored CoinGecko snapshots because live rows are unavailable; alerts remain informational and may be delayed.'
       : 'Search coins, use existing watchlists, and create informational price alerts while market data recovers. Trade Potion labels unavailable data clearly and avoids promotional rankings or investment advice.';
   const heroStatusLabel = marketDataStatus === 'live'
-    ? 'CoinGecko market snapshot loaded'
+    ? 'Data status: CoinGecko snapshot loaded'
     : marketDataStatus === 'cached'
-      ? 'Currently showing cached public snapshots'
-      : 'Market tables may be temporarily empty';
+      ? 'Data status: cached CoinGecko snapshot'
+      : 'Data status: market tables may be temporarily empty';
+  const dataStatusDetail = marketDataStatus === 'live'
+    ? 'The table below uses the latest CoinGecko market snapshot available to this public site.'
+    : marketDataStatus === 'cached'
+      ? 'Live CoinGecko market rows are temporarily unavailable. Showing stored snapshots; some 1h, 7d, and chart fields may be unavailable until live rows recover.'
+      : 'CoinGecko market rows and cached snapshots are not available right now. Search, watchlist, and alert tools remain available while tables recover.';
   const marketTableTitle = marketDataStatus === 'live'
     ? 'Top 250 Cryptocurrencies by Market Snapshot'
     : marketDataStatus === 'cached'
-      ? 'Top Cryptocurrencies from Cached Snapshots'
+      ? 'Top Cryptocurrencies by Market Snapshot'
       : 'Crypto Market Table';
 
   return (
@@ -116,6 +121,9 @@ export default async function HomePage() {
               )}
               <span>{heroStatusLabel}</span>
             </div>
+            <p className="mt-2 max-w-2xl text-xs leading-5 text-zinc-400">
+              {dataStatusDetail}
+            </p>
             <div className="mt-5 flex flex-wrap gap-3">
               <a
                 href="#price-alerts"
@@ -164,31 +172,6 @@ export default async function HomePage() {
           </aside>
         </section>
 
-        {marketDataStatus !== 'live' && (
-          <section className={`mb-6 rounded-xl border p-4 text-sm ${
-            marketDataStatus === 'cached'
-              ? 'border-amber-500/30 bg-amber-950/20 text-amber-100'
-              : 'border-zinc-700 bg-zinc-900/80 text-zinc-300'
-          }`}>
-            <div className="flex items-start gap-3">
-              {marketDataStatus === 'cached' ? (
-                <Database className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
-              ) : (
-                <AlertTriangle className="mt-0.5 h-4 w-4 shrink-0 text-zinc-400" />
-              )}
-              <div>
-                <h2 className="font-semibold text-zinc-100">
-                  {marketDataStatus === 'cached' ? 'Showing cached market data' : 'Market data temporarily unavailable'}
-                </h2>
-                <p className="mt-1 text-xs leading-5 text-zinc-400">
-                  {marketDataStatus === 'cached'
-                    ? 'CoinGecko market rows are temporarily unavailable, so this page is using the latest stored public price snapshots. Confirm venue data independently before acting.'
-                    : 'CoinGecko market rows and cached snapshots are not available right now. The search, watchlist, and alert tools remain available, but market tables may be empty until data recovers.'}
-                </p>
-              </div>
-            </div>
-          </section>
-        )}
 
         {/* Gainers / Losers */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">

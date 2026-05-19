@@ -9,11 +9,11 @@ const coingeckoSource = readFileSync('src/lib/coingecko.ts', 'utf8');
 describe('homepage market-data fallback posture', () => {
   it('uses cached public snapshots when CoinGecko homepage data is unavailable', () => {
     expect(homeSource).toContain('getCachedTopCoins');
-    expect(homeSource).toContain('Showing cached market data');
-    expect(homeSource).toContain('Market data temporarily unavailable');
-    expect(homeSource).toContain('Cached crypto market snapshot');
-    expect(homeSource).toContain('Latest Cached Crypto Prices, Market Cap Rankings & Price Alerts');
-    expect(homeSource).toContain('Currently showing cached public snapshots');
+    expect(homeSource).toContain('Data status: cached CoinGecko snapshot');
+    expect(homeSource).toContain('Live CoinGecko market rows are temporarily unavailable');
+    expect(homeSource).toContain('Crypto market snapshot');
+    expect(homeSource).toContain('Crypto Market Prices, Market Cap Rankings & Price Alerts');
+    expect(homeSource).toContain('some 1h, 7d, and chart fields may be unavailable');
     expect(homeSource).toContain('data-market-data-status={marketDataStatus}');
     expect(coingeckoSource).toContain('price_snapshots');
     expect(coingeckoSource).toContain('getCachedTopCoins');
@@ -37,13 +37,16 @@ describe('homepage market-data fallback posture', () => {
     expect(homeSource).toContain("title: 'Crypto Market Price Tracker | Rankings & Price Alerts'");
     expect(homeSource).toContain('clearly labels cached public snapshots');
     expect(homeSource).toContain('CoinGecko market snapshot');
-    expect(homeSource).toContain('CoinGecko market snapshot loaded');
+    expect(homeSource).toContain('Data status: CoinGecko snapshot loaded');
     expect(homeSource).toContain('Top 250 Cryptocurrencies by Market Snapshot');
-    expect(homeSource).toContain('Top Cryptocurrencies from Cached Snapshots');
+    expect(homeSource).toContain('Top Cryptocurrencies by Market Snapshot');
     expect(homeSource).toContain('dashes mean that window is unavailable');
     expect(homeSource).not.toContain('Top 100 Cryptocurrencies');
     expect(homeSource).not.toContain('Live Crypto Prices, Market Cap Rankings & Price Alerts');
     expect(homeSource).not.toContain('Live CoinGecko market rows available');
+    expect(homeSource).not.toContain('Latest Cached Crypto Prices');
+    expect(homeSource).not.toContain('Currently showing cached public snapshots');
+    expect(homeSource).not.toContain('Showing cached market data');
   });
 
   it('adds privacy-safe internal-link hooks to existing homepage handoffs', () => {
