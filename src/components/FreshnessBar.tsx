@@ -20,11 +20,11 @@ export default function FreshnessBar({ fetchedAt }: Props) {
     secondsAgo < 60 ? `${secondsAgo}s ago` :
     `${Math.floor(secondsAgo / 60)}m ago`;
 
-  const isStale = secondsAgo > 300;
+  const isStale = secondsAgo > 1800;
 
   return (
     <span className={`text-xs ${isStale ? 'text-amber-400' : 'text-zinc-500'}`}>
-      {isStale ? '⚠ Snapshot last refreshed ' : 'Snapshot refreshed '}{label}
+      {isStale ? 'Snapshot may be stale: updated ' : 'Updated '}{label} via CoinGecko
     </span>
   );
 }

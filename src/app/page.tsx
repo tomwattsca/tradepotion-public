@@ -6,7 +6,7 @@ import HomePriceAlertBanner from '@/components/HomePriceAlertBanner';
 import Image from 'next/image';
 import Link from 'next/link';
 import { formatPct, pctColor } from '@/lib/utils';
-import { TrendingUp, TrendingDown, ArrowRight, Bell, Search, Star, Database, AlertTriangle } from 'lucide-react';
+import { TrendingUp, TrendingDown, ArrowRight, Bell, Search, Star, Database, AlertTriangle, Activity } from 'lucide-react';
 
 export const revalidate = 300;
 
@@ -56,7 +56,7 @@ export default async function HomePage() {
       .slice(0, 10);
 
   const heroEyebrow = marketDataStatus === 'live'
-    ? 'CoinGecko market snapshot'
+    ? 'Trade Potion market dashboard'
     : marketDataStatus === 'cached'
       ? 'Crypto market snapshot'
       : 'Crypto market research tools';
@@ -66,17 +66,17 @@ export default async function HomePage() {
       ? 'Crypto Market Prices, Market Cap Rankings & Price Alerts'
       : 'Crypto Price Search, Watchlists & Price Alerts';
   const heroDescription = marketDataStatus === 'live'
-    ? 'Track Bitcoin, Ethereum, altcoins, market cap rankings, top gainers, losers, and volume spikes from the latest CoinGecko snapshot in one public dashboard. Use the table to sort by price, market cap, 24h volume, or Vol/MCap ratio, then save coins to your watchlist or create an informational price alert when a target matters.'
+    ? 'Track Bitcoin, Ethereum, altcoins, market cap rankings, top gainers, losers, and volume spikes in one public dashboard. Sort the market table, save coins to your watchlist, and create informational price alerts when a target matters.'
     : marketDataStatus === 'cached'
       ? 'Search and compare crypto prices, market cap rankings, top gainers, losers, and watchlist entries in one public dashboard. Trade Potion is currently using stored CoinGecko snapshots because live rows are unavailable; alerts remain informational and may be delayed.'
       : 'Search coins, use existing watchlists, and create informational price alerts while market data recovers. Trade Potion labels unavailable data clearly and avoids promotional rankings or investment advice.';
   const heroStatusLabel = marketDataStatus === 'live'
-    ? 'Data status: CoinGecko snapshot loaded'
+    ? 'Market data source: CoinGecko snapshot'
     : marketDataStatus === 'cached'
       ? 'Data status: cached CoinGecko snapshot'
       : 'Data status: market tables may be temporarily empty';
   const dataStatusDetail = marketDataStatus === 'live'
-    ? 'The table below uses the latest CoinGecko market snapshot available to this public site.'
+    ? 'The market table shows the latest CoinGecko snapshot available to this public site. Prices can differ from exchange quotes.'
     : marketDataStatus === 'cached'
       ? 'Live CoinGecko market rows are temporarily unavailable. Showing stored snapshots; some 1h, 7d, and chart fields may be unavailable until live rows recover.'
       : 'CoinGecko market rows and cached snapshots are not available right now. Search, watchlist, and alert tools remain available while tables recover.';
@@ -106,14 +106,14 @@ export default async function HomePage() {
               data-market-data-status={marketDataStatus}
               className={`mt-4 inline-flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium ${
                 marketDataStatus === 'live'
-                  ? 'border-emerald-500/30 bg-emerald-950/20 text-emerald-200'
+                  ? 'border-zinc-700 bg-zinc-950/60 text-zinc-300'
                   : marketDataStatus === 'cached'
                     ? 'border-amber-500/30 bg-amber-950/20 text-amber-100'
                     : 'border-zinc-700 bg-zinc-950/70 text-zinc-300'
               }`}
             >
               {marketDataStatus === 'live' ? (
-                <TrendingUp className="h-3.5 w-3.5" />
+                <Activity className="h-3.5 w-3.5 text-violet-300" />
               ) : marketDataStatus === 'cached' ? (
                 <Database className="h-3.5 w-3.5" />
               ) : (
@@ -152,20 +152,22 @@ export default async function HomePage() {
               <div className="flex gap-3">
                 <Search className="mt-0.5 h-4 w-4 shrink-0 text-violet-300" />
                 <p>
-                  Search any coin or open a market category to compare price, market cap, and
-                  recent movement without promotional rankings.
+                  <span className="font-medium text-zinc-100">1. Search or choose a category.</span>{' '}
+                  Compare price, market cap, and recent movement without promotional rankings.
                 </p>
               </div>
               <div className="flex gap-3">
                 <Star className="mt-0.5 h-4 w-4 shrink-0 text-amber-300" />
                 <p>
-                  Click the star beside a coin to build a browser-based watchlist for repeat checks.
+                  <span className="font-medium text-zinc-100">2. Star coins for repeat checks.</span>{' '}
+                  Your watchlist stays in this browser.
                 </p>
               </div>
               <div className="flex gap-3">
                 <Bell className="mt-0.5 h-4 w-4 shrink-0 text-violet-300" />
                 <p>
-                  Add email alerts for price targets. Market data is informational only, not financial advice.
+                  <span className="font-medium text-zinc-100">3. Create informational alerts.</span>{' '}
+                  Use alerts as data reminders, not financial advice.
                 </p>
               </div>
             </div>
@@ -265,7 +267,7 @@ export default async function HomePage() {
         {/* Market table — up to 250 coins, sortable, paginated */}
         <div className="mb-2 flex flex-wrap items-center justify-between gap-2">
           <h2 className="text-sm font-semibold text-zinc-200">{marketTableTitle}</h2>
-          <span className="text-xs text-zinc-500">Click column headers to sort; dashes mean that window is unavailable in the current data source.</span>
+          <span className="text-xs text-zinc-500">Sorted by market cap by default. Click column headers to sort; dashes mean a metric is unavailable from the current source.</span>
         </div>
         <SortableMarketTable coins={coins} fetchedAt={Date.now()} />
       </main>

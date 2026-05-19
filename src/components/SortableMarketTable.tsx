@@ -87,7 +87,7 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
           }`}
           title="Shows 24h Volume ÷ Market Cap. Higher = more trading relative to coin size. Useful for spotting unusual activity."
         >
-          Vol/MCap Ratio {showVolMcap ? '✓' : ''}
+          {showVolMcap ? 'Hide' : 'Show'} Vol/MCap Ratio {showVolMcap ? '✓' : ''}
         </button>
       </div>
 
