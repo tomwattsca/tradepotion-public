@@ -74,16 +74,16 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
 
   return (
     <div>
-      <div className="flex items-center justify-between mb-2">
+      <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
         <div>
           {fetchedAt && <FreshnessBar fetchedAt={fetchedAt} />}
         </div>
         <button
           onClick={() => setShowVolMcap(v => !v)}
-          className={`px-2.5 py-1 rounded text-xs font-medium border transition-colors ${
+          className={`min-h-9 rounded-lg border px-3 py-1.5 text-xs font-semibold transition-colors ${
             showVolMcap
-              ? 'bg-amber-500/20 border-amber-500/40 text-amber-400'
-              : 'bg-zinc-900 border-zinc-800 text-zinc-500 hover:text-zinc-300'
+              ? 'bg-amber-500/20 border-amber-500/40 text-amber-300'
+              : 'bg-zinc-900 border-zinc-700 text-zinc-300 hover:border-zinc-500 hover:text-zinc-100'
           }`}
           title="Shows 24h Volume ÷ Market Cap. Higher = more trading relative to coin size. Useful for spotting unusual activity."
         >
@@ -91,7 +91,12 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
         </button>
       </div>
 
-      <div className="rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden">
+      <p className="mb-2 rounded-lg border border-zinc-800 bg-zinc-950/70 px-3 py-2 text-xs leading-5 text-zinc-400 md:hidden">
+        Swipe the market table sideways to compare price, 1h/24h/7d movement, sparkline, and watchlist controls.
+      </p>
+
+      <div data-market-table-scroll-region className="rounded-xl bg-zinc-950 border border-zinc-800 overflow-x-auto">
+        <div className="min-w-[46rem] md:min-w-0">
         <div className={`grid ${gridCols} px-4 py-2 border-b border-zinc-800 text-xs text-zinc-500`}>
           <span />
           <span className="pl-3">Coin</span>
@@ -178,6 +183,7 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
               </Link>
             );
           })}
+        </div>
         </div>
       </div>
 

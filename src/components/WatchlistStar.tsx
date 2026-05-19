@@ -18,11 +18,11 @@ export default function WatchlistStar({ coinId, coinName }: Props) {
     <button
       type="button"
       onClick={(e) => { e.preventDefault(); e.stopPropagation(); toggle(coinId); }}
-      className={`transition-colors ${watched ? 'text-amber-400' : 'text-zinc-600 hover:text-zinc-400'}`}
+      className={`inline-flex min-h-9 min-w-9 items-center justify-center rounded-full transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-violet-400 ${watched ? 'text-amber-400' : 'text-zinc-500 hover:bg-zinc-800 hover:text-zinc-200'}`}
       title={watched ? `Remove ${coinName} from watchlist` : `Add ${coinName} to watchlist`}
       aria-label={watched ? `Remove ${coinName} from watchlist` : `Add ${coinName} to watchlist`}
     >
-      <Star className={`h-3.5 w-3.5 ${watched ? 'fill-amber-400' : ''}`} />
+      <Star className={`h-4 w-4 ${watched ? 'fill-amber-400' : ''}`} />
     </button>
   );
 }

@@ -26,6 +26,16 @@ describe('homepage market-data fallback posture', () => {
     expect(tableSource).toContain('CoinGecko data can be rate-limited or delayed');
   });
 
+  it('adds mobile table and alert-form usability affordances for the existing homepage flow', () => {
+    expect(tableSource).toContain('data-market-table-scroll-region');
+    expect(tableSource).toContain('Swipe the market table sideways');
+    expect(tableSource).toContain('overflow-x-auto');
+    expect(tableSource).toContain('min-w-[46rem]');
+    expect(tableSource).toContain('min-h-9 rounded-lg');
+    expect(alertSource).toContain('data-alert-form-layout="responsive"');
+    expect(alertSource).toContain('min-h-11');
+  });
+
   it('keeps price-alert copy non-advisory and disables the form when market data is absent', () => {
     expect(alertSource).toContain('Alerts are informational market-data notifications only');
     expect(alertSource).toContain('no investment advice');
