@@ -3,12 +3,39 @@
 import Link from 'next/link';
 import { useState } from 'react';
 import { Search, Menu, X, TrendingUp } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 
 export default function Navbar() {
   const [query, setQuery] = useState('');
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
+  const pathname = usePathname();
+
+  const navLinks = [
+    { href: '/', label: 'Markets', location: 'markets', match: (path: string) => path === '/' },
+    { href: '/category/decentralized-finance-defi', label: 'DeFi', location: 'defi', match: (path: string) => path === '/category/decentralized-finance-defi' },
+    { href: '/category/layer-2', label: 'Layer 2', location: 'layer_2', match: (path: string) => path === '/category/layer-2' },
+    { href: '/category/meme-token', label: 'Meme', location: 'meme', match: (path: string) => path === '/category/meme-token' },
+    { href: '/top/gainers', label: 'Gainers', location: 'gainers', tone: 'text-emerald-300', match: (path: string) => path === '/top/gainers' },
+    { href: '/top/losers', label: 'Losers', location: 'losers', tone: 'text-red-300', match: (path: string) => path === '/top/losers' },
+    { href: '/top/trending', label: 'Trending', location: 'trending', tone: 'text-orange-300', match: (path: string) => path === '/top/trending' },
+    { href: '/top/vol-spikes', label: 'Vol Spikes', location: 'vol_spikes', tone: 'text-yellow-300', match: (path: string) => path === '/top/vol-spikes' },
+    { href: '/watchlist', label: 'Watchlist', location: 'watchlist', tone: 'text-amber-300', match: (path: string) => path === '/watchlist' },
+  ];
+
+  const navLinkClass = (active: boolean, tone?: string) => [
+    'rounded-full px-3 py-1.5 transition-colors',
+    active
+      ? 'border border-violet-400/40 bg-violet-500/15 text-white shadow-sm shadow-violet-950/40'
+      : `${tone ?? 'text-zinc-400'} hover:bg-zinc-900 hover:text-white`,
+  ].join(' ');
+
+  const mobileNavLinkClass = (active: boolean, tone?: string) => [
+    'rounded-lg px-3 py-2 transition-colors',
+    active
+      ? 'border border-violet-400/40 bg-violet-500/15 text-white'
+      : `${tone ?? 'text-zinc-400'} hover:bg-zinc-900 hover:text-white`,
+  ].join(' ');
 
   function handleSearch(e: React.FormEvent) {
     e.preventDefault();
@@ -28,16 +55,22 @@ export default function Navbar() {
         </Link>
 
         {/* Nav links */}
-        <div className="hidden md:flex items-center gap-6 text-sm text-zinc-400">
-          <Link href="/" data-event="internal_link_click" data-cta-location="global_nav_markets" className="hover:text-white transition-colors">Markets</Link>
-          <Link href="/category/decentralized-finance-defi" data-event="internal_link_click" data-cta-location="global_nav_defi" className="hover:text-white transition-colors">DeFi</Link>
-          <Link href="/category/layer-2" data-event="internal_link_click" data-cta-location="global_nav_layer_2" className="hover:text-white transition-colors">Layer 2</Link>
-          <Link href="/category/meme-token" data-event="internal_link_click" data-cta-location="global_nav_meme" className="hover:text-white transition-colors">Meme</Link>
-          <Link href="/top/gainers" data-event="internal_link_click" data-cta-location="global_nav_gainers" className="hover:text-white transition-colors text-emerald-400/80">Gainers</Link>
-          <Link href="/top/losers" data-event="internal_link_click" data-cta-location="global_nav_losers" className="hover:text-white transition-colors text-red-400/80">Losers</Link>
-          <Link href="/top/trending" data-event="internal_link_click" data-cta-location="global_nav_trending" className="hover:text-white transition-colors text-orange-400/80">Trending</Link>
-          <Link href="/top/vol-spikes" data-event="internal_link_click" data-cta-location="global_nav_vol_spikes" className="hover:text-white transition-colors text-yellow-400/80">Vol Spikes</Link>
-          <Link href="/watchlist" data-event="internal_link_click" data-cta-location="global_nav_watchlist" className="hover:text-white transition-colors text-amber-400/80">Watchlist</Link>
+        <div className="hidden md:flex items-center gap-1 text-sm" aria-label="Primary navigation">
+          {navLinks.map((link) => {
+            const active = link.match(pathname || '/');
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                data-event="internal_link_click"
+                data-cta-location={`global_nav_${link.location}`}
+                aria-current={active ? 'page' : undefined}
+                className={navLinkClass(active, link.tone)}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </div>
 
         {/* Search */}
@@ -75,16 +108,23 @@ export default function Navbar() {
 
       {/* Mobile menu */}
       {menuOpen && (
-        <div className="md:hidden border-t border-zinc-800 px-4 py-3 flex flex-col gap-3 text-sm text-zinc-400">
-          <Link href="/" data-event="internal_link_click" data-cta-location="mobile_nav_markets" onClick={() => setMenuOpen(false)} className="hover:text-white">Markets</Link>
-          <Link href="/category/decentralized-finance-defi" data-event="internal_link_click" data-cta-location="mobile_nav_defi" onClick={() => setMenuOpen(false)} className="hover:text-white">DeFi</Link>
-          <Link href="/category/layer-2" data-event="internal_link_click" data-cta-location="mobile_nav_layer_2" onClick={() => setMenuOpen(false)} className="hover:text-white">Layer 2</Link>
-          <Link href="/category/meme-token" data-event="internal_link_click" data-cta-location="mobile_nav_meme" onClick={() => setMenuOpen(false)} className="hover:text-white">Meme</Link>
-          <Link href="/top/gainers" data-event="internal_link_click" data-cta-location="mobile_nav_gainers" onClick={() => setMenuOpen(false)} className="hover:text-white text-emerald-400/80">Gainers</Link>
-          <Link href="/top/losers" data-event="internal_link_click" data-cta-location="mobile_nav_losers" onClick={() => setMenuOpen(false)} className="hover:text-white text-red-400/80">Losers</Link>
-          <Link href="/top/trending" data-event="internal_link_click" data-cta-location="mobile_nav_trending" onClick={() => setMenuOpen(false)} className="hover:text-white text-orange-400/80">Trending</Link>
-          <Link href="/top/vol-spikes" data-event="internal_link_click" data-cta-location="mobile_nav_vol_spikes" onClick={() => setMenuOpen(false)} className="hover:text-white text-yellow-400/80">Vol Spikes</Link>
-          <Link href="/watchlist" data-event="internal_link_click" data-cta-location="mobile_nav_watchlist" onClick={() => setMenuOpen(false)} className="hover:text-white text-amber-400/80">Watchlist</Link>
+        <div className="md:hidden border-t border-zinc-800 px-4 py-3 flex flex-col gap-2 text-sm" aria-label="Mobile navigation">
+          {navLinks.map((link) => {
+            const active = link.match(pathname || '/');
+            return (
+              <Link
+                key={link.href}
+                href={link.href}
+                data-event="internal_link_click"
+                data-cta-location={`mobile_nav_${link.location}`}
+                aria-current={active ? 'page' : undefined}
+                onClick={() => setMenuOpen(false)}
+                className={mobileNavLinkClass(active, link.tone)}
+              >
+                {link.label}
+              </Link>
+            );
+          })}
         </div>
       )}
     </nav>

@@ -18,14 +18,16 @@ describe('sitewide schema and navigation measurement posture', () => {
 
   it('makes existing global navigation links measurable without PII or query text', () => {
     expect(navSource).toContain('data-event="internal_link_click"');
-    expect(navSource).toContain('data-cta-location="global_nav_markets"');
-    expect(navSource).toContain('data-cta-location="global_nav_defi"');
-    expect(navSource).toContain('data-cta-location="global_nav_vol_spikes"');
-    expect(navSource).toContain('data-cta-location="global_nav_watchlist"');
+    expect(navSource).toContain("location: 'markets'");
+    expect(navSource).toContain("location: 'defi'");
+    expect(navSource).toContain("location: 'vol_spikes'");
+    expect(navSource).toContain("location: 'watchlist'");
+    expect(navSource).toContain('data-cta-location={`global_nav_${link.location}`}');
     expect(navSource).toContain('data-cta-location="global_search_submit"');
     expect(navSource).toContain('aria-label="Search coins"');
-    expect(navSource).toContain('data-cta-location="mobile_nav_markets"');
-    expect(navSource).toContain('data-cta-location="mobile_nav_watchlist"');
+    expect(navSource).toContain('data-cta-location={`mobile_nav_${link.location}`}');
+    expect(navSource).toContain("aria-current={active ? 'page' : undefined}");
+    expect(navSource).toContain('bg-violet-500/15 text-white');
     expect(navSource).not.toContain('data-search-query');
     expect(navSource).not.toContain('data-email');
   });
