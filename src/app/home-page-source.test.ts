@@ -34,12 +34,16 @@ describe('homepage market-data fallback posture', () => {
   });
 
   it('keeps homepage metadata and table labels honest during cached-data states', () => {
-    expect(homeSource).toContain("title: 'Crypto Price Tracker | Market Cap Rankings & Price Alerts'");
+    expect(homeSource).toContain("title: 'Crypto Market Price Tracker | Rankings & Price Alerts'");
     expect(homeSource).toContain('clearly labels cached public snapshots');
-    expect(homeSource).toContain('Top 250 Cryptocurrencies');
+    expect(homeSource).toContain('CoinGecko market snapshot');
+    expect(homeSource).toContain('CoinGecko market snapshot loaded');
+    expect(homeSource).toContain('Top 250 Cryptocurrencies by Market Snapshot');
     expect(homeSource).toContain('Top Cryptocurrencies from Cached Snapshots');
     expect(homeSource).toContain('dashes mean that window is unavailable');
     expect(homeSource).not.toContain('Top 100 Cryptocurrencies');
+    expect(homeSource).not.toContain('Live Crypto Prices, Market Cap Rankings & Price Alerts');
+    expect(homeSource).not.toContain('Live CoinGecko market rows available');
   });
 
   it('adds privacy-safe internal-link hooks to existing homepage handoffs', () => {

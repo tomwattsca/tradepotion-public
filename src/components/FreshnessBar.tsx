@@ -24,7 +24,7 @@ export default function FreshnessBar({ fetchedAt }: Props) {
 
   return (
     <span className={`text-xs ${isStale ? 'text-amber-400' : 'text-zinc-500'}`}>
-      {isStale ? '⚠ Data from ' : 'Updated '}{label}
+      {isStale ? '⚠ Snapshot last refreshed ' : 'Snapshot refreshed '}{label}
     </span>
   );
 }

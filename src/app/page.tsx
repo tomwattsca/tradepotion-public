@@ -11,9 +11,9 @@ import { TrendingUp, TrendingDown, ArrowRight, Bell, Search, Star, Database, Ale
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: 'Crypto Price Tracker | Market Cap Rankings & Price Alerts',
+  title: 'Crypto Market Price Tracker | Rankings & Price Alerts',
   description:
-    'Track Bitcoin, Ethereum, altcoins, market cap rankings, and price alerts. Trade Potion shows live CoinGecko data when available and clearly labels cached public snapshots during provider outages.',
+    'Track Bitcoin, Ethereum, altcoins, market cap rankings, and price alerts. Trade Potion shows CoinGecko market snapshots when available and clearly labels cached public snapshots during provider outages.',
   alternates: {
     canonical: '/',
   },
@@ -56,27 +56,27 @@ export default async function HomePage() {
       .slice(0, 10);
 
   const heroEyebrow = marketDataStatus === 'live'
-    ? 'Live crypto price tracker'
+    ? 'CoinGecko market snapshot'
     : marketDataStatus === 'cached'
       ? 'Cached crypto market snapshot'
       : 'Crypto market research tools';
   const heroTitle = marketDataStatus === 'live'
-    ? 'Live Crypto Prices, Market Cap Rankings & Price Alerts'
+    ? 'Crypto Market Prices, Market Cap Rankings & Price Alerts'
     : marketDataStatus === 'cached'
       ? 'Latest Cached Crypto Prices, Market Cap Rankings & Price Alerts'
       : 'Crypto Price Search, Watchlists & Price Alerts';
   const heroDescription = marketDataStatus === 'live'
-    ? 'Track Bitcoin, Ethereum, altcoins, market cap rankings, top gainers, losers, and volume spikes in one fast public dashboard. Use the table to sort by price, market cap, 24h volume, or Vol/MCap ratio, then save coins to your watchlist or create a price alert when a target matters.'
+    ? 'Track Bitcoin, Ethereum, altcoins, market cap rankings, top gainers, losers, and volume spikes from the latest CoinGecko snapshot in one public dashboard. Use the table to sort by price, market cap, 24h volume, or Vol/MCap ratio, then save coins to your watchlist or create an informational price alert when a target matters.'
     : marketDataStatus === 'cached'
-      ? 'Live CoinGecko data is temporarily unavailable, so Trade Potion is showing the latest stored public price snapshots with clear stale-data labeling. Search coins, compare rankings, save watchlist entries, and create informational price alerts while live market rows recover.'
+      ? 'CoinGecko market rows are temporarily unavailable, so Trade Potion is showing the latest stored public price snapshots with clear stale-data labeling. Search coins, compare rankings, save watchlist entries, and create informational price alerts while fresh market rows recover.'
       : 'Search coins, use existing watchlists, and create informational price alerts while market data recovers. Trade Potion labels unavailable data clearly and avoids promotional rankings or investment advice.';
   const heroStatusLabel = marketDataStatus === 'live'
-    ? 'Live CoinGecko market rows available'
+    ? 'CoinGecko market snapshot loaded'
     : marketDataStatus === 'cached'
       ? 'Currently showing cached public snapshots'
       : 'Market tables may be temporarily empty';
   const marketTableTitle = marketDataStatus === 'live'
-    ? 'Top 250 Cryptocurrencies'
+    ? 'Top 250 Cryptocurrencies by Market Snapshot'
     : marketDataStatus === 'cached'
       ? 'Top Cryptocurrencies from Cached Snapshots'
       : 'Crypto Market Table';
@@ -182,8 +182,8 @@ export default async function HomePage() {
                 </h2>
                 <p className="mt-1 text-xs leading-5 text-zinc-400">
                   {marketDataStatus === 'cached'
-                    ? 'CoinGecko live data is temporarily unavailable, so this page is using the latest stored public price snapshots. Confirm venue data independently before acting.'
-                    : 'CoinGecko live data and cached snapshots are not available right now. The search, watchlist, and alert tools remain available, but market tables may be empty until data recovers.'}
+                    ? 'CoinGecko market rows are temporarily unavailable, so this page is using the latest stored public price snapshots. Confirm venue data independently before acting.'
+                    : 'CoinGecko market rows and cached snapshots are not available right now. The search, watchlist, and alert tools remain available, but market tables may be empty until data recovers.'}
                 </p>
               </div>
             </div>
