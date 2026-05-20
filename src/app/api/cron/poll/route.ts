@@ -1,10 +1,10 @@
 export const runtime = 'nodejs';
+export const dynamic = 'force-dynamic';
 
 import { NextResponse } from 'next/server';
 import { db } from '@/lib/db';
 import { coins, priceSnapshots, priceAlerts, sitemapCache } from '@/lib/schema';
 import { eq, sql } from 'drizzle-orm';
-import { runMigrations } from '@/lib/migrate';
 import { sendAlertEmail } from '@/lib/mailer';
 
 // Protect this route — Railway cron passes the secret as a header
@@ -141,8 +141,9 @@ export async function GET(req: Request) {
   }
 
   try {
-    await runMigrations();
-
+    // Runtime web requests should not run schema migrations. On Railway this route may
+    // be called by an in-process poller or external cron; repeated migrations can fail
+    // against an already-baselined database and consume the public web worker.
     const markets = await fetchCoinGeckoMarkets();
 
     // Upsert coins

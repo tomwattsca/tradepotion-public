@@ -1,14 +1,19 @@
-// Self-contained cron: polls /api/cron/poll on a timer inside the Next.js process.
-// Replaces the standalone cron-worker.js service.
+// Sentry bootstrap plus optional in-process cron for local/internal workers.
 
 export async function register() {
   if (process.env.NEXT_RUNTIME === 'nodejs') {
     await import('../sentry.server.config');
 
     const CRON_SECRET = process.env.CRON_SECRET || '';
+    const IN_PROCESS_CRON_ENABLED = process.env.ENABLE_IN_PROCESS_CRON === 'true';
     const INTERVAL_MS = parseInt(process.env.POLL_INTERVAL_MS || '300000', 10);
     const PORT = process.env.PORT || '3000';
     const BASE_URL = `http://localhost:${PORT}`;
+
+    if (!IN_PROCESS_CRON_ENABLED) {
+      console.log('[cron] In-process poller disabled; set ENABLE_IN_PROCESS_CRON=true to run it inside the web service.');
+      return;
+    }
 
     const poll = async () => {
       try {
@@ -21,9 +26,9 @@ export async function register() {
         const message = err instanceof Error ? err.message : String(err);
         console.error(`[cron] poll error: ${message}`);
       }
-    }
+    };
 
-    // Delay first poll to let the server fully start
+    // Delay first poll to let the server fully start when explicitly enabled.
     setTimeout(() => {
       console.log(`[cron] Starting in-process poller — every ${INTERVAL_MS / 1000}s`);
       poll();
