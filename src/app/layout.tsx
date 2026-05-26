@@ -9,9 +9,9 @@ const inter = Inter({ subsets: ['latin'] });
 export const metadata: Metadata = {
   title: {
     template: '%s | Trade Potion',
-    default: 'Crypto Price Tracker | Live Bitcoin, Ethereum & Altcoin Prices | Trade Potion',
+    default: 'Crypto Market Snapshot Tracker | Bitcoin, Ethereum & Altcoin Prices | Trade Potion',
   },
-  description: 'Live crypto prices for 10,000+ coins. Real-time Bitcoin, Ethereum, altcoin tracking with price alerts. View gainers, losers, and market cap rankings.',
+  description: 'Track CoinGecko crypto market snapshots for Bitcoin, Ethereum, altcoins, watchlists, and informational price alerts. Prices can lag exchange quotes; no financial advice.',
   metadataBase: new URL('https://tradepotion.com'),
   // openGraph and twitter are intentionally absent here so page-level metadata
   // is not overridden by layout defaults. Each page sets its own og tags.
@@ -133,8 +133,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         />
                 <Navbar />
         {children}
-        <footer className="border-t border-zinc-800 mt-12 py-6 px-4 text-center text-xs text-zinc-600">
-          © {new Date().getFullYear()} Trade Potion. Crypto data via CoinGecko. Not financial advice.
+        <footer className="border-t border-zinc-800 mt-12 px-4 py-6 text-center text-xs leading-5 text-zinc-500">
+          <p>© {new Date().getFullYear()} Trade Potion. Crypto market snapshots via CoinGecko. Informational only; not financial advice.</p>
+          <p className="mt-1 text-zinc-600">Public tools do not require a wallet connection. Verify prices, venue access, and regional rules independently.</p>
         </footer>
       </body>
     </html>

@@ -39,6 +39,11 @@ describe('homepage market-data fallback posture', () => {
   it('keeps price-alert copy non-advisory and disables the form when market data is absent', () => {
     expect(alertSource).toContain('Alerts are informational market-data notifications only');
     expect(alertSource).toContain('no investment advice');
+    expect(alertSource).toContain('data-alert-trust-note');
+    expect(alertSource).toContain('Email is used for this alert request');
+    expect(alertSource).toContain('no wallet, account, private key, or exchange login is required');
+    expect(alertSource).toContain('Alert checks use market snapshots and can lag exchange quotes');
+    expect(alertSource).toContain('informational market-snapshot checks');
     expect(alertSource).toContain('disabled={topCoins.length === 0}');
     expect(alertSource).toContain('Market data unavailable');
   });
