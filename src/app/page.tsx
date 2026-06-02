@@ -124,25 +124,43 @@ export default async function HomePage() {
             <p className="mt-2 max-w-2xl text-xs leading-5 text-zinc-400">
               {dataStatusDetail}
             </p>
-            <div className="mt-5 flex flex-wrap gap-3">
+            <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center">
               <a
                 href="#price-alerts"
                 data-event="price_alert_click"
                 data-cta-location="home_hero"
-                className="inline-flex items-center gap-2 rounded-lg bg-violet-600 px-4 py-2 text-sm font-medium text-white transition-colors hover:bg-violet-500"
+                className="inline-flex items-center justify-center gap-2 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-violet-500"
               >
                 <Bell className="h-4 w-4" />
                 Set a price alert
               </a>
-              <Link
-                href="/search"
-                data-event="internal_link_click"
-                data-cta-location="home_hero_search"
-                className="inline-flex items-center gap-2 rounded-lg border border-zinc-700 px-4 py-2 text-sm font-medium text-zinc-200 transition-colors hover:border-zinc-500 hover:bg-zinc-900"
+              <form
+                action="/search"
+                method="get"
+                role="search"
+                aria-label="Search crypto market snapshots"
+                className="flex min-w-0 flex-1 overflow-hidden rounded-lg border border-zinc-700 bg-zinc-950/70 focus-within:border-violet-400 focus-within:ring-2 focus-within:ring-violet-500/30 sm:max-w-md"
               >
-                <Search className="h-4 w-4" />
-                Search coins
-              </Link>
+                <label htmlFor="home-hero-search" className="sr-only">Search coins</label>
+                <div className="flex min-w-0 flex-1 items-center gap-2 px-3">
+                  <Search className="h-4 w-4 shrink-0 text-zinc-500" aria-hidden="true" />
+                  <input
+                    id="home-hero-search"
+                    name="q"
+                    type="search"
+                    placeholder="Search BTC, Akash, DeFi coins..."
+                    className="min-h-11 min-w-0 flex-1 bg-transparent text-sm text-zinc-100 outline-none placeholder:text-zinc-500"
+                  />
+                </div>
+                <button
+                  type="submit"
+                  data-event="internal_link_click"
+                  data-cta-location="home_hero_search_submit"
+                  className="min-h-11 shrink-0 border-l border-zinc-800 px-3 text-sm font-medium text-zinc-200 transition-colors hover:bg-zinc-900 hover:text-white"
+                >
+                  Search
+                </button>
+              </form>
             </div>
           </div>
 

@@ -68,7 +68,12 @@ describe('homepage market-data fallback posture', () => {
 
   it('adds privacy-safe internal-link hooks to existing homepage handoffs', () => {
     expect(homeSource).toContain('data-event="internal_link_click"');
-    expect(homeSource).toContain('data-cta-location="home_hero_search"');
+    expect(homeSource).toContain('role="search"');
+    expect(homeSource).toContain('aria-label="Search crypto market snapshots"');
+    expect(homeSource).toContain('id="home-hero-search"');
+    expect(homeSource).toContain('name="q"');
+    expect(homeSource).toContain('Search BTC, Akash, DeFi coins');
+    expect(homeSource).toContain('data-cta-location="home_hero_search_submit"');
     expect(homeSource).toContain('data-cta-location="home_top_gainers"');
     expect(homeSource).toContain('data-cta-location="home_top_losers"');
     expect(homeSource).toContain('data-cta-location="home_gainer_coin"');
