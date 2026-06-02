@@ -81,7 +81,10 @@ describe('top pages SEO/source guards', () => {
     expect(gainersClientSource).toContain('data-coin-id={coin.id}');
     expect(gainersClientSource).toContain('data-market-snapshot-note');
     expect(gainersClientSource).toContain('7D mini-chart is a sparkline');
-    expect(gainersClientSource).toContain('grid-cols-[2rem_1fr_7rem_5rem_7rem_9rem_9rem_1.5rem]');
+    expect(gainersClientSource).toContain('data-top-list-table-scroll-region');
+    expect(gainersClientSource).toContain('min-w-[56rem] grid-cols-[2rem_1fr_7rem_5rem_7rem_9rem_9rem_4rem]');
+    expect(gainersClientSource).toContain('>Save</span>');
+    expect(gainersClientSource).toContain('aria-label={`Save ${coin.name} to watchlist`}');
     expect(trendingClientSource).toContain('data-cta-location="top_trending_coin"');
     expect(trendingClientSource).toContain('left rank is trending attention');
     expect(trendingClientSource).toContain('Coin / MCap rank');

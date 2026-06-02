@@ -218,8 +218,8 @@ export default function GainersClient({ mode }: Props) {
       )}
 
       {/* Table */}
-      <div className="rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden">
-        <div className="grid grid-cols-[2rem_1fr_7rem_5rem_7rem_9rem_9rem_1.5rem] items-center px-4 py-2 border-b border-zinc-800 text-xs text-zinc-500">
+      <div className="rounded-xl bg-zinc-950 border border-zinc-800 overflow-x-auto" data-top-list-table-scroll-region>
+        <div className="grid min-w-[56rem] grid-cols-[2rem_1fr_7rem_5rem_7rem_9rem_9rem_4rem] items-center px-4 py-2 border-b border-zinc-800 text-xs text-zinc-500">
           <span className="text-right">#</span>
           <span className="pl-3">Coin</span>
           <span className="text-right">Price</span>
@@ -229,7 +229,7 @@ export default function GainersClient({ mode }: Props) {
           </span>
           <span className="text-right hidden sm:block">Market Cap</span>
           <span className="text-right hidden md:block">Volume (24h)</span>
-          <span className="sr-only">Watchlist</span>
+          <span className="text-center text-zinc-400">Save</span>
         </div>
         <div className="divide-y divide-zinc-800/40">
           {loading && <TableSkeleton rows={10} cols={6} />}
@@ -263,7 +263,7 @@ export default function GainersClient({ mode }: Props) {
               data-cta-location={`top_${mode}_coin`}
               data-coin-id={coin.id}
               data-coin-symbol={coin.symbol}
-              className="grid grid-cols-[2rem_1fr_7rem_5rem_7rem_9rem_9rem_1.5rem] items-center px-4 py-3 hover:bg-zinc-900 transition-colors group"
+              className="grid min-w-[56rem] grid-cols-[2rem_1fr_7rem_5rem_7rem_9rem_9rem_4rem] items-center px-4 py-3 hover:bg-zinc-900 transition-colors group"
             >
               <span className="text-xs text-zinc-500 text-right">{page * PAGE_SIZE + i + 1}</span>
               <div className="flex items-center gap-2.5 pl-3 min-w-0">
@@ -282,7 +282,7 @@ export default function GainersClient({ mode }: Props) {
               </span>
               <span className="text-sm text-right text-zinc-300 hidden sm:block">{formatMarketCap(coin.market_cap)}</span>
               <span className="text-sm text-right text-zinc-400 hidden md:block">{formatMarketCap(coin.total_volume)}</span>
-              <div className="flex justify-center">
+              <div className="flex justify-center pl-3" aria-label={`Save ${coin.name} to watchlist`}>
                 <WatchlistStar coinId={coin.id} coinName={coin.name} />
               </div>
             </Link>
