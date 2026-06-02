@@ -30,7 +30,7 @@ describe('homepage market-data fallback posture', () => {
     expect(tableSource).toContain('data-market-table-scroll-region');
     expect(tableSource).toContain('Swipe the market table sideways');
     expect(tableSource).toContain('overflow-x-auto');
-    expect(tableSource).toContain('min-w-[46rem]');
+    expect(tableSource).toContain('min-w-[50rem]');
     expect(tableSource).toContain('min-h-9 rounded-lg');
     expect(alertSource).toContain('data-alert-form-layout="responsive"');
     expect(alertSource).toContain('min-h-11');
@@ -78,6 +78,16 @@ describe('homepage market-data fallback posture', () => {
     expect(tableSource).toContain('data-coin-id={coin.id}');
     expect(homeSource).toContain('data-coin-symbol={coin.symbol}');
     expect(tableSource).toContain('data-coin-symbol={coin.symbol}');
+  });
+
+
+  it('clarifies homepage mover and watchlist table context for first-time users', () => {
+    expect(homeSource).toContain('Extreme percentages can come from small or low-liquidity assets');
+    expect(homeSource).toContain('not Trade Potion recommendations');
+    expect(homeSource).toContain('Verify liquidity, venue pricing, and regional rules independently');
+    expect(tableSource).toContain('Save coins to your browser watchlist');
+    expect(tableSource).toContain('>Save</span>');
+    expect(tableSource).toContain('Save watchlist controls');
   });
 
 });

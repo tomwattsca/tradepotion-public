@@ -192,6 +192,9 @@ export default async function HomePage() {
                 See all <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
+            <p className="mb-3 rounded-lg border border-emerald-500/15 bg-emerald-950/10 px-3 py-2 text-xs leading-5 text-zinc-400">
+              24h movers are market-snapshot signals. Extreme percentages can come from small or low-liquidity assets, not Trade Potion recommendations.
+            </p>
             <div className="flex flex-col gap-1.5">
               {gainers.length === 0 && (
                 <p className="rounded-lg border border-zinc-800 bg-zinc-950/60 px-3 py-4 text-sm text-zinc-500">
@@ -233,6 +236,9 @@ export default async function HomePage() {
                 See all <ArrowRight className="h-3 w-3" />
               </Link>
             </div>
+            <p className="mb-3 rounded-lg border border-red-500/15 bg-red-950/10 px-3 py-2 text-xs leading-5 text-zinc-400">
+              24h loser rows are context for further research. Verify liquidity, venue pricing, and regional rules independently.
+            </p>
             <div className="flex flex-col gap-1.5">
               {losers.length === 0 && (
                 <p className="rounded-lg border border-zinc-800 bg-zinc-950/60 px-3 py-4 text-sm text-zinc-500">

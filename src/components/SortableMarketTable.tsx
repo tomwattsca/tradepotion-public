@@ -69,8 +69,8 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
 
   // Grid: #, Coin, Price, Sparkline, 24h%, 7d%, Market Cap, Volume, [Vol/MCap]
   const gridCols = showVolMcap
-    ? 'grid-cols-[2rem_1fr_7rem_5rem_5rem_6rem_6rem_2.5rem] md:grid-cols-[2rem_1fr_7rem_5rem_5rem_6rem_6rem_8rem_8rem_7rem_2.5rem]'
-    : 'grid-cols-[2rem_1fr_7rem_5rem_5rem_6rem_6rem_2.5rem] md:grid-cols-[2rem_1fr_7rem_5rem_5rem_6rem_6rem_8rem_8rem_2.5rem]';
+    ? 'grid-cols-[2rem_1fr_7rem_5rem_5rem_6rem_6rem_4.5rem] md:grid-cols-[2rem_1fr_7rem_5rem_5rem_6rem_6rem_8rem_8rem_7rem_4.5rem]'
+    : 'grid-cols-[2rem_1fr_7rem_5rem_5rem_6rem_6rem_4.5rem] md:grid-cols-[2rem_1fr_7rem_5rem_5rem_6rem_6rem_8rem_8rem_4.5rem]';
 
   return (
     <div>
@@ -92,11 +92,11 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
       </div>
 
       <p className="mb-2 rounded-lg border border-zinc-800 bg-zinc-950/70 px-3 py-2 text-xs leading-5 text-zinc-400 md:hidden">
-        Swipe the market table sideways to compare price, 1h/24h/7d movement, sparkline, and watchlist controls.
+        Swipe the market table sideways to compare price, 1h/24h/7d movement, sparkline, and the Save watchlist controls.
       </p>
 
       <div data-market-table-scroll-region className="rounded-xl bg-zinc-950 border border-zinc-800 overflow-x-auto">
-        <div className="min-w-[46rem] md:min-w-0">
+        <div className="min-w-[50rem] md:min-w-0">
         <div className={`grid ${gridCols} px-4 py-2 border-b border-zinc-800 text-xs text-zinc-500`}>
           <span />
           <span className="pl-3">Coin</span>
@@ -124,7 +124,7 @@ export default function SortableMarketTable({ coins, pageSize = PAGE_SIZE, fetch
               Vol/MCap <SortIcon active={sortKey === 'vol_mcap_ratio'} dir={sortDir} />
             </button>
           )}
-          <span title="Watchlist" className="text-center">★</span>
+          <span title="Save coins to your browser watchlist" className="text-center font-medium text-zinc-400">Save</span>
         </div>
 
         <div className="divide-y divide-zinc-800/40">
