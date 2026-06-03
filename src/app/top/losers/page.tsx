@@ -8,19 +8,19 @@ import TopListContextPanel from '@/components/TopListContextPanel';
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: 'Top Crypto Losers Today | Largest Downward Market Moves',
+  title: 'Largest Downward Crypto Market Moves Today',
   description: 'Informational market-snapshot list of cryptocurrency downward movers filterable by 1H, 24H, 7D change, volume, and market cap tier. Research observed moves and set price alerts from coin pages.',
   alternates: { canonical: 'https://tradepotion.com/top/losers' },
   openGraph: {
-    title: 'Top Crypto Losers Today',
+    title: 'Largest Downward Market Moves',
     description: 'Downside crypto movers filtered by 1H, 24H, 7D — with volume and market cap tier filters plus watchlist handoffs.',
     url: 'https://tradepotion.com/top/losers',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Top Crypto Losers Today',
-    description: 'Worst performing coins filtered by 1H, 24H, 7D. Powered by Trade Potion.',
+    title: 'Largest Downward Market Moves',
+    description: 'Informational market-snapshot list of cryptocurrency downward movers filtered by 1H, 24H, 7D change, volume, and market cap tier.',
   },
 };
 
@@ -35,7 +35,7 @@ export default function TopLosersPage() {
             '@type': 'BreadcrumbList',
             itemListElement: [
               { '@type': 'ListItem', position: 1, name: 'Markets', item: 'https://tradepotion.com' },
-              { '@type': 'ListItem', position: 2, name: 'Top Crypto Losers', item: 'https://tradepotion.com/top/losers' },
+              { '@type': 'ListItem', position: 2, name: 'Largest Downward Market Moves', item: 'https://tradepotion.com/top/losers' },
             ],
           }),
         }}
@@ -46,9 +46,9 @@ export default function TopLosersPage() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'WebPage',
-            name: 'Top Crypto Losers Today',
+            name: 'Largest Downward Market Moves',
             url: 'https://tradepotion.com/top/losers',
-            description: 'Informational list of crypto downside movers filtered by timeframe, volume and market-cap tier using CoinGecko market data.',
+            description: 'Informational list of observed cryptocurrency downward movers filtered by timeframe, volume and market-cap tier using CoinGecko market data.',
             isPartOf: { '@type': 'WebSite', name: 'Trade Potion', url: 'https://tradepotion.com' },
             about: 'Cryptocurrency market data',
           }),
@@ -61,8 +61,8 @@ export default function TopLosersPage() {
       <div className="flex items-center gap-3 mb-6">
         <TrendingDown className="h-6 w-6 text-red-400" />
         <div>
-          <h1 className="text-2xl font-bold text-white">Top Crypto Losers</h1>
-          <p className="text-sm text-zinc-400">Research downside movers by timeframe, volume, and market cap — informational only</p>
+          <h1 className="text-2xl font-bold text-white">Largest Downward Market Moves</h1>
+          <p className="text-sm text-zinc-400">Research observed downward moves by timeframe, volume, and market cap — informational only</p>
         </div>
       </div>
 
