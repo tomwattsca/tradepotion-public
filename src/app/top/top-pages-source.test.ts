@@ -66,6 +66,12 @@ describe('top pages SEO/source guards', () => {
     expect(topListPanelSource).toContain('CoinGecko');
     expect(topListPanelSource).toContain('data-top-list-risk-note');
     expect(topListPanelSource).toContain('Large green moves can reflect low liquidity');
+    expect(gainersSource).toContain('Largest Upward Market Moves');
+    expect(gainersSource).toContain('Top Crypto Gainers by Market Snapshot');
+    expect(gainersSource).toContain('Research observed upward moves');
+    expect(losersSource).toContain('Largest Downward Market Moves');
+    expect(topListPanelSource).toContain('How to use upward-mover snapshots');
+    expect(topListPanelSource).toContain('How to use downward-mover snapshots');
     expect(topListPanelSource).toContain('top_gainers_context');
     expect(topListPanelSource).toContain('top_losers_context');
     expect(topListPanelSource).toContain('top_trending_context');
@@ -134,6 +140,9 @@ describe('top pages SEO/source guards', () => {
   it('keeps top-list copy away from buy-action and unsupported superlative framing', () => {
     const combined = [gainersSource, losersSource, trendingSource, newListingsSource, topListPanelSource].join('\n');
     expect(combined).not.toContain('pumping');
+    expect(combined).not.toContain('Best Performing');
+    expect(combined).not.toContain('Worst Performing');
+    expect(combined).not.toContain('large upside');
     expect(combined).not.toContain('More actionable than CoinGecko');
     expect(combined).not.toContain('Trade now');
     expect(combined).not.toContain('Buy ');

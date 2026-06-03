@@ -11,15 +11,15 @@ const COPY: Record<TopListKind, {
   riskNote: string;
 }> = {
   gainers: {
-    label: 'How to use the gainers list',
-    description: 'Filter large moves by timeframe, volume and market-cap tier, then open a coin page to review market context before setting any alert.',
+    label: 'How to use upward-mover snapshots',
+    description: 'Filter observed upward moves by timeframe, volume and market-cap tier, then open a coin page to review market context before setting any alert.',
     ctaLocation: 'top_gainers_context',
     accent: 'text-emerald-300 bg-emerald-500/10 border-emerald-500/20',
     riskNote: 'Large green moves can reflect low liquidity, new-listing effects, stale snapshots or outlier data — verify volume, market cap and coin-page history before acting.',
   },
   losers: {
-    label: 'How to use the losers list',
-    description: 'Use downside moves as a research queue, not a signal. Check liquidity, recent context and longer-term price history on the coin page before setting alerts.',
+    label: 'How to use downward-mover snapshots',
+    description: 'Use observed downside moves as a research queue, not a signal. Check liquidity, recent context and longer-term price history on the coin page before setting alerts.',
     ctaLocation: 'top_losers_context',
     accent: 'text-red-300 bg-red-500/10 border-red-500/20',
     riskNote: 'Sharp downside moves can reflect thin liquidity, exchange-specific prints or stale snapshots — verify volume, market cap and coin-page history before acting.',

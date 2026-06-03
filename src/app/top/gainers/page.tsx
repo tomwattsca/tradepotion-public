@@ -8,19 +8,19 @@ import TopListContextPanel from '@/components/TopListContextPanel';
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: 'Top Crypto Gainers Today | 1H, 24H, 7D Best Performing Coins',
-  description: 'Live informational list of the top cryptocurrency gainers filterable by 1H, 24H, 7D performance, volume, and market cap tier. Use Trade Potion to research market moves and set price alerts.',
+  title: 'Top Crypto Gainers Today | Largest Upward Market Moves',
+  description: 'Informational market-snapshot list of cryptocurrency upward movers filterable by 1H, 24H, 7D change, volume, and market cap tier. Use Trade Potion to research observed moves and set price alerts.',
   alternates: { canonical: 'https://tradepotion.com/top/gainers' },
   openGraph: {
-    title: 'Top Crypto Gainers Today',
-    description: 'Best performing coins filtered by 1H, 24H, 7D — with volume and market cap tier filters plus alert and watchlist handoffs.',
+    title: 'Top Crypto Gainers by Market Snapshot',
+    description: 'Largest upward movers from market snapshots filtered by 1H, 24H, and 7D change, with volume and market-cap context plus alert and watchlist handoffs.',
     url: 'https://tradepotion.com/top/gainers',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Top Crypto Gainers Today',
-    description: 'Best performing coins filtered by 1H, 24H, 7D. Powered by Trade Potion.',
+    title: 'Top Crypto Gainers by Market Snapshot',
+    description: 'Largest upward market-snapshot movers filtered by 1H, 24H, and 7D. Powered by Trade Potion.',
   },
 };
 
@@ -35,7 +35,7 @@ export default function TopGainersPage() {
             '@type': 'BreadcrumbList',
             itemListElement: [
               { '@type': 'ListItem', position: 1, name: 'Markets', item: 'https://tradepotion.com' },
-              { '@type': 'ListItem', position: 2, name: 'Top Crypto Gainers', item: 'https://tradepotion.com/top/gainers' },
+              { '@type': 'ListItem', position: 2, name: 'Top Crypto Gainers by Market Snapshot', item: 'https://tradepotion.com/top/gainers' },
             ],
           }),
         }}
@@ -46,9 +46,9 @@ export default function TopGainersPage() {
           __html: JSON.stringify({
             '@context': 'https://schema.org',
             '@type': 'WebPage',
-            name: 'Top Crypto Gainers Today',
+            name: 'Top Crypto Gainers by Market Snapshot',
             url: 'https://tradepotion.com/top/gainers',
-            description: 'Informational list of crypto gainers filtered by timeframe, volume and market-cap tier using CoinGecko market data.',
+            description: 'Informational market-snapshot list of crypto upward movers filtered by timeframe, volume, and market-cap tier using CoinGecko market data.',
             isPartOf: { '@type': 'WebSite', name: 'Trade Potion', url: 'https://tradepotion.com' },
             about: 'Cryptocurrency market data',
           }),
@@ -61,8 +61,8 @@ export default function TopGainersPage() {
       <div className="flex items-center gap-3 mb-6">
         <TrendingUp className="h-6 w-6 text-emerald-400" />
         <div>
-          <h1 className="text-2xl font-bold text-white">Top Crypto Gainers</h1>
-          <p className="text-sm text-zinc-400">Research large upside moves by timeframe, volume, and market cap — informational only</p>
+          <h1 className="text-2xl font-bold text-white">Top Crypto Gainers by Market Snapshot</h1>
+          <p className="text-sm text-zinc-400">Research observed upward moves by timeframe, volume, and market cap — informational only</p>
         </div>
       </div>
 

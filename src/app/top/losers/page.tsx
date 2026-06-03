@@ -8,8 +8,8 @@ import TopListContextPanel from '@/components/TopListContextPanel';
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: 'Top Crypto Losers Today | 1H, 24H, 7D Worst Performing Coins',
-  description: 'Live informational list of the top cryptocurrency losers filterable by 1H, 24H, 7D performance, volume, and market cap tier. Research downside moves and set price alerts from coin pages.',
+  title: 'Top Crypto Losers Today | Largest Downward Market Moves',
+  description: 'Informational market-snapshot list of cryptocurrency downward movers filterable by 1H, 24H, 7D change, volume, and market cap tier. Research observed moves and set price alerts from coin pages.',
   alternates: { canonical: 'https://tradepotion.com/top/losers' },
   openGraph: {
     title: 'Top Crypto Losers Today',
