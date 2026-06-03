@@ -59,7 +59,7 @@ export default function HomePriceAlertBanner({ topCoins }: Props) {
     <div className="rounded-xl bg-gradient-to-br from-violet-950/60 to-zinc-900 border border-violet-800/40 p-5 mb-8">
       <div className="flex items-center gap-2 mb-1">
         <Bell className="h-5 w-5 text-violet-400" />
-        <h2 className="text-base font-semibold text-white">Set a Price Alert</h2>
+        <h2 className="text-base font-semibold text-white">Set a Market Alert</h2>
       </div>
       <p className="text-xs text-zinc-400 mb-2">
         Get informational email alerts when a coin snapshot reaches your chosen threshold.

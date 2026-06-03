@@ -184,7 +184,7 @@ function ComparisonDecisionPanel({
           <h2 className="text-lg font-semibold text-white">Compare the pair, then track the coin that matters</h2>
           <p className="mt-2 text-sm leading-6 text-zinc-400">
             Use this page to compare live price, market cap, volume, supply, and normalised performance for {coinAName} and {coinBName}.
-            If one side deserves follow-up, open its coin page to set a non-advisory price alert or continue with broader market search.
+            If one side deserves follow-up, open its coin page to set a non-advisory market alert or continue with broader market search.
           </p>
         </div>
         <div className="grid gap-2 text-sm">
@@ -194,7 +194,7 @@ function ComparisonDecisionPanel({
             data-event="price_alert_click"
             data-cta-location="compare_coin_a"
             data-coin-id={coinAId}
-            aria-label={`Set a price alert for ${coinAName}`}
+            aria-label={`Set a market alert for ${coinAName}`}
           >
             <Bell className="h-4 w-4" />
             Track {coinASymbol.toUpperCase()}
@@ -205,7 +205,7 @@ function ComparisonDecisionPanel({
             data-event="price_alert_click"
             data-cta-location="compare_coin_b"
             data-coin-id={coinBId}
-            aria-label={`Set a price alert for ${coinBName}`}
+            aria-label={`Set a market alert for ${coinBName}`}
           >
             <Bell className="h-4 w-4" />
             Track {coinBSymbol.toUpperCase()}

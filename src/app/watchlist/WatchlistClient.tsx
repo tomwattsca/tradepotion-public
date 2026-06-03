@@ -77,7 +77,7 @@ export default function WatchlistClient() {
           </div>
           <div className="rounded-xl border border-zinc-800 bg-zinc-950/70 p-3">
             <strong className="block text-zinc-200">3. Add alerts carefully</strong>
-            Use price alerts as monitoring prompts, not investment advice.
+            Use market alerts as monitoring prompts, not investment advice.
           </div>
         </div>
       </section>

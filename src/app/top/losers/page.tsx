@@ -9,7 +9,7 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Largest Downward Crypto Market Moves Today',
-  description: 'Informational market-snapshot list of cryptocurrency downward movers filterable by 1H, 24H, 7D change, volume, and market cap tier. Research observed moves and set price alerts from coin pages.',
+  description: 'Informational market-snapshot list of cryptocurrency downward movers filterable by 1H, 24H, 7D change, volume, and market cap tier. Research observed moves and set market alerts from coin pages.',
   alternates: { canonical: 'https://tradepotion.com/top/losers' },
   openGraph: {
     title: 'Largest Downward Market Moves',

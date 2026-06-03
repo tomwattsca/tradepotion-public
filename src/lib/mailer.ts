@@ -17,7 +17,7 @@ export async function sendAlertEmail(params: AlertEmailParams): Promise<void> {
   const directionWord = params.direction === 'above' ? 'risen above' : 'fallen below';
   const subject = `🚨 ${params.coinSymbol.toUpperCase()} alert — price ${directionWord} $${params.targetPrice.toLocaleString()}`;
   const html = `
-    <h2>Trade Potion Price Alert</h2>
+    <h2>Trade Potion Market Alert</h2>
     <p><strong>${params.coinName} (${params.coinSymbol.toUpperCase()})</strong> has ${directionWord} your selected alert threshold.</p>
     <ul>
       <li>Target: <strong>$${params.targetPrice.toLocaleString()}</strong></li>
@@ -25,7 +25,7 @@ export async function sendAlertEmail(params: AlertEmailParams): Promise<void> {
     </ul>
     <p><a href="https://tradepotion.com/coins/${params.coinSymbol.toLowerCase()}">View on Trade Potion →</a></p>
     <hr />
-    <small>You're receiving this because you set a price alert on tradepotion.com. 
+    <small>You're receiving this because you set a market alert on tradepotion.com.
     <a href="https://tradepotion.com">Manage alerts</a></small>
   `;
 

@@ -11,7 +11,7 @@ export const metadata: Metadata = {
     template: '%s | Trade Potion',
     default: 'Crypto Market Snapshot Tracker | Bitcoin, Ethereum & Altcoin Prices | Trade Potion',
   },
-  description: 'Track CoinGecko crypto market snapshots for Bitcoin, Ethereum, altcoins, watchlists, and informational price alerts. Prices can lag exchange quotes; no financial advice.',
+  description: 'Track CoinGecko crypto market snapshots for Bitcoin, Ethereum, altcoins, watchlists, and informational market alerts. Prices can lag exchange quotes; no financial advice.',
   metadataBase: new URL('https://tradepotion.com'),
   // openGraph and twitter are intentionally absent here so page-level metadata
   // is not overridden by layout defaults. Each page sets its own og tags.

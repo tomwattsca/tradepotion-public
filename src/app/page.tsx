@@ -11,9 +11,9 @@ import { TrendingUp, TrendingDown, ArrowRight, Bell, Search, Star, Database, Ale
 export const revalidate = 300;
 
 export const metadata: Metadata = {
-  title: 'Crypto Market Price Tracker | Rankings & Price Alerts',
+  title: 'Crypto Market Price Tracker | Rankings & Market Alerts',
   description:
-    'Track Bitcoin, Ethereum, altcoins, market cap rankings, and price alerts. Trade Potion shows CoinGecko market snapshots when available and clearly labels cached public snapshots during provider outages.',
+    'Track Bitcoin, Ethereum, altcoins, market cap rankings, and market alerts. Trade Potion shows CoinGecko market snapshots when available and clearly labels cached public snapshots during provider outages.',
   alternates: {
     canonical: '/',
   },
@@ -61,15 +61,15 @@ export default async function HomePage() {
       ? 'Crypto market snapshot'
       : 'Crypto market research tools';
   const heroTitle = marketDataStatus === 'live'
-    ? 'Crypto Market Prices, Market Cap Rankings & Price Alerts'
+    ? 'Crypto Market Prices, Market Cap Rankings & Market Alerts'
     : marketDataStatus === 'cached'
-      ? 'Crypto Market Prices, Market Cap Rankings & Price Alerts'
-      : 'Crypto Price Search, Watchlists & Price Alerts';
+      ? 'Crypto Market Prices, Market Cap Rankings & Market Alerts'
+      : 'Crypto Price Search, Watchlists & Market Alerts';
   const heroDescription = marketDataStatus === 'live'
-    ? 'Track Bitcoin, Ethereum, altcoins, market cap rankings, top gainers, losers, and volume spikes in one public dashboard. Sort the market table, save coins to your watchlist, and create informational price alerts when a target matters.'
+    ? 'Track Bitcoin, Ethereum, altcoins, market cap rankings, top gainers, losers, and volume spikes in one public dashboard. Sort the market table, save coins to your watchlist, and create informational market alerts when a target matters.'
     : marketDataStatus === 'cached'
       ? 'Search and compare crypto prices, market cap rankings, top gainers, losers, and watchlist entries in one public dashboard. Trade Potion is currently using stored CoinGecko snapshots because live rows are unavailable; alerts remain informational and may be delayed.'
-      : 'Search coins, use existing watchlists, and create informational price alerts while market data recovers. Trade Potion labels unavailable data clearly and avoids promotional rankings or investment advice.';
+      : 'Search coins, use existing watchlists, and create informational market alerts while market data recovers. Trade Potion labels unavailable data clearly and avoids promotional rankings or investment advice.';
   const heroStatusLabel = marketDataStatus === 'live'
     ? 'Market data source: CoinGecko snapshot'
     : marketDataStatus === 'cached'

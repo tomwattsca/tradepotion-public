@@ -5,7 +5,7 @@ import { db } from '@/lib/db';
 import { priceAlerts } from '@/lib/schema';
 import { eq, desc } from 'drizzle-orm';
 
-// POST /api/alerts — create a price alert
+// POST /api/alerts — create a market alert
 export async function POST(req: NextRequest) {
   let body: { email?: string; coin_id?: string; target_price?: number; direction?: string };
   try {

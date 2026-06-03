@@ -7,11 +7,11 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Crypto Volume Spikes — Coins With Unusual Trading Activity',
-  description: 'Live list of cryptocurrencies with unusually high trading volume relative to market cap. Use Trade Potion to research activity spikes with neutral market data and price alerts.',
+  description: 'Live list of cryptocurrencies with unusually high trading volume relative to market cap. Use Trade Potion to research activity spikes with neutral market data and market alerts.',
   alternates: { canonical: 'https://tradepotion.com/top/vol-spikes' },
   openGraph: {
     title: 'Crypto Volume Spikes — Unusual Trading Activity Scanner',
-    description: 'Find coins with unusually high trading volume relative to market cap, then research the move with neutral market data and price alerts.',
+    description: 'Find coins with unusually high trading volume relative to market cap, then research the move with neutral market data and market alerts.',
     url: 'https://tradepotion.com/top/vol-spikes',
     type: 'website',
   },
@@ -70,7 +70,7 @@ export default function VolSpikesPage() {
             <p className="mt-2">
               High volume relative to market cap can point to news, listings, liquidity changes, or short-term speculation.
               Treat this as a research queue: open the coin page, compare live price, market cap, and volume context,
-              and set a price alert before making any decision elsewhere.
+              and set a market alert before making any decision elsewhere.
             </p>
             <p className="mt-2 text-xs text-zinc-500">Trade Potion provides market data and alert tools only; this is not financial advice.</p>
           </div>

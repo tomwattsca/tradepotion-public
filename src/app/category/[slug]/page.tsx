@@ -21,7 +21,7 @@ const CATEGORY_META: Record<string, CategoryMeta> = {
     description: 'Track prices for 500+ DeFi tokens including Aave, Uniswap, Curve. Live DeFi coin prices, charts, and alerts.',
     h1: 'DeFi Tokens',
     h2: 'Top DeFi Tokens by Market Cap',
-    intro: 'DeFi tokens power open financial protocols for lending, swaps, derivatives, and governance. Track Aave, Uniswap, Curve, and other DeFi assets with live market data, watchlist stars, and optional price alerts. Category moves can reflect protocol usage, liquidity shifts, governance news, exchange activity, or wider market conditions, so use these pages for research rather than financial advice.',
+    intro: 'DeFi tokens power open financial protocols for lending, swaps, derivatives, and governance. Track Aave, Uniswap, Curve, and other DeFi assets with live market data, watchlist stars, and optional market alerts. Category moves can reflect protocol usage, liquidity shifts, governance news, exchange activity, or wider market conditions, so use these pages for research rather than financial advice.',
     fallbackCoins: [
       { name: 'Aave', href: '/coins/aave' },
       { name: 'Uniswap', href: '/coins/uniswap' },
@@ -37,7 +37,7 @@ const CATEGORY_META: Record<string, CategoryMeta> = {
     description: 'Track prices for 500+ DeFi tokens including Aave, Uniswap, Curve. Live DeFi coin prices, charts, and alerts.',
     h1: 'DeFi Tokens',
     h2: 'Top DeFi Tokens by Market Cap',
-    intro: 'DeFi tokens power open financial protocols for lending, swaps, derivatives, and governance. Track Aave, Uniswap, Curve, and other DeFi assets with live market data, watchlist stars, and optional price alerts. Category moves can reflect protocol usage, liquidity shifts, governance news, exchange activity, or wider market conditions, so use these pages for research rather than financial advice.',
+    intro: 'DeFi tokens power open financial protocols for lending, swaps, derivatives, and governance. Track Aave, Uniswap, Curve, and other DeFi assets with live market data, watchlist stars, and optional market alerts. Category moves can reflect protocol usage, liquidity shifts, governance news, exchange activity, or wider market conditions, so use these pages for research rather than financial advice.',
     fallbackCoins: [
       { name: 'Aave', href: '/coins/aave' },
       { name: 'Uniswap', href: '/coins/uniswap' },
@@ -53,7 +53,7 @@ const CATEGORY_META: Record<string, CategoryMeta> = {
     description: 'Live prices for Ethereum Layer 2 tokens: Arbitrum, Optimism, Polygon, and more. Real-time tracking and alerts.',
     h1: 'Layer 2 Tokens',
     h2: 'Top Layer 2 Tokens by Market Cap',
-    intro: 'Layer 2 tokens power networks that aim to make Ethereum and related ecosystems faster and cheaper. Track Arbitrum, Optimism, Polygon, and other scaling assets with live prices, watchlist stars, and optional price alerts. Category movement can reflect network usage, bridge activity, governance news, exchange liquidity, or wider market conditions; it is not a forecast or recommendation.',
+    intro: 'Layer 2 tokens power networks that aim to make Ethereum and related ecosystems faster and cheaper. Track Arbitrum, Optimism, Polygon, and other scaling assets with live prices, watchlist stars, and optional market alerts. Category movement can reflect network usage, bridge activity, governance news, exchange liquidity, or wider market conditions; it is not a forecast or recommendation.',
     fallbackCoins: [
       { name: 'Arbitrum', href: '/coins/arbitrum' },
       { name: 'Optimism', href: '/coins/optimism' },
@@ -76,7 +76,7 @@ const CATEGORY_META: Record<string, CategoryMeta> = {
     description: 'Track live prices for meme coins: Dogecoin, Shiba Inu, Pepe, and 1000+ more. Real-time meme token prices.',
     h1: 'Meme Coins',
     h2: 'Top Meme Coins by Market Cap',
-    intro: 'Meme coins are community-driven tokens whose prices can move quickly around social attention, liquidity changes, exchange listings, and broader risk appetite. Track Dogecoin, Shiba Inu, Pepe, and other meme tokens with live market data, watchlist stars, and optional price alerts. Treat this page as a monitoring dashboard, not a recommendation to buy or trade.',
+    intro: 'Meme coins are community-driven tokens whose prices can move quickly around social attention, liquidity changes, exchange listings, and broader risk appetite. Track Dogecoin, Shiba Inu, Pepe, and other meme tokens with live market data, watchlist stars, and optional market alerts. Treat this page as a monitoring dashboard, not a recommendation to buy or trade.',
     fallbackCoins: [
       { name: 'Dogecoin', href: '/coins/dogecoin' },
       { name: 'Shiba Inu', href: '/coins/shiba-inu' },
@@ -134,7 +134,7 @@ const CATEGORY_META: Record<string, CategoryMeta> = {
     description: 'Live prices for AI crypto tokens: Fetch.ai, Render, Akash, and more. Track the AI and machine learning coin market.',
     h1: 'AI & Machine Learning Tokens',
     h2: 'Top AI Tokens by Market Cap',
-    intro: 'AI crypto tokens sit around decentralized compute, data networks, agent infrastructure, and machine-learning marketplaces. Track Render, Akash, Fetch.ai, and related AI assets with live market data, watchlist stars, and optional price alerts. Price moves can reflect GPU demand, product news, token liquidity, or broader crypto sentiment; this page is informational only and not financial advice.',
+    intro: 'AI crypto tokens sit around decentralized compute, data networks, agent infrastructure, and machine-learning marketplaces. Track Render, Akash, Fetch.ai, and related AI assets with live market data, watchlist stars, and optional market alerts. Price moves can reflect GPU demand, product news, token liquidity, or broader crypto sentiment; this page is informational only and not financial advice.',
     fallbackCoins: [
       { name: 'Akash Network', href: '/coins/akash-network' },
       { name: 'Render', href: '/coins/render-token' },
@@ -150,7 +150,7 @@ const CATEGORY_META: Record<string, CategoryMeta> = {
     description: 'Track live prices for liquid staking tokens: stETH, rETH, mSOL, and more. Real-time LST market data.',
     h1: 'Liquid Staking Tokens',
     h2: 'Top Liquid Staking Tokens by Market Cap',
-    intro: 'Liquid staking tokens (LSTs) represent staked assets that can still move through parts of the crypto ecosystem. Track stETH, rETH, mSOL, and other LSTs with live prices, watchlist stars, and optional price alerts. Values can be affected by staking yields, liquidity, protocol risk, slashing risk, and governance changes, so use the data for research rather than financial advice.',
+    intro: 'Liquid staking tokens (LSTs) represent staked assets that can still move through parts of the crypto ecosystem. Track stETH, rETH, mSOL, and other LSTs with live prices, watchlist stars, and optional market alerts. Values can be affected by staking yields, liquidity, protocol risk, slashing risk, and governance changes, so use the data for research rather than financial advice.',
     fallbackCoins: [
       { name: 'Lido Staked Ether', href: '/coins/staked-ether' },
       { name: 'Rocket Pool ETH', href: '/coins/rocket-pool-eth' },
@@ -170,7 +170,7 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   const title = meta?.title ?? `${displayName} Coin Prices`;
   const description =
     meta?.description ??
-    `Live prices for ${displayName} tokens. Real-time tracking and price alerts on Trade Potion.`;
+    `Live prices for ${displayName} tokens. Real-time tracking and market alerts on Trade Potion.`;
 
   return {
     title,
@@ -219,7 +219,7 @@ export default async function CategoryPage({ params }: Props) {
 
   // H1: prefer explicit meta.h1, then CoinGecko category name, then slug-derived
   const displayName = params.slug.replace(/-/g, ' ');
-  const description = meta?.description ?? `Live prices for ${displayName} tokens. Real-time tracking and price alerts on Trade Potion.`;
+  const description = meta?.description ?? `Live prices for ${displayName} tokens. Real-time tracking and market alerts on Trade Potion.`;
   const h1 = meta?.h1 ?? category?.name ?? displayName;
   const h2 = meta?.h2 ?? `Top ${h1} by Market Cap`;
   const intro = meta?.intro ?? null;

@@ -27,7 +27,7 @@ describe('coin page alert/tracking source guards', () => {
     expect(coinPageSource).toContain('{coinName} pricing, {uppercaseSymbol} ticker data');
     expect(coinPageSource).toContain('For protocol, cloud, app, or official service pricing');
     expect(coinPageSource).toContain('Coin research guide');
-    expect(coinPageSource).toContain('non-advisory price alerts for {coin.name}');
+    expect(coinPageSource).toContain('non-advisory market alerts for {coin.name}');
   });
 
 
@@ -44,7 +44,7 @@ describe('coin page alert/tracking source guards', () => {
     expect(exchangeCtasSource).not.toContain('Trade now');
   });
 
-  it('keeps the reusable price alert form measurable without collecting PII in attributes', () => {
+  it('keeps the reusable market alert form measurable without collecting PII in attributes', () => {
     expect(alertFormSource).toContain('ctaLocation?: string');
     expect(alertFormSource).toContain("data-event={ctaLocation ? 'price_alert_click' : undefined}");
     expect(alertFormSource).toContain('data-cta-location={ctaLocation}');

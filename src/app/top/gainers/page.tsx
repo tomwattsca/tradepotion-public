@@ -9,7 +9,7 @@ export const revalidate = 300;
 
 export const metadata: Metadata = {
   title: 'Largest Upward Crypto Market Moves Today',
-  description: 'Informational market-snapshot list of cryptocurrency upward movers filterable by 1H, 24H, 7D change, volume, and market cap tier. Use Trade Potion to research observed moves and set price alerts.',
+  description: 'Informational market-snapshot list of cryptocurrency upward movers filterable by 1H, 24H, 7D change, volume, and market cap tier. Use Trade Potion to research observed moves and set market alerts.',
   alternates: { canonical: 'https://tradepotion.com/top/gainers' },
   openGraph: {
     title: 'Largest Upward Market Moves',

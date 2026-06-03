@@ -52,7 +52,7 @@ export default function PriceAlertForm({ coinId, coinName, currentPrice, ctaLoca
     <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
       <div className="flex items-center gap-2 mb-3">
         <Bell className="h-4 w-4 text-violet-400" />
-        <h3 className="text-sm font-semibold text-zinc-300">Price Alert</h3>
+        <h3 className="text-sm font-semibold text-zinc-300">Market Alert</h3>
       </div>
 
       {status === 'success' ? (

@@ -12,7 +12,7 @@ describe('homepage market-data fallback posture', () => {
     expect(homeSource).toContain('Data status: cached CoinGecko snapshot');
     expect(homeSource).toContain('Live CoinGecko market rows are temporarily unavailable');
     expect(homeSource).toContain('Crypto market snapshot');
-    expect(homeSource).toContain('Crypto Market Prices, Market Cap Rankings & Price Alerts');
+    expect(homeSource).toContain('Crypto Market Prices, Market Cap Rankings & Market Alerts');
     expect(homeSource).toContain('some 1h, 7d, and chart fields may be unavailable');
     expect(homeSource).toContain('data-market-data-status={marketDataStatus}');
     expect(coingeckoSource).toContain('price_snapshots');
@@ -49,7 +49,7 @@ describe('homepage market-data fallback posture', () => {
   });
 
   it('keeps homepage metadata and table labels honest during cached-data states', () => {
-    expect(homeSource).toContain("title: 'Crypto Market Price Tracker | Rankings & Price Alerts'");
+    expect(homeSource).toContain("title: 'Crypto Market Price Tracker | Rankings & Market Alerts'");
     expect(homeSource).toContain('clearly labels cached public snapshots');
     expect(homeSource).toContain('Crypto market snapshot');
     expect(homeSource).toContain('Market data source: CoinGecko snapshot');
@@ -57,7 +57,7 @@ describe('homepage market-data fallback posture', () => {
     expect(homeSource).toContain('Top Cryptocurrencies by Market Snapshot');
     expect(homeSource).toContain('dashes mean a metric is unavailable from the current source');
     expect(homeSource).not.toContain('Top 100 Cryptocurrencies');
-    expect(homeSource).not.toContain('Live Crypto Prices, Market Cap Rankings & Price Alerts');
+    expect(homeSource).not.toContain('Live Crypto Prices, Market Cap Rankings & Market Alerts');
     expect(homeSource).toContain('Prices can differ from exchange quotes');
     expect(homeSource).not.toContain('Live CoinGecko market rows available');
     expect(homeSource).not.toContain('Latest Cached Crypto Prices');

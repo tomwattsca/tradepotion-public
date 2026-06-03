@@ -366,7 +366,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     return {
       title: `${name} (${symbol}) Coin Price, Market Cap & Alerts`,
-      description: `Live ${name} (${symbol}) coin, token, ticker, and pricing data: $${priceStr}. Track ${name} price history, market cap, volume, and non-advisory price alerts on Trade Potion.`,
+      description: `Live ${name} (${symbol}) coin, token, ticker, and pricing data: $${priceStr}. Track ${name} price history, market cap, volume, and non-advisory market alerts on Trade Potion.`,
       alternates: { canonical: `https://tradepotion.com/coins/${params.slug}` },
       openGraph: {
         title: `${name} Coin Price, Market Cap & Alerts`,
@@ -499,7 +499,7 @@ export default async function CoinPage({ params }: Props) {
             {coin.name} coin price ({coin.symbol.toUpperCase()})
           </h1>
           <p className="mt-1 text-sm text-zinc-400">
-            Live USD coin/token price, ticker context, market cap, 24h volume, chart history, and non-advisory price alerts for {coin.name}.
+            Live USD coin/token price, ticker context, market cap, 24h volume, chart history, and non-advisory market alerts for {coin.name}.
           </p>
           {coin.market_cap_rank && (
             <span className="mt-1 inline-block text-xs text-zinc-500">Rank #{coin.market_cap_rank}</span>
