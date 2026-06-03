@@ -206,7 +206,7 @@ function CoinMarketContext({
       <h2 className="text-sm font-semibold text-zinc-300 mb-3">How to read the {uppercaseSymbol} market data</h2>
       <div className="space-y-4 text-sm text-zinc-400 leading-relaxed">
         <p>
-          This page tracks live {coinName} ({uppercaseSymbol}) market data: current USD price, 24-hour volume, market cap,
+          This page tracks the latest {coinName} ({uppercaseSymbol}) market snapshot: current USD price, 24-hour volume, market cap,
           supply figures, recent percentage changes, and historical high/low levels. These signals describe recent market
           activity; they are not a forecast or a recommendation.
         </p>
@@ -292,7 +292,7 @@ function CoinSearchIntentPanel({
         <div className="rounded-lg bg-zinc-950/70 p-3">
           <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-300">What is {coinName}?</h3>
           <p className="mt-1 leading-relaxed">
-            Treat this page as a quick {coinName} crypto research snapshot: live {uppercaseSymbol} market data, category context, and links for checking official project sources.
+            Treat this page as a quick {coinName} crypto research snapshot: latest {uppercaseSymbol} market snapshot, category context, and links for checking official project sources.
           </p>
         </div>
         <div className="rounded-lg bg-zinc-950/70 p-3">
@@ -346,6 +346,20 @@ function getAth(coinId: string, apiAth: number): number {
   return ATH_OVERRIDES[coinId] ?? apiAth;
 }
 
+function hasPositiveMarketValue(value: unknown): value is number {
+  return typeof value === 'number' && Number.isFinite(value) && value > 0;
+}
+
+function formatOptionalSupply(value: unknown): string {
+  if (!hasPositiveMarketValue(value)) return 'Not available';
+  return value.toLocaleString();
+}
+
+function formatOptionalPrice(value: unknown): string {
+  if (!hasPositiveMarketValue(value)) return 'Not available';
+  return formatPrice(value);
+}
+
 
 export const revalidate = 60;
 
@@ -366,24 +380,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
     return {
       title: `${name} (${symbol}) Coin Price, Market Cap & Alerts`,
-      description: `Live ${name} (${symbol}) coin, token, ticker, and pricing data: $${priceStr}. Track ${name} price history, market cap, volume, and non-advisory market alerts on Trade Potion.`,
+      description: `Latest ${name} (${symbol}) coin, token, ticker, and pricing snapshot: $${priceStr}. Track ${name} price history, market cap, volume, and non-advisory market alerts on Trade Potion.`,
       alternates: { canonical: `https://tradepotion.com/coins/${params.slug}` },
       openGraph: {
         title: `${name} Coin Price, Market Cap & Alerts`,
-        description: `View live ${name} (${symbol}) coin price, ticker context, market cap, charts, and non-advisory alerts on Trade Potion.`,
+        description: `View the latest ${name} (${symbol}) coin price snapshot, ticker context, market cap, charts, and non-advisory alerts on Trade Potion.`,
         url: `https://tradepotion.com/coins/${params.slug}`,
         type: 'website',
       },
       twitter: {
         card: 'summary',
         title: `${name} (${symbol}) Price & Market Cap`,
-        description: `${name} coin price: $${priceStr}. Live ticker, market cap, charts, and non-advisory alerts.`,
+        description: `${name} coin price snapshot: $${priceStr}. Ticker, market cap, charts, and non-advisory alerts.`,
       },
     };
   } catch {
     return {
       title: 'Coin Price',
-      description: 'Live crypto price tracking on Trade Potion.',
+      description: 'Crypto market snapshot tracking on Trade Potion.',
     };
   }
 }
@@ -416,10 +430,10 @@ export default async function CoinPage({ params }: Props) {
   const stats = [
     { label: 'Market Cap', value: formatMarketCap(md.market_cap.usd) },
     { label: '24h Volume', value: formatMarketCap(md.total_volume.usd) },
-    { label: 'Circulating Supply', value: md.circulating_supply?.toLocaleString() ?? '—' },
-    { label: 'Total Supply', value: md.total_supply?.toLocaleString() ?? '∞' },
-    { label: 'All-Time High', value: formatPrice(getAth(params.slug, md.ath.usd)) },
-    { label: 'All-Time Low', value: formatPrice(getAtl(params.slug, md.atl.usd)) },
+    { label: 'Circulating Supply', value: formatOptionalSupply(md.circulating_supply) },
+    { label: 'Total Supply', value: formatOptionalSupply(md.total_supply) },
+    { label: 'All-Time High', value: formatOptionalPrice(getAth(params.slug, md.ath.usd)) },
+    { label: 'All-Time Low', value: formatOptionalPrice(getAtl(params.slug, md.atl.usd)) },
   ];
 
   return (
@@ -451,7 +465,7 @@ export default async function CoinPage({ params }: Props) {
             '@id': `https://tradepotion.com/coins/${params.slug}#webpage`,
             url: `https://tradepotion.com/coins/${params.slug}`,
             name: `${coin.name} (${coin.symbol.toUpperCase()}) Price`,
-            description: `Live ${coin.name} (${coin.symbol.toUpperCase()}) market data including USD price, market cap, volume, supply, and recent performance.`,
+            description: `Latest ${coin.name} (${coin.symbol.toUpperCase()}) market snapshot including USD price, market cap, volume, supply, and recent performance.`,
             isPartOf: {
               '@type': 'WebSite',
               '@id': 'https://tradepotion.com/#website',
@@ -499,9 +513,9 @@ export default async function CoinPage({ params }: Props) {
             {coin.name} coin price ({coin.symbol.toUpperCase()})
           </h1>
           <p className="mt-1 text-sm text-zinc-400">
-            Live USD coin/token price, ticker context, market cap, 24h volume, chart history, and non-advisory market alerts for {coin.name}.
+            Latest USD coin/token market snapshot, ticker context, market cap, 24h volume, chart history, and non-advisory market alerts for {coin.name}.
           </p>
-          {coin.market_cap_rank && (
+          {hasPositiveMarketValue(coin.market_cap_rank) && (
             <span className="mt-1 inline-block text-xs text-zinc-500">Rank #{coin.market_cap_rank}</span>
           )}
         </div>
@@ -599,7 +613,7 @@ export default async function CoinPage({ params }: Props) {
             <div className="rounded-xl bg-zinc-900 border border-zinc-800 p-4">
               <h2 className="text-sm font-semibold text-zinc-300 mb-2">About {coin.name}</h2>
               <p className="text-sm text-zinc-400 leading-relaxed">
-                {coin.name} is tracked on Trade Potion with live market data from CoinGecko, including price, market cap, volume, supply, and recent performance windows.
+                {coin.name} is tracked on Trade Potion with CoinGecko market snapshots, including price, market cap, volume, supply, and recent performance windows.
                 Project descriptions and external links can change over time, so use official sources for protocol-specific details.
               </p>
             </div>

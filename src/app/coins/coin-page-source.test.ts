@@ -18,7 +18,7 @@ describe('coin page alert/tracking source guards', () => {
   it('aligns GSC-visible coin pages with price and market-cap search intent', () => {
     expect(coinPageSource).toContain('`${name} (${symbol}) Coin Price, Market Cap & Alerts`');
     expect(coinPageSource).toContain('{coin.name} coin price');
-    expect(coinPageSource).toContain('Live USD coin/token price, ticker context, market cap, 24h volume, chart history');
+    expect(coinPageSource).toContain('Latest USD coin/token market snapshot, ticker context, market cap, 24h volume, chart history');
     expect(coinPageSource).toContain('{coinName} coin, token, ticker, and pricing context');
     expect(coinPageSource).toContain('What is {coinName}?');
     expect(coinPageSource).toContain('quick {coinName} crypto research snapshot');
@@ -28,6 +28,12 @@ describe('coin page alert/tracking source guards', () => {
     expect(coinPageSource).toContain('For protocol, cloud, app, or official service pricing');
     expect(coinPageSource).toContain('Coin research guide');
     expect(coinPageSource).toContain('non-advisory market alerts for {coin.name}');
+
+    expect(coinPageSource).toContain('Latest USD coin/token market snapshot');
+    expect(coinPageSource).toContain('CoinGecko market snapshots');
+    expect(coinPageSource).toContain('Crypto market snapshot tracking on Trade Potion.');
+    expect(coinPageSource).not.toContain('Live USD coin/token price');
+    expect(coinPageSource).not.toContain('Live crypto price tracking');
   });
 
 
@@ -103,5 +109,17 @@ describe('coin page alert/tracking source guards', () => {
     expect(coinPageSource).toContain('coinId={coin.id}');
     expect(coinPageSource).not.toContain('data-coin-id={symbol.toLowerCase()}');
   });
+
+  it('renders unavailable coin stats intentionally instead of placeholder zeros or infinity', () => {
+    expect(coinPageSource).toContain('hasPositiveMarketValue');
+    expect(coinPageSource).toContain("return 'Not available'");
+    expect(coinPageSource).toContain('formatOptionalSupply(md.circulating_supply)');
+    expect(coinPageSource).toContain('formatOptionalSupply(md.total_supply)');
+    expect(coinPageSource).toContain('formatOptionalPrice(getAth(params.slug, md.ath.usd))');
+    expect(coinPageSource).toContain('formatOptionalPrice(getAtl(params.slug, md.atl.usd))');
+    expect(coinPageSource).toContain('hasPositiveMarketValue(coin.market_cap_rank)');
+    expect(coinPageSource).not.toContain("value: md.total_supply?.toLocaleString() ?? '∞'");
+  });
+
 
 });
