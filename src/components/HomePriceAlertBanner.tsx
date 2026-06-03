@@ -62,7 +62,7 @@ export default function HomePriceAlertBanner({ topCoins }: Props) {
         <h2 className="text-base font-semibold text-white">Set a Price Alert</h2>
       </div>
       <p className="text-xs text-zinc-400 mb-2">
-        Get notified by email when any coin hits your target price.
+        Get informational email alerts when a coin snapshot reaches your chosen threshold.
       </p>
       <div data-alert-trust-note className="mb-4 rounded-lg border border-zinc-800 bg-zinc-950/60 px-3 py-2">
         <p className="text-xs leading-5 text-zinc-300">

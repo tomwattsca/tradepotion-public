@@ -18,7 +18,7 @@ export async function sendAlertEmail(params: AlertEmailParams): Promise<void> {
   const subject = `🚨 ${params.coinSymbol.toUpperCase()} alert — price ${directionWord} $${params.targetPrice.toLocaleString()}`;
   const html = `
     <h2>Trade Potion Price Alert</h2>
-    <p><strong>${params.coinName} (${params.coinSymbol.toUpperCase()})</strong> has ${directionWord} your target price.</p>
+    <p><strong>${params.coinName} (${params.coinSymbol.toUpperCase()})</strong> has ${directionWord} your selected alert threshold.</p>
     <ul>
       <li>Target: <strong>$${params.targetPrice.toLocaleString()}</strong></li>
       <li>Current price: <strong>$${params.currentPrice.toLocaleString()}</strong></li>

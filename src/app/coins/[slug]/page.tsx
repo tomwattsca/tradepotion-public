@@ -250,7 +250,7 @@ function CoinMarketContext({
           </div>
         )}
         <p className="text-xs text-zinc-500">
-          Crypto assets are volatile. Use this page for market research alongside independent due diligence; Trade Potion does not provide financial advice.
+          Crypto assets are volatile. Use this page as an informational market-data snapshot; Trade Potion does not provide financial advice.
         </p>
       </div>
     </section>
@@ -311,7 +311,7 @@ function CoinSearchIntentPanel({
         <div className="rounded-lg bg-zinc-950/70 p-3">
           <h3 className="text-xs font-semibold uppercase tracking-wide text-zinc-300">Exchange research</h3>
           <p className="mt-1 leading-relaxed">
-            Trade Potion shows informational market data and research links only. Confirm venue availability, fees, and risks independently before acting.
+            Trade Potion shows informational market data and research links only. Confirm venue availability, fees, and market details directly with each venue.
           </p>
         </div>
       </div>
@@ -512,7 +512,7 @@ export default async function CoinPage({ params }: Props) {
             data-event="price_alert_click"
             data-cta-location="coin_hero"
             data-coin-id={coin.id}
-            aria-label={`Set a price alert for ${coin.name}`}
+            aria-label={`Set a market alert for ${coin.name}`}
           >
             <Bell className="h-4 w-4" />
             Set {coin.symbol.toUpperCase()} alert

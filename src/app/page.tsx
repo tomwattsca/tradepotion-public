@@ -132,7 +132,7 @@ export default async function HomePage() {
                 className="inline-flex items-center justify-center gap-2 rounded-lg bg-violet-600 px-4 py-2.5 text-sm font-medium text-white transition-colors hover:bg-violet-500"
               >
                 <Bell className="h-4 w-4" />
-                Set a price alert
+                Set a market alert
               </a>
               <form
                 action="/search"

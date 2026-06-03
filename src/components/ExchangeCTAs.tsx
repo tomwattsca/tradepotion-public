@@ -45,15 +45,15 @@ export default function ExchangeCTAs({ coinSymbol, coinName }: Props) {
         ))}
       </div>
       <div className="mt-3 rounded-lg border border-zinc-800 bg-zinc-950/70 p-3">
-        <h4 className="text-xs font-semibold uppercase tracking-wide text-zinc-300">Before acting on a venue result</h4>
+        <h4 className="text-xs font-semibold uppercase tracking-wide text-zinc-300">When reviewing a venue result</h4>
         <ul className="mt-2 space-y-1 text-xs leading-relaxed text-zinc-500">
           <li>Confirm the listing is the exact {coinSymbol.toUpperCase()} asset and network.</li>
           <li>Check regional availability, fees, liquidity, spread, custody, and withdrawal rules directly with the venue.</li>
-          <li>Treat every outbound result as independent research, not a Trade Potion recommendation or sponsored ranking.</li>
+          <li>Treat every outbound result as an independent venue page, not a Trade Potion recommendation or sponsored ranking.</li>
         </ul>
       </div>
       <p className="mt-3 text-xs text-zinc-600">
-        Trade Potion does not provide financial advice, execute trades, or verify venue access. Partner links stay clearly marked through non-PII tracking hooks.
+        Trade Potion does not execute trades or verify venue access. Partner links stay clearly marked through non-PII tracking hooks.
       </p>
     </div>
   );
