@@ -44,18 +44,24 @@ export default function TrendingClient() {
   return (
     <div>
       {/* Header row */}
-      <div className="flex items-center justify-between mb-4">
-        <p className="text-sm text-zinc-500">
-          Top coins trending on CoinGecko right now — left rank is trending attention; coin badges show market-cap rank when available.
-        </p>
+      <div className="mb-4 space-y-2 sm:flex sm:items-end sm:justify-between sm:gap-4 sm:space-y-0">
+        <div className="space-y-1">
+          <p className="text-sm text-zinc-500">
+            CoinGecko attention snapshot — left rank is trending attention; badges show market-cap rank when available.
+          </p>
+          <p className="text-xs text-zinc-600 sm:hidden" data-trending-table-scroll-hint>
+            Swipe sideways to compare price, 24h movement, market cap, and volume.
+          </p>
+        </div>
         {lastUpdated && !loading && (
-          <span className="text-xs text-zinc-600">
+          <span className="text-xs text-zinc-600 shrink-0">
             Updated {new Date(lastUpdated).toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' })} UTC
           </span>
         )}
       </div>
 
-      <div className="rounded-xl bg-zinc-950 border border-zinc-800 overflow-hidden">
+      <div className="overflow-x-auto rounded-xl border border-zinc-800 bg-zinc-950" data-trending-table-scroll-region>
+        <div className="min-w-[44rem]">
         <div className="grid grid-cols-[2rem_1fr_7rem_7rem_9rem_9rem] px-4 py-2 border-b border-zinc-800 text-xs text-zinc-500">
           <span className="text-right">Trend</span>
           <span className="pl-3">Coin / MCap rank</span>
@@ -111,6 +117,7 @@ export default function TrendingClient() {
               </span>
             </Link>
           ))}
+        </div>
         </div>
       </div>
     </div>

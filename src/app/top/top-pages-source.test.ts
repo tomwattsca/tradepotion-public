@@ -93,6 +93,10 @@ describe('top pages SEO/source guards', () => {
     expect(gainersClientSource).toContain('aria-label={`Save ${coin.name} to watchlist`}');
     expect(trendingClientSource).toContain('data-cta-location="top_trending_coin"');
     expect(trendingClientSource).toContain('left rank is trending attention');
+    expect(trendingClientSource).toContain('data-trending-table-scroll-region');
+    expect(trendingClientSource).toContain('data-trending-table-scroll-hint');
+    expect(trendingClientSource).toContain('min-w-[44rem]');
+    expect(trendingSource).toContain('Trending Crypto Attention Snapshot');
     expect(trendingClientSource).toContain('Coin / MCap rank');
     expect(trendingClientSource).toContain('MCap #{coin.rank}');
     expect(newListingsClientSource).toContain('data-cta-location="top_new_listings_coin"');
@@ -146,6 +150,8 @@ describe('top pages SEO/source guards', () => {
     expect(combined).not.toContain('Top Crypto Gainers');
     expect(combined).not.toContain('Top Crypto Losers');
     expect(combined).not.toContain('More actionable than CoinGecko');
+    expect(combined).not.toContain('Most Searched');
+    expect(combined).not.toContain('Popular Tokens');
     expect(combined).not.toContain('Trade now');
     expect(combined).not.toContain('Buy ');
   });
